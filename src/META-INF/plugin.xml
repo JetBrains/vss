@@ -1,0 +1,52 @@
+<!DOCTYPE idea-plugin PUBLIC "Plugin/DTD" "http://plugins.intellij.net/plugin.dtd">
+<idea-plugin version="2">
+  <name>Visual SourceSafe Integration</name>
+  <id>SourceSafe</id>
+  <version>1.0</version>
+  <vendor logo="/general/ijLogo.png">JetBrains</vendor>
+  <idea-version since-build="3000"/>
+  <resource-bundle xmlns="">com.intellij.vssSupport.VssBundle</resource-bundle>
+
+  <extensions xmlns="com.intellij">
+    <errorHandler implementation="com.intellij.diagnostic.ITNReporter"/>
+  </extensions>
+
+  <project-components>
+    <component>
+      <implementation-class>com.intellij.vssSupport.VssVcs</implementation-class>
+    </component>
+    
+    <component>
+      <interface-class>com.intellij.vssSupport.VssConfiguration</interface-class>
+      <implementation-class>com.intellij.vssSupport.VssConfiguration</implementation-class>
+      <option name="workspace" value="true"/>
+    </component>
+  </project-components>
+
+  <actions>
+    <group id="VssGlobalGroup" class="com.intellij.vssSupport.actions.VssGroup" popup="true" >
+      <add-to-group group-id="VcsGroups" anchor="last"/>
+      <action id="Vss.RunExplorer" class="com.intellij.vssSupport.actions.RunExplorerAction"/>
+    </group>
+
+    <group id="VssFilePopupGroup" class="com.intellij.vssSupport.actions.VssGroup" popup="true" >
+      <add-to-group group-id="VcsGroup" anchor="last"/>
+    </group>
+
+
+    <group id="VssGroup">
+      <add-to-group group-id="VssGlobalGroup" anchor="last"/>
+      <add-to-group group-id="VssFilePopupGroup" anchor="last"/>
+      <action id="Vss.Get" class="com.intellij.vssSupport.actions.GetAction"/>
+      <action id="Vss.Checkout" class="com.intellij.vssSupport.actions.CheckoutAction"/>
+      <action id="Vss.Undocheckout" class="com.intellij.vssSupport.actions.UndocheckoutAction"/>
+      <reference id="CheckinFiles"/>
+      <action id="Vss.Add" class="com.intellij.vssSupport.actions.AddAction"/>
+      <action id="Vss.Label" class="com.intellij.vssSupport.actions.LabelAction"/>
+      <separator/>
+      <reference id="Vcs.ShowTabbedFileHistory"/>
+      <action id="Vss.Diff" class="com.intellij.vssSupport.actions.DiffAction"/>
+    </group>
+
+  </actions>
+</idea-plugin>
