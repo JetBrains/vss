@@ -81,7 +81,7 @@ public class VssRollbackEnvironment implements RollbackEnvironment
     VcsDirtyScopeManager mgr = VcsDirtyScopeManager.getInstance(project);
     for( FilePath folder : newFileAndFolders )
     {
-      host.deleteNewFile( folder.getPath() );
+      host.deleteNewFile( folder.getVirtualFile() );
       mgr.fileDirty( folder );
     }
   }

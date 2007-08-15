@@ -83,11 +83,11 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
 
   public  HashSet<String> removedFiles;
   public  HashSet<String> removedFolders;
-  private HashSet<String> newFiles;
   public  HashSet<String> deletedFiles;
   public  HashSet<String> deletedFolders;
   public  HashMap<String, String> renamedFiles;
   public  HashMap<String, String> renamedFolders;
+  private HashSet<VirtualFile> newFiles;
 
   public VssVcs( Project project )
   {
@@ -104,7 +104,7 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
     removedFolders = new HashSet<String>();
     renamedFiles = new HashMap<String, String>();
     renamedFolders = new HashMap<String, String>();
-    newFiles = new HashSet<String>();
+    newFiles = new HashSet<VirtualFile>();
     deletedFiles = new HashSet<String>();
     deletedFolders = new HashSet<String>();
     savedProjectPaths = new HashSet<String>();
@@ -412,11 +412,14 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
     return file != null && (pm.getVcsFor( file ) == this);
   }
 
-  public void add2NewFile( VirtualFile file )   {  add2NewFile( file.getPath() );         }
-  public void add2NewFile( String path )        {  newFiles.add( path.toLowerCase() );    }
-  public void deleteNewFile( VirtualFile file ) {  deleteNewFile( file.getPath() );       }
-  public void deleteNewFile( String path )      {  newFiles.remove( path.toLowerCase() ); }
-  public boolean containsNew( String path )     {  return newFiles.contains( path.toLowerCase() );   }
+  public void add2NewFile( @NotNull VirtualFile file )    {  newFiles.add( file );             }
+  public void deleteNewFile( @NotNull VirtualFile file )  {  newFiles.remove( file );          }
+  public boolean containsNew( @NotNull VirtualFile file ) {  return newFiles.contains( file ); }
+  public boolean containsNew( String path )
+  {
+    VirtualFile file = VcsUtil.getVirtualFile( path );
+    return newFiles.contains( file );
+  }
 
   public boolean isDeletedFile( String path )   {  return deletedFiles.contains( path ) || removedFiles.contains( path );  }
   public boolean isDeletedFolder( String path ) {  return deletedFolders.contains( path ) || removedFolders.contains( path );  }
@@ -458,19 +461,23 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
   {
     readElements( element, removedFiles, PERSISTENCY_REMOVED_FILE_TAG, false );
     readElements( element, removedFolders, PERSISTENCY_REMOVED_FOLDER_TAG, false );
-    readElements( element, newFiles, PERSISTENCY_NEW_FILE_TAG, true );
     readElements( element, deletedFiles, PERSISTENCY_DELETED_FILE_TAG, false );
     readElements( element, deletedFolders, PERSISTENCY_DELETED_FOLDER_TAG, false );
+
+    HashSet<String> tmp = new HashSet<String>();
+    readElements( element, tmp, PERSISTENCY_NEW_FILE_TAG, true );
 
     readRenamedElements( element, renamedFiles, PERSISTENCY_RENAMED_FILE_TAG, true );
     readRenamedElements( element, renamedFolders, PERSISTENCY_RENAMED_FOLDER_TAG, true );
 
     readUsedProjectPaths();
 
-    //  New files are stored in lower case for easier matching afterwards.
-    HashSet<String> tmp = new HashSet<String>( newFiles );
-    newFiles.clear();
-    for( String value : tmp )  newFiles.add( value.toLowerCase() );
+    for( String path : tmp )
+    {
+      VirtualFile file = VcsUtil.getVirtualFile( path );
+      if( file != null )
+        newFiles.add( file );
+    }
   }
 
   private static void readElements( final Element element, HashSet<String> list, String tag, boolean isExist )
@@ -518,9 +525,12 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
   {
     writeElement( element, removedFiles, PERSISTENCY_REMOVED_FILE_TAG );
     writeElement( element, removedFolders, PERSISTENCY_REMOVED_FOLDER_TAG );
-    writeElement( element, newFiles, PERSISTENCY_NEW_FILE_TAG );
     writeElement( element, deletedFiles, PERSISTENCY_DELETED_FILE_TAG );
     writeElement( element, deletedFolders, PERSISTENCY_DELETED_FOLDER_TAG );
+
+    HashSet<String> tmp = new HashSet<String>();
+    for( VirtualFile file : newFiles )  tmp.add( file.getPath() );
+    writeElement( element, tmp, PERSISTENCY_NEW_FILE_TAG );
 
     writeRenElement( element, renamedFiles, PERSISTENCY_RENAMED_FILE_TAG );
     writeRenElement( element, renamedFolders, PERSISTENCY_RENAMED_FOLDER_TAG );
