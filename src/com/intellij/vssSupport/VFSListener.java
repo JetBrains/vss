@@ -208,9 +208,10 @@ public class VFSListener extends VirtualFileAdapter implements CommandListener
     return false;
   }
 
-  public void commandStarted(final CommandEvent event) {
-    if (project != event.getProject()) return;
-    commandLevel++;
+  public void commandStarted(final CommandEvent event)
+  {
+    if( project == event.getProject() )
+      commandLevel++;
   }
 
   public void commandFinished(final CommandEvent event)
@@ -256,11 +257,11 @@ public class VFSListener extends VirtualFileAdapter implements CommandListener
                                                                            VssBundle.message( "action.Vss.Add.Question" ),
                                                                            confirmOption );
       if( filesToProcess != null ) 
-        performAdding(new ArrayList<VirtualFile>(filesToProcess) );
+        performAdding( filesToProcess );
     }
-
   }
-  private void performAdding( List<VirtualFile> files )
+
+  private void performAdding( Collection<VirtualFile> files )
   {
     for( VirtualFile file : files )
     {
@@ -304,7 +305,7 @@ public class VFSListener extends VirtualFileAdapter implements CommandListener
       if( filesToProcess != null )
         markFileRemoval( filesToProcess, host.deletedFolders, host.deletedFiles );
       else
-        markFileRemoval( filesToProcess, host.removedFolders, host.removedFiles );
+        markFileRemoval( deletedFiles, host.removedFolders, host.removedFiles );
     }
   }
 
