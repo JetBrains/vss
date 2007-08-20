@@ -6,6 +6,8 @@ package com.intellij.vssSupport;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.PathManager;
+import com.intellij.openapi.command.CommandListener;
+import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.options.Configurable;
@@ -166,6 +168,7 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
     //  track down potential changes in the repository.
     listener = new VFSListener( getProject(), this );
     LocalFileSystem.getInstance().addVirtualFileListener( listener );
+    CommandProcessor.getInstance().addCommandListener( (CommandListener)listener );
 
     VssConfiguration config = VssConfiguration.getInstance( myProject );
     ProjectLevelVcsManager mgr = ProjectLevelVcsManager.getInstance( myProject );
@@ -204,6 +207,7 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
   public void deactivate()
   {
     LocalFileSystem.getInstance().removeVirtualFileListener( listener );
+    CommandProcessor.getInstance().removeCommandListener( (CommandListener)listener );
     ContentRevisionFactory.detachListeners();
   }
 
@@ -390,6 +394,10 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
     }
   }
 
+  /**
+   * Consults <code>ChangeListManager</code> whether the file belongs to the list of ignored
+   * files or resides under the ignored folder. 
+   */
   public boolean isFileIgnored( VirtualFile file )
   {
     ChangeListManager mgr = ChangeListManager.getInstance( myProject );

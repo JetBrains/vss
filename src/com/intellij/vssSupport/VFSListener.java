@@ -16,13 +16,14 @@
 
 package com.intellij.vssSupport;
 
+import com.intellij.openapi.command.CommandEvent;
+import com.intellij.openapi.command.CommandListener;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vcs.AbstractVcsHelper;
-import com.intellij.openapi.vcs.FileStatus;
-import com.intellij.openapi.vcs.FileStatusManager;
-import com.intellij.openapi.vcs.VcsShowConfirmationOption;
+import com.intellij.openapi.vcs.*;
 import com.intellij.openapi.vfs.*;
+import com.intellij.peer.PeerFactory;
 import com.intellij.vcsUtil.VcsUtil;
 import static com.intellij.vssSupport.Checkin.VssCheckinEnvironment.RENAME_ROLLBACK;
 
@@ -33,52 +34,65 @@ import java.util.*;
  * User: lloix
  * Date: Sep 21, 2006
  */
-public class VFSListener extends VirtualFileAdapter
+public class VFSListener extends VirtualFileAdapter implements CommandListener
 {
   private Project project;
   private VssVcs  host;
 
+  private int     commandLevel;
+  private final List<VirtualFile> filesAdded = new ArrayList<VirtualFile>();
+  private final List<FilePath> filesDeleted = new ArrayList<FilePath>();
+
   public VFSListener( Project project, VssVcs host ) {  this.project = project; this.host = host; }
 
-  public void beforeFileMovement( VirtualFileMoveEvent event )
+  public void fileCreated( VirtualFileEvent event )
   {
     VirtualFile file = event.getFile();
 
     //  In the case of multi-vcs project configurations, we need to skip all
     //  notifications on non-owned files
-    if( !VcsUtil.isFileForVcs( file, project, host ))
-      return;
+    if( !VcsUtil.isFileForVcs( file, project, host ))  return;
 
-    if( !file.isDirectory() )
+    //  In the case when the project content is synchronized over the
+    //  occasionally removed files.
+    //  NB: These structures must be updated even in the case of refresh events
+    //      (lines below).
+    String path = file.getPath();
+    host.removedFiles.remove( path );
+    host.removedFolders.remove( path );
+    host.deletedFiles.remove( path );
+    host.deletedFolders.remove( path );
+
+    if( event.isFromRefresh() )  return;
+
+    if( isFileProcessable( file ) )
+      filesAdded.add( file );
+  }
+
+  public void beforeFileDeletion( VirtualFileEvent event )
+  {
+    if( !isIgnoredEvent( event ) )
+      performDeleteFile( event.getFile() );
+  }
+
+  private void performDeleteFile( VirtualFile file )
+  {
+    FileStatus status = FileStatusManager.getInstance( project ).getStatus( file );
+    Boolean isRenameDest = file.getUserData( RENAME_ROLLBACK );
+
+    //  NB: <isRenameDest> is set in the CheckinEnvironment during
+    //      the rollback of rename change. We should not put it into the list
+    //      of the removed files for further control.
+    if(( status != FileStatus.UNKNOWN ) && ( status != FileStatus.IGNORED ) &&
+       ( isRenameDest == null ))
     {
-      String oldName = file.getPath();
-      String newName = event.getNewParent().getPath() + "/" + file.getName();
-
-      //  If the file is moved into Vss-versioned module, then it is a simple
-      //  movement. Otherwise (move into non-versioned module), mark it
-      //  "for removal" in the current, versioned module.
-      if( VcsUtil.isFileForVcs( newName, project, host ) )
-      {
-        //  Newer name must refer to the oldest one in the chain of movements
-        String prevName = host.renamedFiles.get( oldName );
-        if( prevName == null )
-          prevName = oldName;
-
-        //  Check whether we are trying to rename the file back -
-        //  if so, just delete the old key-value pair
-        if( !prevName.equals( newName ) )
-          host.renamedFiles.put( newName, prevName );
-
-        host.renamedFiles.remove( oldName );
-
-        //  Clear the cache of the content revisions for this file.
-        //  This will make possible to reread the correct version content
-        //  after the referred FilePath/VirtualFile is changed
-        ContentRevisionFactory.clearCacheForFile( file.getPath() );
-      }
+      if( status == FileStatus.ADDED )
+        host.deleteNewFile( file );
       else
+      if( isFileProcessable( file ) )
       {
-        performDeleteFile( file );
+        FilePath path = PeerFactory.getInstance().getVcsContextFactory().createFilePathOn( file );
+        filesDeleted.add( path );
       }
     }
   }
@@ -129,129 +143,194 @@ public class VFSListener extends VirtualFileAdapter
     store.remove( oldName );
   }
 
-  public void fileCreated( VirtualFileEvent event )
+  public void beforeFileMovement( VirtualFileMoveEvent event )
   {
-    VirtualFile file = event.getFile();
-    String path = file.getPath();
+    if( isIgnoredEvent( event ) )
+        return;
 
+    VirtualFile file = event.getFile();
+    if( !file.isDirectory() )
+    {
+      String oldName = file.getPath();
+      String newName = event.getNewParent().getPath() + "/" + file.getName();
+
+      //  If the file is moved into Vss-versioned module, then it is a simple
+      //  movement. Otherwise (move into non-versioned module), mark it
+      //  "for removal" in the current, versioned module.
+      if( VcsUtil.isFileForVcs( newName, project, host ) )
+      {
+        //  Newer name must refer to the oldest one in the chain of movements
+        String prevName = host.renamedFiles.get( oldName );
+        if( prevName == null )
+          prevName = oldName;
+
+        //  Check whether we are trying to rename the file back -
+        //  if so, just delete the old key-value pair
+        if( !prevName.equals( newName ) )
+          host.renamedFiles.put( newName, prevName );
+
+        host.renamedFiles.remove( oldName );
+
+        //  Clear the cache of the content revisions for this file.
+        //  This will make possible to reread the correct version content
+        //  after the referred FilePath/VirtualFile is changed
+        ContentRevisionFactory.clearCacheForFile( file.getPath() );
+      }
+      else
+      {
+        performDeleteFile( file );
+      }
+    }
+  }
+
+  /**
+   * File is not processable if e.g. it was created during "GetLatestVersion",
+   * if it outside the vcs scope or it is in the list of excluded project files.
+   */
+  private boolean isFileProcessable( VirtualFile file )
+  {
+    return !host.isFileIgnored( file ) &&
+           !FileTypeManager.getInstance().isFileIgnored( file.getName() );
+  }
+
+  private boolean isIgnoredEvent( VirtualFileEvent e )
+  {
     //  In the case of multi-vcs project configurations, we need to skip all
     //  notifications on non-owned files
-    if( !VcsUtil.isFileForVcs( file, project, host ))
-      return;
+    if( !VcsUtil.isFileForVcs( e.getFile(), project, host ))
+      return true;
 
-    //  In the case when the project content is synchronized over the
-    //  occasionally removed files.
-    host.removedFiles.remove( path );
-    host.removedFolders.remove( path );
-    host.deletedFiles.remove( path );
-    host.deletedFolders.remove( path );
+    //  Do not ask user if the file operation is caused by the vcs operation
+    //  like UPDATE.
+    if( e.isFromRefresh() )
+      return true;
 
-    //  Do not ask user if the files created came from the vcs per se
-    //  (obviously they are not new).
-    if( event.isFromRefresh() )
-      return;
+    return false;
+  }
 
-    //  Take into account only processable files.
-    
-    if( isFileProcessable( event.getFile() ) )
+  public void commandStarted(final CommandEvent event) {
+    if (project != event.getProject()) return;
+    commandLevel++;
+  }
+
+  public void commandFinished(final CommandEvent event)
+  {
+    if (project != event.getProject()) return;
+
+    commandLevel--;
+    if (commandLevel == 0)
     {
-      VcsShowConfirmationOption confirmOption = host.getAddConfirmation();
-
-      //  In the case when we need to perform "Add" vcs action right upon
-      //  the file's creation, put the file into the host's cache until it
-      //  will be analyzed by the ChangeProvider.
-      if( confirmOption.getValue() == VcsShowConfirmationOption.Value.DO_ACTION_SILENTLY )
-        host.add2NewFile( file );
-      else
-      if( confirmOption.getValue() == VcsShowConfirmationOption.Value.SHOW_CONFIRMATION )
+      if (!filesAdded.isEmpty() || !filesDeleted.isEmpty() )
       {
-        List<VirtualFile> files = new ArrayList<VirtualFile>();
-        files.add( event.getFile() );
-        Collection<VirtualFile> filesToProcess = AbstractVcsHelper.getInstance( project ).selectFilesToProcess( files, VssBundle.message("dialog.title.info"),
-                                                                        null, VssBundle.message("action.Vss.Add.description") + "?",
-                                                                       VssBundle.message("action.Vss.Add.Question"), confirmOption );
-        if( filesToProcess != null )
-          host.add2NewFile( file );
+        // avoid reentering commandFinished handler - saving the documents may cause a "before file deletion" event firing,
+        // which will cause closing the text editor, which will itself run a command that will be caught by this listener
+        commandLevel++;
+        try {  FileDocumentManager.getInstance().saveAllDocuments();  }
+        finally {  commandLevel--;  }
+
+        if (!filesAdded.isEmpty())
+          executeAdd();
+
+        if (!filesDeleted.isEmpty() )
+          executeDelete();
+
+        filesAdded.clear();
+        filesDeleted.clear();
       }
     }
   }
 
-  public void beforeFileDeletion( VirtualFileEvent event )
+  private void executeAdd()
   {
-    //  Do not ask user if the files deletion is caused by the vcs operation
-    //  like UPDATE (obviously they are deleted without a necessity to recover
-    //  or to keep track).
-    if( event.isFromRefresh() )
-      return;
+    ArrayList<VirtualFile> files = new ArrayList<VirtualFile>( filesAdded );
+    VcsShowConfirmationOption confirmOption = host.getAddConfirmation();
 
-    VirtualFile file = event.getFile();
-    performDeleteFile( file );
-  }
-
-  private void performDeleteFile( VirtualFile file )
-  {
-    FileStatus status = FileStatusManager.getInstance( project ).getStatus( file );
-    Boolean isRenameDest = file.getUserData( RENAME_ROLLBACK );
-
-    //  NB: <isRenameDest> is set in the CheckinEnvironment during
-    //      the rollback of rename change. We should not put it into the list
-    //      of the removed files for further control.
-    if( VcsUtil.isFileForVcs( file, project, host ) &&
-       ( status != FileStatus.UNKNOWN ) && ( status != FileStatus.IGNORED ) &&
-       ( isRenameDest == null ))
+    if( confirmOption.getValue() == VcsShowConfirmationOption.Value.DO_NOTHING_SILENTLY) return;
+    if( confirmOption.getValue() == VcsShowConfirmationOption.Value.DO_ACTION_SILENTLY)
+      performAdding( files );
+    else
     {
-      if( status == FileStatus.ADDED )
-      {
-        host.deleteNewFile( file );
-      }
-      else
-      {
-        VcsShowConfirmationOption confirmOption = host.getRemoveConfirmation();
+      final AbstractVcsHelper helper = AbstractVcsHelper.getInstance( project );
+      Collection<VirtualFile> filesToProcess = helper.selectFilesToProcess( files, VssBundle.message( "dialog.title.info" ), null,
+                                                                           VssBundle.message( "action.Vss.Add.description" ),
+                                                                           VssBundle.message( "action.Vss.Add.Question" ),
+                                                                           confirmOption );
+      if( filesToProcess != null ) 
+        performAdding(new ArrayList<VirtualFile>(filesToProcess) );
+    }
 
-        //  In the case when we need to perform "Delete" vcs action right upon
-        //  the file's deletion, put the file into the host's cache until it
-        //  will be analyzed by the ChangeProvider.
-        if( confirmOption.getValue() == VcsShowConfirmationOption.Value.DO_ACTION_SILENTLY )
-        {
-          markFileRemoval( file, host.deletedFolders, host.deletedFiles );
-        }
-        else
-        if( confirmOption.getValue() == VcsShowConfirmationOption.Value.DO_NOTHING_SILENTLY )
-        {
-          markFileRemoval( file, host.removedFolders, host.removedFiles );
-        }
-        else
-        {
-          List<VirtualFile> files = new ArrayList<VirtualFile>();
-          files.add( file );
-          Collection<VirtualFile> filesToProcess = AbstractVcsHelper.getInstance( project ).selectFilesToProcess( files, VssBundle.message("dialog.title.info"),
-                                                                          null, VssBundle.message("action.Vss.Delete.description") + "?",
-                                                                         VssBundle.message("action.Vss.Delete.Question"), confirmOption );
-          if( filesToProcess != null )
-            markFileRemoval( file, host.deletedFolders, host.deletedFiles );
-          else
-            markFileRemoval( file, host.removedFolders, host.removedFiles );
-        }
-      }
+  }
+  private void performAdding( List<VirtualFile> files )
+  {
+    for( VirtualFile file : files )
+    {
+      String path = file.getPath();
+
+      //  In the case when the project content is synchronized over the
+      //  occasionally removed files.
+      host.removedFiles.remove( path );
+      host.removedFolders.remove( path );
+      host.deletedFiles.remove( path );
+      host.deletedFolders.remove( path );
+
+      host.add2NewFile( file );
+      VcsUtil.markFileAsDirty( project, file );
     }
   }
 
-  private void markFileRemoval( VirtualFile file, HashSet<String> folders, HashSet<String> files )
+  private void executeDelete()
   {
-    String path = file.getPath();
-    if( file.isDirectory() )
+    VcsShowConfirmationOption confirmOption = host.getRemoveConfirmation();
+
+    //  In the case when we need to perform "Delete" vcs action right upon
+    //  the file's deletion, put the file into the host's cache until it
+    //  will be analyzed by the ChangeProvider.
+    if( confirmOption.getValue() == VcsShowConfirmationOption.Value.DO_ACTION_SILENTLY )
     {
-      markSubfolderStructure( path );
-      folders.add( path );
+      markFileRemoval( filesDeleted, host.deletedFolders, host.deletedFiles );
     }
     else
-    if( !isUnderDeletedFolder( host.removedFolders, path ) &&
-        !isUnderDeletedFolder( host.deletedFolders, path ) )
+    if( confirmOption.getValue() == VcsShowConfirmationOption.Value.DO_NOTHING_SILENTLY )
     {
-      files.add( path );
+      markFileRemoval( filesDeleted, host.removedFolders, host.removedFiles );
+    }
+    else
+    {
+      final List<FilePath> deletedFiles = new ArrayList<FilePath>( filesDeleted );
+      AbstractVcsHelper helper = AbstractVcsHelper.getInstance( project );
+      Collection<FilePath> filesToProcess = helper.selectFilePathsToProcess( deletedFiles, VssBundle.message("dialog.title.info"),
+                                                                             null, VssBundle.message("action.Vss.Delete.description") + "?",
+                                                                             VssBundle.message("action.Vss.Delete.Question"), confirmOption );
+      if( filesToProcess != null )
+        markFileRemoval( filesToProcess, host.deletedFolders, host.deletedFiles );
+      else
+        markFileRemoval( filesToProcess, host.removedFolders, host.removedFiles );
     }
   }
-  
+
+  private void markFileRemoval( final Collection<FilePath> paths, HashSet<String> folders, HashSet<String> files )
+  {
+    final ArrayList<FilePath> allpaths = new ArrayList<FilePath>( paths );
+    for( FilePath fpath : allpaths )
+    {
+      String path = fpath.getPath();
+      path = VcsUtil.getCanonicalLocalPath( path );
+      if( fpath.isDirectory() )
+      {
+        markSubfolderStructure( path );
+        folders.add( path );
+      }
+      else
+      if( !isUnderDeletedFolder( host.removedFolders, path ) &&
+          !isUnderDeletedFolder( host.deletedFolders, path ) )
+      {
+        files.add( path );
+      }
+
+      VcsUtil.markFileAsDirty( project, fpath );
+    }
+  }
+
   /**
    * When adding new path into the list of the removed folders, remove from
    * that list all files/folders which were removed previously locating under
@@ -279,19 +358,12 @@ public class VFSListener extends VirtualFileAdapter
   {
     for( String folder : folders )
     {
-      if( path.toLowerCase().startsWith( folder.toLowerCase() ))
-        return true;
+      if( path.toLowerCase().startsWith( folder.toLowerCase() )) return true;
     }
     return false;
   }
 
-  /**
-   * File is not processable if e.g. it was created during "GetLatestVersion",
-   * if it outside the vcs scope or it is in the list of excluded project files.
-   */
-  private boolean isFileProcessable( VirtualFile file )
-  {
-    return host.fileIsUnderVcs( file ) && !host.isFileIgnored( file ) &&
-           !FileTypeManager.getInstance().isFileIgnored( file.getName() );
-  }
+  public void beforeCommandFinished( final CommandEvent event ){}
+  public void undoTransparentActionStarted() {}
+  public void undoTransparentActionFinished() {}
 }
