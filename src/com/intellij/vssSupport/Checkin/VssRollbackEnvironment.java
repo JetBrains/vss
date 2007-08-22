@@ -10,6 +10,7 @@ import com.intellij.openapi.vcs.changes.VcsDirtyScopeManager;
 import com.intellij.openapi.vcs.rollback.RollbackEnvironment;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.vcsUtil.VcsUtil;
+import com.intellij.vssSupport.VssUtil;
 import com.intellij.vssSupport.VssVcs;
 
 import java.io.File;
@@ -40,19 +41,24 @@ public class VssRollbackEnvironment implements RollbackEnvironment
   public List<VcsException> rollbackChanges( List<Change> changes )
   {
     List<VcsException> errors = new ArrayList<VcsException>();
+    List<String> renamedFolders = new ArrayList<String>();
     HashSet<FilePath> processedFiles = new HashSet<FilePath>();
 
-    rollbackRenamedFolders( changes, processedFiles );
+    rollbackRenamedFolders( changes, processedFiles, renamedFolders );
     rollbackNew( changes, processedFiles );
     rollbackDeleted( changes, processedFiles, errors );
     rollbackChanged( changes, processedFiles, errors );
+
+    for( String path : renamedFolders )
+      host.renamedFolders.remove( VcsUtil.getCanonicalLocalPath( path ) );
 
     VcsUtil.refreshFiles( project, processedFiles );
 
     return errors;
   }
 
-  private void rollbackRenamedFolders( List<Change> changes, HashSet<FilePath> processedFiles )
+  private static void rollbackRenamedFolders( List<Change> changes, HashSet<FilePath> processedFiles,
+                                              List<String> renamedFolders )
   {
     for( Change change : changes )
     {
@@ -67,7 +73,12 @@ public class VssRollbackEnvironment implements RollbackEnvironment
         File folderOld = change.getBeforeRevision().getFile().getIOFile();
         folderNew.renameTo( folderOld );
         VcsUtil.waitForTheFile( folderOld.getPath() );
-        host.renamedFolders.remove( VcsUtil.getCanonicalLocalPath( folderNew.getPath() ) );
+
+        //  Remember these renamed folders so that we still can use them for
+        //  proper resolving of changed files under these folders, but afterwards
+        //  we need to remove them from the list of renamed folders.
+        renamedFolders.add( folderNew.getPath() );
+        
         processedFiles.add( folder );
       }
     }
@@ -200,6 +211,7 @@ public class VssRollbackEnvironment implements RollbackEnvironment
         }
         else
         {
+          path = discoverOldName( path ); 
           //  Collect all files to be uncheckouted into one set so that
           //  if dialog popups we could say "Yes to all"
           rollbacked.add( path );
@@ -278,5 +290,37 @@ public class VssRollbackEnvironment implements RollbackEnvironment
   }
 
   public void rollbackIfUnchanged(VirtualFile file) {
+  }
+
+  private String discoverOldName( String file )
+  {
+    String oldName = host.renamedFiles.get( VssUtil.getCanonicalLocalPath( file ) );
+    if( oldName == null )
+    {
+      oldName = host.renamedFolders.get( VssUtil.getCanonicalLocalPath( file ) );
+      if( oldName == null )
+      {
+        oldName = findInRenamedParentFolder( file );
+        if( oldName == null )
+          oldName = file;
+      }
+    }
+
+    return oldName;
+  }
+
+  private String findInRenamedParentFolder( String name )
+  {
+    String fileInOldFolder = name;
+    for( String folder : host.renamedFolders.keySet() )
+    {
+      String oldFolderName = host.renamedFolders.get( folder );
+      if( name.startsWith( folder ) )
+      {
+        fileInOldFolder = oldFolderName + name.substring( folder.length() );
+        break;
+      }
+    }
+    return fileInOldFolder;
   }
 }
