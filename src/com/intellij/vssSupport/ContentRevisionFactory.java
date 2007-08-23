@@ -9,7 +9,9 @@ import com.intellij.openapi.vfs.VirtualFilePropertyEvent;
 import com.intellij.vcsUtil.VcsUtil;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -75,6 +77,19 @@ public class ContentRevisionFactory
       if( revision != null )
       {
         cachedRevisions.remove( path );
+      }
+
+      //  If the given path is a folder, we need to remove cached revisions
+      //  for ALL files under that folder since all of them will change
+      //  VirtualFile value inside their FilePath keys.
+      if( path.isDirectory() )
+      {
+        List<FilePath> keys = new ArrayList<FilePath>( cachedRevisions.keySet() );
+        for( FilePath file : keys )
+        {
+          if( file.isUnder( path, false ) )
+            cachedRevisions.remove( file );
+        }
       }
     }
   }
