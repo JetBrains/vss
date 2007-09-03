@@ -454,7 +454,7 @@ public class VssChangeProvider implements ChangeProvider
     for( String folderName : host.renamedFolders.keySet() )
     {
       String oldFolderName = host.renamedFolders.get( folderName );
-      final FilePath refPath = VcsUtil.getFilePath( oldFolderName );
+      final FilePath refPath = VcsUtil.getFilePathForDeletedFile( oldFolderName, true );
       final FilePath currPath = VcsUtil.getFilePath( folderName );
 
       builder.processChange( new Change( new VssContentRevision( refPath, project ), new CurrentContentRevision( currPath )));
