@@ -252,7 +252,7 @@ public class VFSListener extends VirtualFileAdapter implements CommandListener
     else
     {
       final AbstractVcsHelper helper = AbstractVcsHelper.getInstance( project );
-      Collection<VirtualFile> filesToProcess = helper.selectFilesToProcess( files, VssBundle.message( "dialog.title.info" ), null,
+      Collection<VirtualFile> filesToProcess = helper.selectFilesToProcess( files, VssBundle.message("title.select.files.add"), null,
                                                                            VssBundle.message( "action.Vss.Add.description" ),
                                                                            VssBundle.message( "action.Vss.Add.Question" ),
                                                                            confirmOption );
@@ -299,7 +299,7 @@ public class VFSListener extends VirtualFileAdapter implements CommandListener
     {
       final List<FilePath> deletedFiles = new ArrayList<FilePath>( filesDeleted );
       AbstractVcsHelper helper = AbstractVcsHelper.getInstance( project );
-      Collection<FilePath> filesToProcess = helper.selectFilePathsToProcess( deletedFiles, VssBundle.message("dialog.title.info"),
+      Collection<FilePath> filesToProcess = helper.selectFilePathsToProcess( deletedFiles, VssBundle.message("title.select.files.delete"),
                                                                              null, VssBundle.message("action.Vss.Delete.description") + "?",
                                                                              VssBundle.message("action.Vss.Delete.Question"), confirmOption );
       if( filesToProcess != null )
