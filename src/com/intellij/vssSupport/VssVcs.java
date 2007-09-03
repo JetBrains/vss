@@ -28,6 +28,7 @@ import com.intellij.openapi.vcs.history.VcsHistoryProvider;
 import com.intellij.openapi.vcs.history.VcsRevisionNumber;
 import com.intellij.openapi.vcs.rollback.RollbackEnvironment;
 import com.intellij.openapi.vcs.update.UpdateEnvironment;
+import com.intellij.openapi.vfs.LocalFileOperationsHandler;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileListener;
@@ -74,6 +75,7 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
   private VssFileHistoryProvider historyProvider;
   private EditFileProvider  editFileProvider;
   private VirtualFileListener listener;
+  private LocalFileOperationsHandler removalHandler;
 
   private VcsShowSettingOption myCheckoutOptions;
   private VcsShowSettingOption myUndoCheckoutOptions;
@@ -167,8 +169,10 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
     //  Control the appearance of project items so that we can easily
     //  track down potential changes in the repository.
     listener = new VFSListener( getProject(), this );
+    removalHandler = new VssLocalFileOperationsHandler( myProject, this );
     LocalFileSystem.getInstance().addVirtualFileListener( listener );
     CommandProcessor.getInstance().addCommandListener( (CommandListener)listener );
+    LocalFileSystem.getInstance().registerAuxiliaryFileOperationsHandler( removalHandler );
 
     VssConfiguration config = VssConfiguration.getInstance( myProject );
     ProjectLevelVcsManager mgr = ProjectLevelVcsManager.getInstance( myProject );
@@ -208,6 +212,8 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
   {
     LocalFileSystem.getInstance().removeVirtualFileListener( listener );
     CommandProcessor.getInstance().removeCommandListener( (CommandListener)listener );
+    LocalFileSystem.getInstance().unregisterAuxiliaryFileOperationsHandler( removalHandler );
+
     ContentRevisionFactory.detachListeners();
   }
 
