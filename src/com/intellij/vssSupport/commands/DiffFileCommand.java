@@ -39,7 +39,7 @@ public class DiffFileCommand extends VssCommandAbstract
     FileDocumentManager.getInstance().saveAllDocuments();
 
     // The implementation of Diff command consists from two parts:
-    // 1. Get latest repository version into the temporary directory.
+    // 1. Get the latest repository version into the temporary folder;
     // 2. Performs difference of two local versions.
 
     try
@@ -74,6 +74,7 @@ public class DiffFileCommand extends VssCommandAbstract
 
     public FileDiffListener( List<VcsException> errors ) {  super(errors);   }
 
+    @SuppressWarnings({"ThrowableInstanceNeverThrown"})
     public void everythingFinishedImpl( final String output )
     {
       if( output.indexOf( DELETED_MESSAGE ) != -1 ||
@@ -100,7 +101,7 @@ public class DiffFileCommand extends VssCommandAbstract
           DiffManager.getInstance().getDiffTool().show( diffData );
         }
         catch (IOException e) {
-          myErrors.add(new VcsException(e.getLocalizedMessage()));
+          myErrors.add( new VcsException(e.getLocalizedMessage()) );
         }
       }
     }
