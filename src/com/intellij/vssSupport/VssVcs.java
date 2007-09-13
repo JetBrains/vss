@@ -549,14 +549,6 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
     writeRenElement( element, renamedFiles, PERSISTENCY_RENAMED_FILE_TAG );
     writeRenElement( element, renamedFolders, PERSISTENCY_RENAMED_FOLDER_TAG );
 
-    /*
-    //  New files are written in lower case for easier matching afterwards.
-    HashSet<String> tmp = new HashSet<String>( newFiles );
-    newFiles.clear();
-    for( String value : tmp )  newFiles.add( value.toLowerCase() );
-    
-    */
-
     //  Do not write to the file which is shared between several projects since
     //  the default settings may be incomplete and they override the current
     //  project's settings.
