@@ -543,7 +543,12 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
     writeElement( element, deletedFolders, PERSISTENCY_DELETED_FOLDER_TAG );
 
     HashSet<String> tmp = new HashSet<String>();
-    for( VirtualFile file : newFiles )  tmp.add( file.getPath() );
+    for( VirtualFile file : newFiles )
+    {
+      FileStatus status = FileStatusManager.getInstance( myProject ).getStatus( file );
+      if( status == FileStatus.ADDED )
+        tmp.add( file.getPath() );
+    }
     writeElement( element, tmp, PERSISTENCY_NEW_FILE_TAG );
 
     writeRenElement( element, renamedFiles, PERSISTENCY_RENAMED_FILE_TAG );
