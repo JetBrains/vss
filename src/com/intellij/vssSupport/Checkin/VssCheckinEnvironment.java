@@ -116,8 +116,13 @@ public class VssCheckinEnvironment implements CheckinEnvironment
    */
   public String getDefaultMessageFor( FilePath[] filesToCheckin )
   {
-    //  Reuse the description of the change list as the comment for the checkin?
-    return null;
+    VssConfiguration config = VssConfiguration.getInstance(project);
+
+    //  If Checkout comment is null, <caller> will inherit last commit's
+    //  message for this commit.
+    return config.getCheckoutOptions().COMMENT;
+
+    //  TODO: reuse comment for a changlist (if it was set) as the checkin comment
   }
 
   public List<VcsException> commit( List<Change> changes, String comment )
