@@ -217,11 +217,6 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
     ContentRevisionFactory.detachListeners();
   }
 
-  public void start() throws VcsException
-  {
-    super.start();
-  }
-
   private static boolean hasMappedFolder( String path, List<VcsDirectoryMapping> mappings )
   {
     for( VcsDirectoryMapping mapping : mappings )
