@@ -24,6 +24,7 @@ public abstract class VssOutputCollector
   public void  setExitCode( int code ) {  myExitCode = code;  }
   public int   getExitCode()           {  return myExitCode;  }
 
+  @SuppressWarnings({"ThrowableInstanceNeverThrown"})
   public final void onCommandCriticalFail( final String message )
   {
     myErrors.add( new VcsException( message ) );
