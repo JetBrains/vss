@@ -40,7 +40,7 @@ public final class VssStreamReader implements Runnable
       while (((read = is.read(buffer, 0, buffer.length)) != -1))
       {
         myByteContents.write(buffer, 0, read);
-        if( read == '\n' )
+        if( buffer[ read - 1 ] == '\n' )
           checkTextAvailable();
       }
     }
