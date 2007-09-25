@@ -112,7 +112,9 @@ public class VSSExecUtil
       String reason = (outReader.getReason() != null) ? outReader.getReason() : errReader.getReason();
 
       LOG.info( "++ Critical error detected: " + reason );
+      listener.setExitCode( worker.getExitCode() );
       listener.onCommandCriticalFail( reason );
+      listener.everythingFinishedImpl( reason );
 
       //  Hack: there is no known (so far) way to give the necessary sequence of
       //  characters to the input of the SS.EXE process to emulate "Enter" on its

@@ -32,7 +32,7 @@ public class VssChangeProvider implements ChangeProvider
 {
   private static final Logger LOG = Logger.getInstance("#com.intellij.vssSupport.VssChangeProvider");
 
-  private static final int PER_FILE_DIFF_MARGIN = 30;
+  private static final int PER_FILE_DIFF_MARGIN = 5;
 
   private Project project;
   private VssVcs  host;
@@ -195,7 +195,7 @@ public class VssChangeProvider implements ChangeProvider
         }
       }
     }
-    analyzeWritableFiles( paths, filesNew, filesChanged, filesHijacked, filesObsolete );
+    analyzeWritableFilesByStatus( paths, filesNew, filesChanged, filesHijacked, filesObsolete );
   }
 
   private void iterateOverProjectPath( FilePath path )
@@ -247,27 +247,12 @@ public class VssChangeProvider implements ChangeProvider
     if( writableFiles.size() < PER_FILE_DIFF_MARGIN )
     {
       LOG.info( "-- ChangeProvider - Analyzing writable files on per-file basis" );
-      analyzeWritableFiles( writableFiles, newFiles, filesChanged, filesHijacked, filesObsolete );
+      analyzeWritableFilesByStatus( writableFiles, newFiles, filesChanged, filesHijacked, filesObsolete );
     }
     else
     {
       LOG.info( "-- ChangeProvider - Analyzing writable files on the base of \"Directory\" command" );
-
-      ArrayList<VcsException> errors = new ArrayList<VcsException>();
-      DirectoryCommand cmd = new DirectoryCommand( project, filePath.getPath(), errors );
-      cmd.execute();
-
-      for( String path : writableFiles )
-      {
-        path = path.toLowerCase();
-        if( !cmd.isInProject( path ) )
-          newFiles.add( path );
-        else
-        if( !cmd.isCheckedOut( path ))
-          filesHijacked.add( path );
-        else
-          filesChanged.add( path );
-      }
+      analyzeWritableFilesByDirectory( filePath, writableFiles, newFiles, filesChanged, filesHijacked );
     }
 
     //  For each new file check whether some subfolders structure above it
@@ -286,9 +271,9 @@ public class VssChangeProvider implements ChangeProvider
     filesNew.addAll( newFiles );
   }
 
-  private void analyzeWritableFiles( List<String> files,
-                                     HashSet<String> newf, HashSet<String> changed,
-                                     HashSet<String> hijacked, HashSet<String> obsolete )
+  private void analyzeWritableFilesByStatus( List<String> files,
+                                             HashSet<String> newf, HashSet<String> changed,
+                                             HashSet<String> hijacked, HashSet<String> obsolete )
   {
     List<String> oldNames = new ArrayList<String>();
     for( String file : files )
@@ -302,18 +287,28 @@ public class VssChangeProvider implements ChangeProvider
       StatusMultipleCommand cmd = new StatusMultipleCommand( project, oldNames );
       cmd.execute();
 
-      for( int i = 0; i < files.size(); i++ )
+      //  If any error occured, most probably it is the critical one - others are
+      //  processed on the "by line" basis (and per file correspondingly).
+      if( cmd.getErrors().size() > 0 )
       {
-        if( cmd.isDeleted( oldNames.get( i ) ) )
-          obsolete.add( files.get( i ) );
-        else
-        if( cmd.isNonexist( oldNames.get( i ) ) )
-          newf.add( files.get( i ) );
-        else
-        if( cmd.isCheckedout( oldNames.get( i ) ) )
-          changed.add( files.get( i ) );
-        else
-          hijacked.add( files.get( i ) );
+        VcsUtil.showErrorMessage( project, cmd.getErrors().get( 0 ).getMessage(),
+                                  VssBundle.message("message.title.check.status"));
+      }
+      else
+      {
+        for( int i = 0; i < files.size(); i++ )
+        {
+          if( cmd.isDeleted( oldNames.get( i ) ) )
+            obsolete.add( files.get( i ) );
+          else
+          if( cmd.isNonexist( oldNames.get( i ) ) )
+            newf.add( files.get( i ) );
+          else
+          if( cmd.isCheckedout( oldNames.get( i ) ) )
+            changed.add( files.get( i ) );
+          else
+            hijacked.add( files.get( i ) );
+        }
       }
     }
     catch( NullPointerException e )
@@ -334,6 +329,36 @@ public class VssChangeProvider implements ChangeProvider
     }
   }
 
+  private void analyzeWritableFilesByDirectory( FilePath filePath, List<String> writableFiles,
+                                                HashSet<String> newFiles, HashSet<String> changed,
+                                                HashSet<String> hijacked )
+  {
+    ArrayList<VcsException> errors = new ArrayList<VcsException>();
+    DirectoryCommand cmd = new DirectoryCommand( project, filePath.getPath(), errors );
+    cmd.execute();
+
+    //  If any error occured, most probably it is the critical one - others are
+    //  processed on the "by line" basis (and per file correspondingly).
+    if( errors.size() > 0 )
+    {
+      VcsUtil.showErrorMessage( project, cmd.getErrors().get( 0 ).getMessage(),
+                                VssBundle.message("message.title.check.status"));
+    }
+    else
+    {
+      for( String path : writableFiles )
+      {
+        path = path.toLowerCase();
+        if( !cmd.isInProject( path ) )
+          newFiles.add( path );
+        else
+        if( !cmd.isCheckedOut( path ))
+          hijacked.add( path );
+        else
+          changed.add( path );
+      }
+    }
+  }
   //---------------------------------------------------------------------------
   //  For a given file which is known that it is new, check also its direct
   //  parent folder for presence in the VSS repository, and then all its indirect

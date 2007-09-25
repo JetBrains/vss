@@ -36,7 +36,7 @@ public class StatusMultipleCommand extends VssCommandAbstract
 
   public StatusMultipleCommand( Project project, List<String> paths )
   {
-    super( project, null );
+    super( project );
     files = paths;
   }
 

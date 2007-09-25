@@ -61,11 +61,23 @@ public abstract class VssCommandAbstract
   protected final VssConfiguration myConfig;
   protected final List<VcsException> myErrors;
 
+  protected VssCommandAbstract( Project project )
+  {
+    myProject = project;
+    myErrors = new ArrayList<VcsException>();
+    myConfig = VssConfiguration.getInstance( project );
+  }
+
   protected VssCommandAbstract( Project project, List<VcsException> errors )
   {
     myProject = project;
     myErrors = errors;
     myConfig = VssConfiguration.getInstance( project );
+  }
+
+  public List<VcsException> getErrors()
+  {
+    return myErrors;
   }
 
   protected void runProcess( List<String> list, String wrkPath )
