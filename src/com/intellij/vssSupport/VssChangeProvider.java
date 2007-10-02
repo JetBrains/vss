@@ -32,7 +32,7 @@ public class VssChangeProvider implements ChangeProvider
 {
   private static final Logger LOG = Logger.getInstance("#com.intellij.vssSupport.VssChangeProvider");
 
-  private static final int PER_FILE_DIFF_MARGIN = 5;
+  private static final int PER_FILE_DIFF_MARGIN = 30;
 
   private Project project;
   private VssVcs  host;
@@ -133,7 +133,7 @@ public class VssChangeProvider implements ChangeProvider
           filesIgnored.add( fileName );
         else
         {
-          String refName = discoverOldName( fileName );
+          String refName = discoverOldName( host, fileName );
           if( !isFolderExists( refName ) )
             filesNew.add( fileName );
           else
@@ -278,7 +278,7 @@ public class VssChangeProvider implements ChangeProvider
     List<String> oldNames = new ArrayList<String>();
     for( String file : files )
     {
-      String legalName = discoverOldName( file );
+      String legalName = discoverOldName( host, file );
       oldNames.add( legalName );
     }
 
@@ -348,11 +348,11 @@ public class VssChangeProvider implements ChangeProvider
     {
       for( String path : writableFiles )
       {
-        path = path.toLowerCase();
-        if( !cmd.isInProject( path ) )
+        String oldPath = VssChangeProvider.discoverOldName( host, path ).toLowerCase();
+        if( !cmd.isInProject( oldPath ) )
           newFiles.add( path );
         else
-        if( !cmd.isCheckedOut( path ))
+        if( !cmd.isCheckedOut( oldPath ))
           hijacked.add( path );
         else
           changed.add( path );
@@ -369,7 +369,7 @@ public class VssChangeProvider implements ChangeProvider
   {
     String fileParent = new File( file ).getParentFile().getPath();
     String fileParentNorm = VssUtil.getCanonicalLocalPath( fileParent );
-    String refParentName = discoverOldName( fileParentNorm );
+    String refParentName = discoverOldName( host, fileParentNorm );
 
     if( VcsUtil.isPathUnderProject( project, fileParent ) && !processedFolders.contains( fileParent ) )
     {
@@ -421,7 +421,7 @@ public class VssChangeProvider implements ChangeProvider
     {
       //  In the case of file rename or parent folder rename we should
       //  refer to the list of new files by the 
-      String refName = discoverOldName( fileName );
+      String refName = discoverOldName( host, fileName );
 
       //  New file could be added AFTER and BEFORE the package rename.
       if( host.containsNew( fileName ) || host.containsNew( refName ))
@@ -440,7 +440,7 @@ public class VssChangeProvider implements ChangeProvider
   {
     for( String fileName : filesHijacked )
     {
-      String validRefName = discoverOldName( fileName );
+      String validRefName = discoverOldName( host, fileName );
       final FilePath fp = VcsUtil.getFilePath( validRefName );
       final FilePath currfp = VcsUtil.getFilePath( fileName );
       VssContentRevision revision = ContentRevisionFactory.getRevision( fp, project );
@@ -468,7 +468,7 @@ public class VssChangeProvider implements ChangeProvider
   {
     for( String fileName : filesChanged )
     {
-      String validRefName = discoverOldName( fileName );
+      String validRefName = discoverOldName( host, fileName );
       final FilePath refPath = VcsUtil.getFilePath( validRefName );
       final FilePath currPath = VcsUtil.getFilePath( fileName );
       
@@ -563,15 +563,21 @@ public class VssChangeProvider implements ChangeProvider
           ( newName.equals( oldName ) || (newName == "" && oldName != "") );
   }
 
-  private String discoverOldName( String file )
+  /**
+   * Given the current file path find out its original path:<br>
+   * <li>if the file was renamed;
+   * <li>if the folder was renamed;
+   * <li>if the file resides under the renamed folder.
+   */
+  public static String discoverOldName( VssVcs hostVcs, String file )
   {
-    String oldName = host.renamedFiles.get( VssUtil.getCanonicalLocalPath( file ) );
+    String oldName = hostVcs.renamedFiles.get( VssUtil.getCanonicalLocalPath( file ) );
     if( oldName == null )
     {
-      oldName = host.renamedFolders.get( VssUtil.getCanonicalLocalPath( file ) );
+      oldName = hostVcs.renamedFolders.get( VssUtil.getCanonicalLocalPath( file ) );
       if( oldName == null )
       {
-        oldName = findInRenamedParentFolder( file );
+        oldName = findOldInRenamedParentFolder( hostVcs, file );
         if( oldName == null )
           oldName = file;
       }
@@ -580,20 +586,61 @@ public class VssChangeProvider implements ChangeProvider
     return oldName;
   }
 
-  private String findInRenamedParentFolder( String name )
+  private static String findOldInRenamedParentFolder( VssVcs hostVcs, String name )
   {
     String fileInOldFolder = name;
-    for( String folder : host.renamedFolders.keySet() )
+    for( String folder : hostVcs.renamedFolders.keySet() )
     {
-      String oldFolderName = host.renamedFolders.get( folder );
       if( name.startsWith( folder ) )
       {
+        String oldFolderName = hostVcs.renamedFolders.get( folder );
         fileInOldFolder = oldFolderName + name.substring( folder.length() );
         break;
       }
     }
     return fileInOldFolder;
   }
+
+  /**
+   * Given the file path from the repository find out its current path:<br>
+   * <li>if the file was renamed;
+   * <li>if the folder was renamed;
+   * <li>if the file resides under the renamed folder.
+   */
+  /*
+  public static String discoverNewName( VssVcs hostVcs, String file )
+  {
+    String canonFile = VssUtil.getCanonicalLocalPath( file );
+    String oldName = hostVcs.getNewFileFromRenamed( canonFile );
+    if( oldName == null )
+    {
+      oldName = hostVcs.getNewFolderFromRenamed( canonFile );
+      if( oldName == null )
+      {
+        oldName = findNewInRenamedParentFolder( hostVcs, file );
+        if( oldName == null )
+          oldName = file;
+      }
+    }
+
+    return oldName;
+  }
+
+  private static String findNewInRenamedParentFolder( VssVcs hostVcs, String name )
+  {
+    String fileInOldFolder = name;
+    for( String folder : hostVcs.renamedFolders.keySet() )
+    {
+      String oldFolderName = hostVcs.renamedFolders.get( folder ).toLowerCase();
+      if( name.startsWith( oldFolderName ) )
+      {
+        fileInOldFolder = folder + name.substring( oldFolderName.length() );
+        break;
+      }
+    }
+    return fileInOldFolder;
+  }
+  */
 
   private boolean isUnderRenamedFolder( String fileName )
   {

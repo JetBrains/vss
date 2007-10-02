@@ -178,7 +178,9 @@ public class DirectoryCommandListener extends VssOutputCollector
   
   /**
    * Given a possibly truncated path of a checked out file, try to complete
-   * the path by matching file names of writable files in the same directory
+   * the path by matching file names of writable files in the same directory.
+   * NB: Does not work with renamed files or files under the renamed folders.
+   * ToDo: fix that!
    */
   private static String completeFileName(String fileName)
   {
