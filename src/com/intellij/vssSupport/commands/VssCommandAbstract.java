@@ -89,7 +89,7 @@ public abstract class VssCommandAbstract
   {
     try
     {
-      VSSExecUtil.runProcess( myConfig.CLIENT_PATH, list, myConfig.getSSDIREnv(), wrkPath, listener );
+      VSSExecUtil.runProcess( myProject, myConfig.CLIENT_PATH, list, myConfig.getSSDIREnv(), wrkPath, listener );
     }
     catch( ExecutionException exc )
     {

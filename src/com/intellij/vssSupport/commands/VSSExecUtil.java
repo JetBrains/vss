@@ -3,10 +3,12 @@ package com.intellij.vssSupport.commands;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.DefaultJavaProcessHandler;
+import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.process.InterruptibleProcess;
 import com.intellij.vssSupport.VssBundle;
 import com.intellij.vssSupport.VssOutputCollector;
@@ -37,21 +39,24 @@ public class VSSExecUtil
 
   public static interface UserInput {  void doInput(Writer writer);  }
 
-  public static void runProcess( String exePath, List<String> programParams,
-                                 HashMap<String, String> envParms, String workingDir,
-                                 VssOutputCollector listener) throws ExecutionException
+  public synchronized static void runProcess( final Project project,
+                                              String exePath, List<String> paremeters,
+                                              HashMap<String, String> envParams, String workingDir,
+                                              VssOutputCollector listener) throws ExecutionException
   {
-    String[] paremeters = programParams.toArray( new String[ programParams.size() ] );
+    String[] programParams = paremeters.toArray( new String[ paremeters.size() ] );
+  /*
     runProcess( exePath, paremeters, envParms, workingDir, listener );
   }
   public synchronized static void runProcess( String exePath, String[] programParms,
                                               HashMap<String, String> envParams, String workingDir,
                                               VssOutputCollector listener ) throws ExecutionException
   {
+  */
     addVSS2005Values( envParams );
 
     GeneralCommandLine cmdLine = new GeneralCommandLine();
-    cmdLine.addParameters( programParms );
+    cmdLine.addParameters( programParams );
     cmdLine.setWorkDirectory( workingDir );
     cmdLine.setEnvParams( envParams );
     cmdLine.setExePath( exePath );
@@ -65,13 +70,14 @@ public class VSSExecUtil
       progress.setText2( descriptor );
     }
 
-    VssProcess worker = new VssProcess( cmdLine.createProcess() );
+    VssProcess worker = new VssProcess( cmdLine.createProcess(), project );
 
     final VssStreamReader errReader = new VssStreamReader( worker.getErrorStream() );
     final VssStreamReader outReader = new VssStreamReader( worker.getInputStream() );
 
-    final Future<?> errorStreamReadingFuture = ApplicationManager.getApplication().executeOnPooledThread( errReader );
-    final Future<?> outputStreamReadingFuture = ApplicationManager.getApplication().executeOnPooledThread( outReader );
+    final Application app = ApplicationManager.getApplication();
+    final Future<?> errorStreamReadingFuture = app.executeOnPooledThread( errReader );
+    final Future<?> outputStreamReadingFuture = app.executeOnPooledThread( outReader );
 
     final int rc = worker.execute();
 
@@ -180,8 +186,19 @@ public class VSSExecUtil
 
   private static class VssProcess extends InterruptibleProcess
   {
-    public VssProcess( Process process ) {  super( process, TIMEOUT_LIMIT, TimeUnit.SECONDS );  }
+    private final Project project;
+    public VssProcess( Process process, Project project )
+    {
+      super( process, TIMEOUT_LIMIT, TimeUnit.SECONDS );
+      this.project = project;
+    }
     public void destroy()        {  super.interrupt();  }
     public int  processTimeout() {  return TIMEOUT_EXIT_CODE;  }
+
+    @Override
+    protected int processTimeoutInEDT()
+    {
+      return project.isDisposed() ? TIMEOUT_EXIT_CODE : super.processTimeoutInEDT();
+    }
   }
 }

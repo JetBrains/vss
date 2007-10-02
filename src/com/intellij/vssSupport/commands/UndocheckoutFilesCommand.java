@@ -74,7 +74,7 @@ public class UndocheckoutFilesCommand extends VssCommandAbstract
     VirtualFile file = myFiles[ idx ];
     VssConfiguration config = options.getVssConfiguration();
     try{
-      VSSExecUtil.runProcess( config.CLIENT_PATH, options.getOptions( file ), config.getSSDIREnv(),
+      VSSExecUtil.runProcess( myProject, config.CLIENT_PATH, options.getOptions( file ), config.getSSDIREnv(),
                               file.getParent().getPath().replace('/',File.separatorChar), processListener);
     }
     catch( ExecutionException exc )

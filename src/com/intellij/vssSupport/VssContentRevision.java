@@ -100,7 +100,7 @@ public class VssContentRevision implements ContentRevision
           });
           workDir = roots[ 0 ].getPath().replace('/', File.separatorChar);
         }
-        VSSExecUtil.runProcess( config.CLIENT_PATH, options, config.getSSDIREnv(), workDir, listener );
+        VSSExecUtil.runProcess( project, config.CLIENT_PATH, options, config.getSSDIREnv(), workDir, listener );
       }
       catch( Exception exc )
       {
