@@ -174,6 +174,6 @@ public class VssUtil extends VcsUtil
   }
 
   public static void showErrorOutput( @NonNls String message, Project project) {
-    showErrorMessage(project, VssBundle.message("message.text.operation.failed", message), VssBundle.message("message.title.error"));
+    showErrorMessage(project, VssBundle.message("message.text.operation.failed.text", message), VssBundle.message("message.title.error"));
   }
 }
