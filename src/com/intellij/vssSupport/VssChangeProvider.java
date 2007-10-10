@@ -7,6 +7,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ContentIterator;
 import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vcs.*;
 import com.intellij.openapi.vcs.changes.*;
@@ -537,7 +538,7 @@ public class VssChangeProvider implements ChangeProvider
     String parentPathToCheck = new File( path ).getParent();
     for( String folderPath : folders )
     {
-      if( parentPathToCheck.equalsIgnoreCase( folderPath ) )
+      if( FileUtil.pathsEqual( parentPathToCheck, folderPath ))
         return true;
     }
     return false;
