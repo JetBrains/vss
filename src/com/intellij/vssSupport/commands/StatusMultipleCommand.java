@@ -252,10 +252,18 @@ public class StatusMultipleCommand extends VssCommandAbstract
       if( VssUtil.EXIT_CODE_FAILURE != getExitCode() )
       {
         String[] lines = LineTokenizer.tokenize( output, false );
-        if( (lines[ 0 ].indexOf( NOFILES_SIG ) == -1) &&
-            (lines[ 0 ].indexOf( NOFILES_BY_USER_SIG ) == -1) )
+
+        //  Fix IDEADEV-22275 - no output from Status command.
+        //  Taking seriously - I do not know the reason for this behavior
+        //  right now since proper files lead to proper "ss.exe Status" responce,
+        //  and all major error messages are processed on the level before.
+        if( lines.length > 0 )
         {
-          checkoutFiles.add( file );
+          if( (lines[ 0 ].indexOf( NOFILES_SIG ) == -1) &&
+              (lines[ 0 ].indexOf( NOFILES_BY_USER_SIG ) == -1) )
+          {
+            checkoutFiles.add( file );
+          }
         }
       }
     }
