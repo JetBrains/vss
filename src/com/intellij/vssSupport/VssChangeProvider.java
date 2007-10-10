@@ -534,10 +534,10 @@ public class VssChangeProvider implements ChangeProvider
 
   private static boolean isPathUnderProcessedFolders( HashSet<String> folders, String path )
   {
-    String parentPathToCheck = new File( path ).getParent().toLowerCase();
+    String parentPathToCheck = new File( path ).getParent();
     for( String folderPath : folders )
     {
-      if( parentPathToCheck == folderPath )
+      if( parentPathToCheck.equalsIgnoreCase( folderPath ) )
         return true;
     }
     return false;
