@@ -63,7 +63,7 @@ public class VssContentRevision implements ContentRevision
     //  under Vss vcs, but a call to ProjectLevelVcsMgr requires dispatch thread
     //  or read action, so more straightforward way is used (since this has to
     //  be done anyway...)
-    String vssPath = VssUtil.getVssPath( path.getIOFile(), project );
+    String vssPath = VssUtil.getVssPath( path, project );
     if( vssPath != null )
     {
       VssConfiguration config = VssConfiguration.getInstance( project );

@@ -2,6 +2,7 @@ package com.intellij.vssSupport;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.vcs.FilePath;
 import com.intellij.openapi.vcs.ProjectLevelVcsManager;
 import com.intellij.openapi.vcs.VcsDirectoryMapping;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -46,10 +47,10 @@ public class VssUtil extends VcsUtil
    *         if local path cannot be resolved.
    */
   @Nullable
-  public static String getLocalPath(String vssPath, Project project)
+  public static String getLocalPath( String vssPath, Project project )
   {
-    VcsDirectoryMapping nearestItem = getNearestMapItemForVssPath(vssPath, project);
-    if (nearestItem == null)
+    VcsDirectoryMapping nearestItem = getNearestMapItemForVssPath( vssPath, project );
+    if( nearestItem == null )
       return null;
 
     String vssProject = ((VssRootSettings)nearestItem.getRootSettings()).getVssProject();
@@ -77,34 +78,10 @@ public class VssUtil extends VcsUtil
   }
 
   /**
-   * @param localPath local path with UNIX separator chars.
-   */
-  @Nullable
-  private static VcsDirectoryMapping getNearestMapItemForLocalPath( String localPath, boolean isDirectory, Project project )
-  {
-    localPath = localPath.toLowerCase();
-    if( isDirectory )
-      localPath += "/";
-
-    VcsDirectoryMapping nearestMapping = null;
-    ProjectLevelVcsManager mgr = ProjectLevelVcsManager.getInstance( project );
-    List<VcsDirectoryMapping> roots = mgr.getDirectoryMappings( VssVcs.getInstance( project ) );
-    for( VcsDirectoryMapping rootMapping : roots )
-    {
-      String path = rootMapping.getDirectory().replace('\\', '/').toLowerCase() + "/";
-      if( localPath.startsWith( path ) &&
-         (nearestMapping == null || nearestMapping.getDirectory().length() < path.length() - 1) // '-1' is because we added "/" to the path
-      ) {
-        nearestMapping = rootMapping;
-      }
-    }
-    return nearestMapping;
-  }
-
-  /**
    * @return nearest <code>MapItem</code> to the specified <code>vssPath</code>. Returns
    *         <code>null</code> if there is no any item found.
    */
+  @Nullable
   private static VcsDirectoryMapping getNearestMapItemForVssPath( String vssPath, Project project )
   {
     vssPath = vssPath.toLowerCase();
@@ -132,32 +109,39 @@ public class VssUtil extends VcsUtil
    * @return VSS path for the specified local file or <code>null</code> if
    *         the file isn't under VSS control.
    */
-  public static String getVssPath(File localFile, Project project) {
-    return getVssPath(localFile.getAbsolutePath().replace('\\', '/'), localFile.isDirectory(), project);
+  @Nullable
+  public static String getVssPath( File localFile, Project project ) {
+    FilePath path = VcsUtil.getFilePath( localFile );
+    return getVssPath( path, project );
   }
 
   /**
    * @return VSS path for the specified virtual file or <code>null</code>
    *         if virtual file isn't under VSS control.
    */
-  public static String getVssPath(VirtualFile localFile, Project project) {
-    return getVssPath( localFile.getPath(), localFile.isDirectory(), project );
+  @Nullable
+  public static String getVssPath( VirtualFile file, Project project) {
+    FilePath path = VcsUtil.getFilePath( file.getPath(), file.isDirectory() );
+    return getVssPath( path, project );
+  }
+
+  @Nullable
+  public static String getVssPath( String localPath, boolean isDirectory, Project project ) {
+    FilePath path = VcsUtil.getFilePath( localPath, isDirectory );
+    return getVssPath( path, project );
   }
 
   /**
    * @param localPath local path with UNIX separator chars.
    */
   @Nullable
-  public static String getVssPath( String localPath, boolean isDirectory, Project project )
+  public static String getVssPath( FilePath localPath, Project project )
   {
-    VcsDirectoryMapping rootMapping = getNearestMapItemForLocalPath(localPath, isDirectory, project);
-    if( rootMapping == null )
+    VcsDirectoryMapping rootMapping = ProjectLevelVcsManager.getInstance( project ).getDirectoryMappingFor( localPath );
+    if( rootMapping == null || rootMapping.getRootSettings() == null )
       return null;
 
-    if( rootMapping.getRootSettings() == null )
-      return null;
-
-    String pathDifference = localPath.substring( rootMapping.getDirectory().length()).replace('\\', '/');
+    String pathDifference = localPath.getPath().substring( rootMapping.getDirectory().length() ).replace('\\', '/');
     String rootVssPath = ((VssRootSettings)rootMapping.getRootSettings()).getVssProject();
     StringBuffer vssPath = new StringBuffer( rootVssPath );
     if( !StringUtil.endsWithChar( rootVssPath, '/' ) )
