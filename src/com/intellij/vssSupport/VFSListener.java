@@ -118,7 +118,7 @@ public class VFSListener extends VirtualFileAdapter implements CommandListener
     if( !VcsUtil.isFileForVcs( file, project, host ))
       return;
 
-    if( event.getPropertyName() == VirtualFile.PROP_WRITABLE )
+    if( event.getPropertyName().equals( VirtualFile.PROP_WRITABLE ))
     {
       //  On every change of the "Writable" property clear the cache of the
       //  content revisions. This will make possible to reread the correct
@@ -126,7 +126,7 @@ public class VFSListener extends VirtualFileAdapter implements CommandListener
       ContentRevisionFactory.clearCacheForFile( file.getPath() );
     }
     else
-    if( event.getPropertyName() == VirtualFile.PROP_NAME )
+    if( event.getPropertyName().equals( VirtualFile.PROP_NAME ))
     {
       FileStatus status = FileStatusManager.getInstance( project ).getStatus( file );
       if( status != FileStatus.ADDED && status != FileStatus.UNKNOWN && status != FileStatus.IGNORED )
