@@ -14,6 +14,7 @@
   <project-components>
     <component>
       <implementation-class>com.intellij.vssSupport.VssVcs</implementation-class>
+      <option name="workspace" value="true"/>
     </component>
     
     <component>
