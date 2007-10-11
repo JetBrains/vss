@@ -45,14 +45,6 @@ public class VSSExecUtil
                                               VssOutputCollector listener) throws ExecutionException
   {
     String[] programParams = paremeters.toArray( new String[ paremeters.size() ] );
-  /*
-    runProcess( exePath, paremeters, envParms, workingDir, listener );
-  }
-  public synchronized static void runProcess( String exePath, String[] programParms,
-                                              HashMap<String, String> envParams, String workingDir,
-                                              VssOutputCollector listener ) throws ExecutionException
-  {
-  */
     addVSS2005Values( envParams );
 
     GeneralCommandLine cmdLine = new GeneralCommandLine();
