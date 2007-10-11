@@ -3,6 +3,7 @@
  */
 package com.intellij.vssSupport.commands;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.LineTokenizer;
@@ -66,7 +67,7 @@ public class UndocheckoutDirCommand extends VssCommandAbstract
 
     public void everythingFinishedImpl( final String output )
     {
-      UpdatedFiles updatedFiles = UpdatedFiles.create();
+      final UpdatedFiles updatedFiles = UpdatedFiles.create();
       updatedFiles.registerGroup( new FileGroup(VssBundle.message("update.group.name.not.checkedout"),
                                                 VssBundle.message("update.group.name.not.checkedout"),
                                                 false, NOT_CHECKED_OUT_GROUP, true ));
@@ -143,8 +144,12 @@ public class UndocheckoutDirCommand extends VssCommandAbstract
       }
       if( logRecordsCount > 0 )
       {
-        ProjectLevelVcsManager.getInstance(myProject).showProjectOperationInfo(
-          updatedFiles, VssBundle.message("dialog.title.undo.check.out", myDir.getName()) );
+        ApplicationManager.getApplication().invokeLater( new Runnable() {
+          public void run() {
+            ProjectLevelVcsManager.getInstance(myProject).showProjectOperationInfo(
+              updatedFiles, VssBundle.message("dialog.title.undo.check.out", myDir.getName()) );
+          }
+        });
       }
       else
       {
