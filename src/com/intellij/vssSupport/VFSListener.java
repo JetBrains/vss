@@ -263,11 +263,15 @@ public class VFSListener extends VirtualFileAdapter implements CommandListener
       performAdding( files );
     else
     {
+      //  Choose appropriate dialog title (discriminate file or folder).
+      String title = VssBundle.message( "action.Vss.Add.file.description" );
+      if( files.size() == 1 && files.get( 0 ).isDirectory() )
+        title = VssBundle.message( "action.Vss.Add.folder.description" );
+
       final AbstractVcsHelper helper = AbstractVcsHelper.getInstance( project );
-      Collection<VirtualFile> filesToProcess = helper.selectFilesToProcess( files, VssBundle.message("title.select.files.add"), null,
-                                                                           VssBundle.message( "action.Vss.Add.description" ),
-                                                                           VssBundle.message( "action.Vss.Add.Question" ),
-                                                                           confirmOption );
+      Collection<VirtualFile> filesToProcess = helper.selectFilesToProcess( files, VssBundle.message( "title.select.files.add" ), null,
+                                                                            title, VssBundle.message( "action.Vss.Add.Question" ),
+                                                                            confirmOption );
       if( filesToProcess != null ) 
         performAdding( filesToProcess );
     }
