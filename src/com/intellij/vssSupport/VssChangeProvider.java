@@ -82,10 +82,8 @@ public class VssChangeProvider implements ChangeProvider
       return;
 
     initInternals();
-    if( isBatchUpdate )
-    {
-      iterateOverProjectStructure( dirtyScope );
-    }
+
+    iterateOverRecursiveFolders( dirtyScope );
     iterateOverDirtyDirectories( dirtyScope );
     iterateOverDirtyFiles( dirtyScope );
     processStatusExceptions();
@@ -106,7 +104,7 @@ public class VssChangeProvider implements ChangeProvider
    *  and check their status against the VSS repository. If file exists in the repository
    *  it is assigned "changed" status, otherwise it has "new" status.
    */
-  private void iterateOverProjectStructure( final VcsDirtyScope dirtyScope )
+  private void iterateOverRecursiveFolders( final VcsDirtyScope dirtyScope )
   {
     for( FilePath path : dirtyScope.getRecursivelyDirtyDirectories() )
     {
