@@ -191,7 +191,7 @@ public class UndocheckoutFilesCommand extends VssCommandAbstract
       return exitCode[ 0 ];
     }
 
-    private int  runDialogAskOption()
+    private int runDialogAskOption()
     {
       ConfirmMultipleDialog dialog = new ConfirmMultipleDialog(
         VssBundle.message("confirm.text.undo.check.out"),

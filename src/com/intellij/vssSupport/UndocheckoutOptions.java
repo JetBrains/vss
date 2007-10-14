@@ -23,17 +23,14 @@ public class UndocheckoutOptions implements JDOMExternalizable, Cloneable
    * XML tag.
    */
   @NonNls public static final String TAG = "UndocheckoutOptions";
+
   /**
-   * Ask for replace when local copy isn't compared with repository version.
+   * 0: Ask for replace when local copy isn't compared with repository version.
+   * 1: Do not replace local copy.
+   * 2: Local copy will be replaced with repository version.
    */
   public static final int OPTION_ASK = 0;
-  /**
-   * Do not replace local copy.
-   */
   public static final int OPTION_LEAVE = 1;
-  /**
-   * Local copy should be replaced with repository version.
-   */
   public static final int OPTION_REPLACE = 2;
 
   /**
@@ -46,7 +43,7 @@ public class UndocheckoutOptions implements JDOMExternalizable, Cloneable
    * @see com.intellij.vssSupport.UndocheckoutOptions#OPTION_LEAVE
    * @see com.intellij.vssSupport.UndocheckoutOptions#OPTION_REPLACE
    */
-  public int REPLACE_LOCAL_COPY=OPTION_ASK;
+  public int REPLACE_LOCAL_COPY = OPTION_REPLACE;
 
   /**
    * -R
@@ -65,7 +62,7 @@ public class UndocheckoutOptions implements JDOMExternalizable, Cloneable
   @NonNls private static final String _R_OPTION = "-R";
   @NonNls private static final String _R_NOT_OPTION = "-R-";
 
-  public UndocheckoutOptions(VssConfiguration config){
+  public UndocheckoutOptions( VssConfiguration config ){
     myConfig = config;
   }
 
@@ -82,16 +79,9 @@ public class UndocheckoutOptions implements JDOMExternalizable, Cloneable
     options.add( UNDOCHECKOUT_COMMAND );
     options.add( VssUtil.getVssPath( file, myConfig.getProject() ));
 
-    if( OPTION_ASK == REPLACE_LOCAL_COPY ){
-      options.add(_I_N_OPTION);
-    }else if( OPTION_LEAVE == REPLACE_LOCAL_COPY ){
-      options.add(_G_OPTION);
-      options.add(_I_Y_OPTION);
-    }else if( OPTION_REPLACE == REPLACE_LOCAL_COPY ){
-      options.add(_I_Y_OPTION);
-    }else{
-      LOG.error("Unknown REPLACE_LOCAL_COPY value: "+REPLACE_LOCAL_COPY);
-    }
+    options.add( (REPLACE_LOCAL_COPY == OPTION_ASK) ? _I_N_OPTION : _I_Y_OPTION );
+    if( REPLACE_LOCAL_COPY == OPTION_LEAVE )
+      options.add( _G_OPTION );
 
     if( file.isDirectory() )
     {

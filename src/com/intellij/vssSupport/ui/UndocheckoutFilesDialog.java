@@ -15,21 +15,23 @@ import java.awt.*;
 
 public class UndocheckoutFilesDialog extends OptionsDialog
 {
+  private VssVcs host;
   private UndocheckoutOptions options;
 
   // UI controls.
   private JCheckBox myCheckBoxMakeWritable;
   private JComboBox myComboBoxReplaceLocalCopy;
 
-  public UndocheckoutFilesDialog(Project project)
+  public UndocheckoutFilesDialog( Project project )
   {
     super( project );
+    host = VssVcs.getInstance( myProject );
     options = VssConfiguration.getInstance( project ).getUndocheckoutOptions();
     init();
   }
 
-  protected boolean isToBeShown() {  return VssVcs.getInstance( myProject ).getUndoCheckoutOptions().getValue();  }
-  protected void setToBeShown( boolean value, boolean onOk ) {  VssVcs.getInstance( myProject ).getUndoCheckoutOptions().setValue( value );  }
+  protected boolean isToBeShown() {  return host.getUndoCheckoutOptions().getValue();  }
+  protected void    setToBeShown( boolean value, boolean onOk ) {  host.getUndoCheckoutOptions().setValue( value );  }
   protected boolean shouldSaveOptionsOnCancel()  {  return false;  }
   
   /**
@@ -73,7 +75,7 @@ public class UndocheckoutFilesDialog extends OptionsDialog
 
   protected void init()
   {
-    myCheckBoxMakeWritable = new JCheckBox(VssBundle.message("checkbox.undo.optiond.make.writable"));
+    myCheckBoxMakeWritable = new JCheckBox( VssBundle.message("checkbox.undo.optiond.make.writable") );
     myComboBoxReplaceLocalCopy = new JComboBox( new DefaultComboBoxModel(
                                                       new String[]{ VssBundle.message("combo.replace.policy.ask"),
                                                                     VssBundle.message("combo.undo.options.replace.policy.leave"),

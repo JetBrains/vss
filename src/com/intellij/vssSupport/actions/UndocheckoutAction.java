@@ -66,7 +66,8 @@ public class UndocheckoutAction extends VssAction
       boolean showOptions = VssVcs.getInstance(config.getProject()).getUndoCheckoutOptions().getValue();
       if( showOptions || isShiftPressed( e ) )
       {
-        OptionsDialog editor = allFilesAreFolders( files ) ? new UndocheckoutDirDialog( project ) : new UndocheckoutFilesDialog( project );
+        OptionsDialog editor = allFilesAreFolders( files ) ? new UndocheckoutDirDialog( project ) :
+                                                             new UndocheckoutFilesDialog( project );
         editor.setTitle( (files.length == 1) ? VssBundle.message( "dialog.title.undo.check.out", files[ 0 ].getName()) :
                                                VssBundle.message( "dialog.title.undo.check.out.multiple" ) );
         editor.show();
