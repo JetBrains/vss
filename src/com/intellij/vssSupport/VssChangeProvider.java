@@ -4,14 +4,12 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ContentIterator;
-import com.intellij.openapi.roots.ProjectFileIndex;
-import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vcs.*;
 import com.intellij.openapi.vcs.changes.*;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.util.Processor;
 import com.intellij.vcsUtil.VcsUtil;
 import com.intellij.vssSupport.commands.DirectoryCommand;
 import com.intellij.vssSupport.commands.PropertiesCommand;
@@ -214,25 +212,26 @@ public class VssChangeProvider implements ChangeProvider
 
   private void collectSuspiciousFiles( final FilePath filePath, final List<String> writableFiles )
   {
-    final ProjectFileIndex fileIndex = ProjectRootManager.getInstance( project ).getFileIndex();
-
     VirtualFile vf = filePath.getVirtualFile();
     if( vf != null )
     {
-      fileIndex.iterateContentUnderDirectory( vf, new ContentIterator()
+      ProjectLevelVcsManager.getInstance(project).iterateVcsRoot( vf, new Processor<FilePath>()
         {
-          public boolean processFile( VirtualFile file )
-          {
+          public boolean process(final FilePath file) {
             String path = file.getPath();
-            if( host.isFileIgnored( file ) )
-              filesIgnored.add( path );
-            else
-            if( isFileVssProcessable( file ) )
-              writableFiles.add( path );
+            VirtualFile vFile = file.getVirtualFile();
+            if(vFile != null) {
+              if( host.isFileIgnored(vFile) )
+                filesIgnored.add( path );
+              else if (vFile.isWritable() && !vFile.isDirectory() )
+                writableFiles.add( path );
+            }
 
             return true;
           }
-        } );
+
+        }
+      );
     }
   }
 
