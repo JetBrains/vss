@@ -84,7 +84,7 @@ public class UndocheckoutAction extends VssAction
       }
       else
       {
-        (new UndocheckoutFilesCommand( project, files, false, errors ) ).execute();
+        (new UndocheckoutFilesCommand( project, files, errors ) ).execute();
       }
     }
     finally

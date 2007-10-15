@@ -1,13 +1,15 @@
 package com.intellij.vssSupport.commands;
 
-import com.intellij.execution.ExecutionException;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.VcsException;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.vssSupport.*;
+import com.intellij.vssSupport.UndocheckoutOptions;
+import com.intellij.vssSupport.VssBundle;
+import com.intellij.vssSupport.VssOutputCollector;
+import com.intellij.vssSupport.VssUtil;
 import com.intellij.vssSupport.ui.ConfirmMultipleDialog;
 import org.jetbrains.annotations.NonNls;
 
@@ -21,183 +23,132 @@ import java.util.List;
 public class UndocheckoutFilesCommand extends VssCommandAbstract
 {
   private VirtualFile[] myFiles;
-  private UndocheckoutOptions myBaseOptions;
-  private boolean mySuppressOnNotCheckedOutMessage;
+  private boolean needToAsk = false;
 
-  private boolean myReplaceAllLocalCopies;
-  private boolean myDoNotReplaceAllLocalCopies;
-
-  /**
-   * Creates new <code>UndocheckoutFilesCommand</code> instance.
-   * @param files files to be unchecked out. Note, that the passed
-   * files must be under VSS control, i.e. <code>VssUtil.isUnderVss</code>
-   * method must return <code>true</code> for each of them.
-   */
-  public UndocheckoutFilesCommand( Project project, VirtualFile[] files,
-                                   boolean suppressNotCheckedOutDiag, List<VcsException> errors )
+  public UndocheckoutFilesCommand( Project project, VirtualFile[] files, List<VcsException> errors )
   {
     super( project, errors );
     myFiles = files;
-    mySuppressOnNotCheckedOutMessage = suppressNotCheckedOutDiag;
   }
 
+  @SuppressWarnings({"AssignmentToForLoopParameter"})
   public void execute()
   {
-    myBaseOptions = myConfig.getUndocheckoutOptions();
     FileDocumentManager.getInstance().saveAllDocuments();
-    undoCheckOut( 0 );
-  }
 
-  private void undoCheckOut(int idx)
-  {
-    if( idx >= myFiles.length )
+    final UndocheckoutOptions baseOptions = myConfig.getUndocheckoutOptions();
+    int savedActionType = baseOptions.REPLACE_LOCAL_COPY;
+    boolean replaceInstance = false;
+
+    UndocheckoutListenerNew listener = new UndocheckoutListenerNew( myErrors );
+    for( int i = 0; i < myFiles.length; i++ )
     {
-      for( VirtualFile file : myFiles )
-        file.refresh( true, true );
+      List<String> options = baseOptions.getOptions( myFiles[ i ] );
+      String workingPath = myFiles[ i ].getParent().getPath().replace( '/', File.separatorChar );
+      listener.setFileName( myFiles[ i ].getPath() );
 
-      return;
+      // If options specify "ask before replace", Undocheckout runs with -I-N option.
+      // This causes replacement of unchanged file but the confirmation is requested
+      // for changed files. Analyze output and repeat with proper "Yes" or "No" answer.
+      needToAsk = false;
+
+      runProcess( options, workingPath, listener );
+
+      //  Return the option value back - we need to ask again for the next file 
+      if( replaceInstance ){
+        baseOptions.REPLACE_LOCAL_COPY = savedActionType;
+        replaceInstance = false;
+      }
+
+      if( needToAsk )
+      {
+        int exitCode = askOption( myFiles[ i ].getPath() );
+        if( exitCode == ConfirmMultipleDialog.YES_EXIT_CODE ){
+          replaceInstance = true;
+          baseOptions.REPLACE_LOCAL_COPY = UndocheckoutOptions.OPTION_REPLACE;
+          //  repeat for the file with the new options set
+          i--;
+        }
+        else
+        if( exitCode == ConfirmMultipleDialog.YES_ALL_EXIT_CODE  ){
+          baseOptions.REPLACE_LOCAL_COPY = UndocheckoutOptions.OPTION_REPLACE;
+          //  repeat for this file and all others with the new options set
+          i--;
+        }
+        else
+        if( exitCode == ConfirmMultipleDialog.NO_ALL_EXIT_CODE ){
+          baseOptions.REPLACE_LOCAL_COPY = UndocheckoutOptions.OPTION_LEAVE;
+        }
+        else
+        if( exitCode == ConfirmMultipleDialog.CANCEL_OPTION ){
+          break;
+        }
+        // and nothing to do in the case of ConfirmMultipleDialog.NO_EXIT_CODE
+      }
     }
+    baseOptions.REPLACE_LOCAL_COPY = savedActionType;
 
-    // If base options specify leave local copies or replace then everything is OK.
-    //
-    // If base options specify ask before replace local files then our life become a
-    // litte bit difficult.
-    // First of all I need to run Undocheckout with -I-N option. It cause replacement
-    // of unchenged file but skip the operation if the file has been changed. So after
-    // that I should analize output and repeat with rigth "Yes" or "No" answer.
-
-    runVss( idx, myBaseOptions, new UndocheckoutListener( idx, myErrors ));
+    for( VirtualFile file : myFiles )
+      file.refresh( true, true );
   }
 
-  private void runVss( int idx, UndocheckoutOptions options, VssOutputCollector processListener )
+  private int askOption( final String fileName )
   {
-    VirtualFile file = myFiles[ idx ];
-    VssConfiguration config = options.getVssConfiguration();
-    try{
-      VSSExecUtil.runProcess( myProject, config.CLIENT_PATH, options.getOptions( file ), config.getSSDIREnv(),
-                              file.getParent().getPath().replace('/',File.separatorChar), processListener);
-    }
-    catch( ExecutionException exc )
-    {
-      String msg = config.checkCmdPath();
-      myErrors.add( new VcsException( (msg != null) ? msg : exc.getLocalizedMessage() ));
-    }
-  }
+    final int[] exitCode = new int[ 1 ];
+    Runnable runnable = new Runnable() {  public void run() {
+      ConfirmMultipleDialog dialog = new ConfirmMultipleDialog( VssBundle.message("confirm.text.undo.check.out"),
+                                                                VssBundle.message("confirm.text.file.changed.undo", fileName ),
+                                                                myProject);
+      dialog.show();
+      exitCode[ 0 ] = dialog.getExitCode();
+    } };
 
-  private void showStatusMessage(int idx,int exitCode,String errorOutput)
-  {
-    if( VssUtil.EXIT_CODE_SUCCESS == exitCode || VssUtil.EXIT_CODE_WARNING == exitCode )
-      VssUtil.showStatusMessage(myProject, VssBundle.message("message.text.undo.successfully", myFiles[idx].getPresentableUrl()));
+    if( ApplicationManager.getApplication().isDispatchThread() )
+      runnable.run();
     else
-      VssUtil.showErrorOutput(errorOutput, myProject);
+      ApplicationManager.getApplication().invokeAndWait( runnable, ModalityState.defaultModalityState() );
+
+    return exitCode[ 0 ];
   }
 
-  private class UndocheckoutListener extends VssOutputCollector
+  private class UndocheckoutListenerNew extends VssOutputCollector
   {
-    private int myIdx;
+    private String fileName;
     @NonNls private static final String CHECKED_OUT_MESSAGE = "currently checked out";
     @NonNls private static final String NOT_EXISTING_MESSAGE = "is not an existing";
     @NonNls private static final String DELETED_MESSAGE = "has been deleted";
     @NonNls private static final String NOT_FROM_CURRENT_MESSAGE = "not from the current folder";
     @NonNls private static final String UNDO_CHECKOUT_CONF_MESSAGE = "Undo check out and lose changes?(Y/N)N";
 
-    public UndocheckoutListener(int idx, List<VcsException> errors)
-    {
+    public UndocheckoutListenerNew( List<VcsException> errors ){
       super( errors );
-      myIdx = idx;
+    }
+
+    public void setFileName( String name ){
+      fileName = name;
     }
 
     public void everythingFinishedImpl( final String output )
     {
-      String fileName = myFiles[myIdx].getPresentableUrl();
       if( output.indexOf( CHECKED_OUT_MESSAGE ) != -1 )
-      {
-        if( !mySuppressOnNotCheckedOutMessage )
           myErrors.add( new VcsException( VssBundle.message("message.text.file.not.checked.out", fileName ) ));
-      }
-      else if( output.indexOf( NOT_EXISTING_MESSAGE ) != -1 )
+      else 
+      if( output.indexOf( NOT_EXISTING_MESSAGE ) != -1 )
         myErrors.add( new VcsException( VssBundle.message("message.text.path.is.not.existing.filename.or.project", fileName ) ));
-      else if( output.indexOf( DELETED_MESSAGE )!= -1 )
+      else
+      if( output.indexOf( DELETED_MESSAGE )!= -1 )
         myErrors.add( new VcsException( VssBundle.message("message.text.cannot.undo.file.deleted", fileName) ));
-      else if( output.indexOf( NOT_FROM_CURRENT_MESSAGE )!= -1)
+      else
+      if( output.indexOf( NOT_FROM_CURRENT_MESSAGE )!= -1)
         myErrors.add( new VcsException( VssBundle.message("message.text.cannot.undo.checked.out.not.from.current", fileName) ));
-      else if( output.indexOf( UNDO_CHECKOUT_CONF_MESSAGE )!= -1){
-        onLooseChanges();
-        return;
-      }else
-        showStatusMessage(myIdx,getExitCode(),output);
-
-      undoCheckOut( myIdx + 1 );
-    }
-
-    private void onLooseChanges()
-    {
-      int exitCode = askOption();
-
-      if(ConfirmMultipleDialog.YES_EXIT_CODE == exitCode)
-      {
-        UndocheckoutOptions options = myBaseOptions.copy();
-        options.REPLACE_LOCAL_COPY = UndocheckoutOptions.OPTION_REPLACE;
-        runVss( myIdx, options,  new VssOutputCollector(myErrors){
-                                        public void everythingFinishedImpl(final String output){
-                                          showStatusMessage( myIdx, getExitCode(), output );
-                                          undoCheckOut( myIdx + 1 );
-                                        }
-                                 } );
-        return;
-      }
-      else if(ConfirmMultipleDialog.YES_ALL_EXIT_CODE == exitCode)
-      {
-        UndocheckoutOptions options = myBaseOptions.copy();
-        options.REPLACE_LOCAL_COPY = UndocheckoutOptions.OPTION_REPLACE;
-        myReplaceAllLocalCopies = true;
-        runVss( myIdx, options, new VssOutputCollector(myErrors){
-                                      public void everythingFinishedImpl(final String output){
-                                        showStatusMessage(myIdx,getExitCode(), output );
-                                        undoCheckOut( myIdx + 1 );
-                                      }
-                                } );
-        return;
-      }else if(ConfirmMultipleDialog.NO_EXIT_CODE==exitCode){
-        // Skip current file and continue
-      }else if(ConfirmMultipleDialog.NO_ALL_EXIT_CODE==exitCode){
-        myDoNotReplaceAllLocalCopies=true;
-        // Skip current file and continue
-      }else if(ConfirmMultipleDialog.CANCEL_OPTION==exitCode){
-        // Break undo sequence
-        return;
-      }
-      undoCheckOut( myIdx + 1 );
-    }
-
-    private int askOption()
-    {
-      final int[] exitCode = new int[ 1 ];
-      if( myReplaceAllLocalCopies )
-        exitCode[ 0 ] = ConfirmMultipleDialog.YES_ALL_EXIT_CODE;
       else
-      if( myDoNotReplaceAllLocalCopies )
-        exitCode[ 0 ] = ConfirmMultipleDialog.NO_ALL_EXIT_CODE;
+      if( output.indexOf( UNDO_CHECKOUT_CONF_MESSAGE )!= -1)
+        needToAsk = true;
       else
-      {
-        if( ApplicationManager.getApplication().isDispatchThread() )
-          exitCode[ 0 ] = runDialogAskOption();
-        else
-        {
-          Runnable runnable = new Runnable() {  public void run() {  exitCode[ 0 ] = runDialogAskOption(); } };
-          ApplicationManager.getApplication().invokeAndWait( runnable, ModalityState.defaultModalityState() );
-        }
-      }
-      return exitCode[ 0 ];
-    }
-
-    private int runDialogAskOption()
-    {
-      ConfirmMultipleDialog dialog = new ConfirmMultipleDialog(
-        VssBundle.message("confirm.text.undo.check.out"),
-        VssBundle.message("confirm.text.file.changed.undo", myFiles[myIdx].getPresentableUrl()), myProject);
-      dialog.show();
-      return dialog.getExitCode();
+      if( VssUtil.EXIT_CODE_SUCCESS == getExitCode() || VssUtil.EXIT_CODE_WARNING == getExitCode() )
+        VssUtil.showStatusMessage( myProject, VssBundle.message("message.text.undo.successfully", fileName ));
+      else
+        myErrors.add( new VcsException( output ));
     }
   }
 }

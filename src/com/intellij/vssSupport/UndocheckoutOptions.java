@@ -3,7 +3,6 @@
  */
 package com.intellij.vssSupport;
 
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.DefaultJDOMExternalizer;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.JDOMExternalizable;
@@ -17,8 +16,6 @@ import java.util.List;
 
 public class UndocheckoutOptions implements JDOMExternalizable, Cloneable
 {
-  private static final Logger LOG = Logger.getInstance("#com.intellij.vssSupport.UndocheckoutOptions");
-
   /**
    * XML tag.
    */
@@ -89,18 +86,15 @@ public class UndocheckoutOptions implements JDOMExternalizable, Cloneable
       //  simply omit it. If the "Act on projects recursively" option is set
       //  in the SS Explorer, then all commands to the [sub]projects are
       //  applied in the recursive manner by default.
-      if( RECURSIVE )
-        options.add( _R_OPTION );
-      else
-        options.add( _R_NOT_OPTION );
+      options.add( RECURSIVE ? _R_OPTION : _R_NOT_OPTION );
     }
 
     if( MAKE_WRITABLE )
       options.add( _W_OPTION );
 
-    if(myConfig.USER_NAME.length()>0){
-      options.add(myConfig.getYOption());
-    }
+    if( myConfig.USER_NAME.length() > 0 )
+      options.add( myConfig.getYOption() );
+
     return options;
   }
 

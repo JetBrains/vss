@@ -378,7 +378,7 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
       if( file.isDirectory() )
         (new UndocheckoutDirCommand( myProject, file, errors )).execute();
       else
-        (new UndocheckoutFilesCommand( myProject, new VirtualFile[]{ file }, false, errors )).execute();
+        (new UndocheckoutFilesCommand( myProject, new VirtualFile[]{ file }, errors )).execute();
     }
   }
 
@@ -391,7 +391,7 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
     }
     else
     {
-      (new UndocheckoutFilesCommand( myProject, files, false, errors )).execute();
+      (new UndocheckoutFilesCommand( myProject, files, errors )).execute();
     }
   }
 
