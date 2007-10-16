@@ -6,7 +6,6 @@ package com.intellij.vssSupport.commands;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class VssHistoryParserTest extends TestCase
 {
