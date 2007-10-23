@@ -20,6 +20,7 @@ import com.intellij.vssSupport.commands.SynchronizeCommand;
 import com.intellij.vssSupport.ui.GetDirDialog;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,7 +44,8 @@ public class VssUpdateEnvironment implements UpdateEnvironment
 
   public void fillGroups( UpdatedFiles groups ){}
 
-  public UpdateSession updateDirectories( final FilePath[] roots, UpdatedFiles updatedFiles,
+  @NotNull
+  public UpdateSession updateDirectories( @NotNull final FilePath[] roots, UpdatedFiles updatedFiles,
                                           ProgressIndicator progress ) throws ProcessCanceledException
   {
     final ArrayList<VcsException> errors = new ArrayList<VcsException>();
@@ -65,6 +67,7 @@ public class VssUpdateEnvironment implements UpdateEnvironment
     }
 
     return new UpdateSession(){
+      @NotNull
       public List<VcsException> getExceptions() { return errors; }
       public void onRefreshFilesCompleted()     {}
       public boolean isCanceled()               { return cancelled;  }
