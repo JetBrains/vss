@@ -32,7 +32,7 @@ public class VSSExecUtil
   @NonNls private final static String TEMP_VAR = "TEMP";
   @NonNls private final static String USER_SIG_OPTION_PREFIX = " -Y";
 
-  private static final int TIMEOUT_LIMIT = 300;
+  private static final int TIMEOUT_LIMIT = 40;
   private static final int TIMEOUT_EXIT_CODE = -1000;
 
   private VSSExecUtil() {}
