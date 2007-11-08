@@ -1,7 +1,7 @@
 package com.intellij.vssSupport.actions;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DataKeys;
+import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vcs.VcsException;
@@ -19,7 +19,7 @@ public class DiffAction extends VssAction
 {
   public void actionPerformed(AnActionEvent e)
   {
-    Project project = e.getData( DataKeys.PROJECT );
+    Project project = e.getData( PlatformDataKeys.PROJECT );
     VirtualFile[] files = VssUtil.getVirtualFiles( e );
     VirtualFile   vFile = files[ 0 ];
     ArrayList<VcsException> errors = new ArrayList<VcsException>();

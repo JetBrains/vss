@@ -1,7 +1,7 @@
 package com.intellij.vssSupport.actions;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DataKeys;
+import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vcs.FileStatus;
@@ -49,7 +49,7 @@ public class CheckoutAction extends VssAction
 
     if( e.getPresentation().isEnabled() )
     {
-      Project project = e.getData( DataKeys.PROJECT );
+      Project project = e.getData( PlatformDataKeys.PROJECT );
       ChangeListManager mgr = ChangeListManager.getInstance( project );
       VirtualFile[] files = VssUtil.getVirtualFiles( e );
 
@@ -70,7 +70,7 @@ public class CheckoutAction extends VssAction
   public void actionPerformed( AnActionEvent e )
   {
     boolean isActionProduces = false;
-    Project project = e.getData( DataKeys.PROJECT );
+    Project project = e.getData( PlatformDataKeys.PROJECT );
     VirtualFile[] files = VssUtil.getVirtualFiles( e );
     ArrayList<VcsException> errors = new ArrayList<VcsException>();
 

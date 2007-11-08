@@ -1,7 +1,7 @@
 package com.intellij.vssSupport.actions;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DataKeys;
+import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vcs.FileStatus;
@@ -31,7 +31,7 @@ public class GetAction extends VssAction
 
     if( e.getPresentation().isVisible() && e.getPresentation().isEnabled() )
     {
-      Project project = e.getData( DataKeys.PROJECT );
+      Project project = e.getData( PlatformDataKeys.PROJECT );
       ChangeListManager mgr = ChangeListManager.getInstance( project );
       VirtualFile[] files = VcsUtil.getVirtualFiles( e );
 
@@ -51,7 +51,7 @@ public class GetAction extends VssAction
 
   public void actionPerformed( AnActionEvent e )
   {
-    Project project = e.getData( DataKeys.PROJECT );
+    Project project = e.getData( PlatformDataKeys.PROJECT );
     VirtualFile[] files = VssUtil.getVirtualFiles( e );
 
     ArrayList<VcsException> errors = new ArrayList<VcsException>();
