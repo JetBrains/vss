@@ -16,8 +16,6 @@ import java.util.Set;
  * Created by IntelliJ IDEA.
  * User: lloix
  * Date: Apr 16, 2007
- * Time: 7:52:02 PM
- * To change this template use File | Settings | File Templates.
  */
 public class VssCheckinHandler extends CheckinHandler {
   private VssVcs host;
