@@ -37,6 +37,7 @@ import com.intellij.vcsUtil.VcsUtil;
 import com.intellij.vssSupport.Checkin.VssCheckinEnvironment;
 import com.intellij.vssSupport.Checkin.VssCheckinHandler;
 import com.intellij.vssSupport.Checkin.VssRollbackEnvironment;
+import com.intellij.vssSupport.Configuration.MapItem;
 import com.intellij.vssSupport.Configuration.VssConfigurable;
 import com.intellij.vssSupport.Configuration.VssConfiguration;
 import com.intellij.vssSupport.Configuration.VssRootSettings;

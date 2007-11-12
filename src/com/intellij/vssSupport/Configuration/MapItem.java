@@ -1,12 +1,13 @@
 /**
  * @author Vladimir Kondratyev
  */
-package com.intellij.vssSupport;
+package com.intellij.vssSupport.Configuration;
 
 import com.intellij.openapi.util.DefaultJDOMExternalizer;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.JDOMExternalizable;
 import com.intellij.openapi.util.WriteExternalException;
+import com.intellij.vssSupport.VssUtil;
 import org.jdom.Element;
 
 public class MapItem implements JDOMExternalizable{
@@ -47,7 +48,7 @@ public class MapItem implements JDOMExternalizable{
 
   public void readExternal(Element element) throws InvalidDataException {
     DefaultJDOMExternalizer.readExternal(this, element);
-    VSS_PATH=VssUtil.getCanonicalVssPath(VSS_PATH);
+    VSS_PATH= VssUtil.getCanonicalVssPath(VSS_PATH);
     LOCAL_PATH=VssUtil.getCanonicalVssPath(LOCAL_PATH);
   }
 
