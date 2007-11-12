@@ -14,7 +14,11 @@ import com.intellij.openapi.vcs.checkin.CheckinEnvironment;
 import com.intellij.openapi.vcs.ui.RefreshableOnComponent;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.vcsUtil.VcsUtil;
-import com.intellij.vssSupport.*;
+import com.intellij.vssSupport.AddOptions;
+import com.intellij.vssSupport.CheckinOptions;
+import com.intellij.vssSupport.Configuration.VssConfiguration;
+import com.intellij.vssSupport.VssBundle;
+import com.intellij.vssSupport.VssVcs;
 
 import javax.swing.*;
 import java.util.*;

@@ -18,8 +18,8 @@
     </component>
     
     <component>
-      <interface-class>com.intellij.vssSupport.VssConfiguration</interface-class>
-      <implementation-class>com.intellij.vssSupport.VssConfiguration</implementation-class>
+      <interface-class>com.intellij.vssSupport.Configuration.VssConfiguration</interface-class>
+      <implementation-class>com.intellij.vssSupport.Configuration.VssConfiguration</implementation-class>
       <option name="workspace" value="true"/>
     </component>
   </project-components>

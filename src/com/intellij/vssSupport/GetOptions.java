@@ -9,6 +9,7 @@ import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.JDOMExternalizable;
 import com.intellij.openapi.util.WriteExternalException;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.vssSupport.Configuration.VssConfiguration;
 import org.jdom.Element;
 import org.jetbrains.annotations.NonNls;
 

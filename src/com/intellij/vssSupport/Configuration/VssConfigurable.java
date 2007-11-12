@@ -1,7 +1,7 @@
 /**
  * @author  Vladimir Kondratyev
  */
-package com.intellij.vssSupport;
+package com.intellij.vssSupport.Configuration;
 
 import com.intellij.openapi.options.BaseConfigurable;
 import com.intellij.openapi.options.ConfigurationException;
@@ -9,6 +9,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.wm.WindowManager;
+import com.intellij.vssSupport.VssBundle;
 import org.jetbrains.annotations.NonNls;
 
 import javax.swing.*;

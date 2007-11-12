@@ -7,8 +7,8 @@ import com.intellij.execution.ExecutionException;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.vssSupport.Configuration.VssConfiguration;
 import com.intellij.vssSupport.VssBundle;
-import com.intellij.vssSupport.VssConfiguration;
 import com.intellij.vssSupport.VssUtil;
 import org.jetbrains.annotations.NonNls;
 

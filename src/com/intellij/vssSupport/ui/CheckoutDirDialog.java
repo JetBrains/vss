@@ -6,8 +6,8 @@ package com.intellij.vssSupport.ui;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.ui.OptionsDialog;
 import com.intellij.vssSupport.CheckoutOptions;
+import com.intellij.vssSupport.Configuration.VssConfiguration;
 import com.intellij.vssSupport.VssBundle;
-import com.intellij.vssSupport.VssConfiguration;
 import com.intellij.vssSupport.VssVcs;
 
 import javax.swing.*;

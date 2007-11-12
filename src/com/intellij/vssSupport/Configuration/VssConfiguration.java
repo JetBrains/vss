@@ -1,11 +1,12 @@
 /**
  * @author Vladimir Kondratyev
  */
-package com.intellij.vssSupport;
+package com.intellij.vssSupport.Configuration;
 
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.*;
+import com.intellij.vssSupport.*;
 import org.jdom.Element;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;

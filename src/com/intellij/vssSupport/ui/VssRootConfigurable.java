@@ -7,8 +7,8 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vcs.VcsDirectoryMapping;
 import com.intellij.openapi.vcs.VcsException;
 import com.intellij.ui.DocumentAdapter;
+import com.intellij.vssSupport.Configuration.VssRootSettings;
 import com.intellij.vssSupport.VssBundle;
-import com.intellij.vssSupport.VssRootSettings;
 import com.intellij.vssSupport.commands.VssCommandAbstract;
 
 import javax.swing.*;

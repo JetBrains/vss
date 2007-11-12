@@ -8,7 +8,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.ProjectLevelVcsManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.vcsUtil.VcsUtil;
-import com.intellij.vssSupport.VssConfiguration;
+import com.intellij.vssSupport.Configuration.VssConfiguration;
 import com.intellij.vssSupport.VssVcs;
 
 import java.awt.*;
@@ -45,7 +45,7 @@ abstract class VssAction extends AnAction
     if( state )
     {
       state = false;
-      VssConfiguration  config = VssConfiguration.getInstance( project );
+      VssConfiguration config = VssConfiguration.getInstance( project );
       if( config != null )
       {
         VssVcs  host = VssVcs.getInstance( project );

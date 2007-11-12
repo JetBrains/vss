@@ -7,6 +7,7 @@ import com.intellij.openapi.vcs.ProjectLevelVcsManager;
 import com.intellij.openapi.vcs.VcsDirectoryMapping;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.vcsUtil.VcsUtil;
+import com.intellij.vssSupport.Configuration.VssRootSettings;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
 

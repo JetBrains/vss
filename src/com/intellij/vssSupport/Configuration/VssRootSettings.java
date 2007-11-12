@@ -1,4 +1,4 @@
-package com.intellij.vssSupport;
+package com.intellij.vssSupport.Configuration;
 
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.WriteExternalException;

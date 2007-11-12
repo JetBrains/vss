@@ -10,6 +10,7 @@ import com.intellij.openapi.util.WriteExternalException;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vcs.VcsConfiguration;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.vssSupport.Configuration.VssConfiguration;
 import org.jdom.Element;
 import org.jetbrains.annotations.NonNls;
 
