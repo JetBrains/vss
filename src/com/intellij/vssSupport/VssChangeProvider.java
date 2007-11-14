@@ -400,7 +400,7 @@ public class VssChangeProvider implements ChangeProvider
     for( Iterator<String> it = filesChanged.iterator(); it.hasNext(); )
     {
       String fileName = it.next();
-      if( host.isNewOverRenamed( fileName ) )
+      if( host.isWasRenamed( fileName ) )
       {
         it.remove();
         filesNew.add( fileName );
