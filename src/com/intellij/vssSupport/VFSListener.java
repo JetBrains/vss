@@ -84,7 +84,15 @@ public class VFSListener extends VirtualFileAdapter implements CommandListener
   public void beforeFileDeletion( VirtualFileEvent event )
   {
     if( !isIgnoredEvent( event ) )
-      performDeleteFile( event.getFile() );
+    {
+      //  When user performs undo for "Extract Interface or Superclass" refactoring
+      //  with the option "Rename original class" set, the newly created file is
+      //  deleted. Since it is always an unversioned file, we should remove it
+      //  silently without confirmation. Otherwise its status (deleted) will conflict
+      //  with the status of the original file which is renamed back to the current name.
+      if( !host.isWasRenamed( event.getFile().getPath() ) )
+        performDeleteFile( event.getFile() );
+    }
   }
 
   private void performDeleteFile( VirtualFile file )
