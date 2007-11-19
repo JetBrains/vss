@@ -1,12 +1,14 @@
 package com.intellij.vssSupport.commands;
 
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.vfs.CharsetToolkit;
 import com.intellij.vssSupport.VssBundle;
 import org.jetbrains.annotations.NonNls;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -51,7 +53,14 @@ public final class VssStreamReader implements Runnable
   public String getReadString()
   {
     if( myOutput == null )
-      myOutput = StringUtil.convertLineSeparators( myByteContents.toString() );
+    {
+      try {
+        myOutput = StringUtil.convertLineSeparators( myByteContents.toString( CharsetToolkit.getIDEOptionsCharset().name() ) );
+      }
+      catch( UnsupportedEncodingException e )
+      {
+      }
+    }
 
     return myOutput;
   }
