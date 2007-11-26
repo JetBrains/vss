@@ -40,7 +40,6 @@ import com.intellij.vssSupport.Checkin.VssRollbackEnvironment;
 import com.intellij.vssSupport.Configuration.MapItem;
 import com.intellij.vssSupport.Configuration.VssConfigurable;
 import com.intellij.vssSupport.Configuration.VssConfiguration;
-import com.intellij.vssSupport.Configuration.VssRootSettings;
 import com.intellij.vssSupport.commands.*;
 import com.intellij.vssSupport.ui.VssRootConfigurable;
 import org.jdom.Element;
