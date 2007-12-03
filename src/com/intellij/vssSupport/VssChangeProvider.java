@@ -370,7 +370,7 @@ public class VssChangeProvider implements ChangeProvider
     String fileParentNorm = VssUtil.getCanonicalLocalPath( fileParent );
     String refParentName = discoverOldName( host, fileParentNorm );
 
-    if( VcsUtil.isPathUnderProject( project, fileParent ) && !processedFolders.contains( fileParent ) )
+    if( VcsUtil.isFileForVcs(fileParent, project, VssVcs.getInstance(project)) && !processedFolders.contains( fileParent ) )
     {
       processedFolders.add( fileParent );
 
@@ -687,7 +687,7 @@ public class VssChangeProvider implements ChangeProvider
   private boolean isFileVssProcessable( VirtualFile file )
   {
     return (file != null) && file.isWritable() && !file.isDirectory() &&
-           VcsUtil.isPathUnderProject( project, file.getPath() );
+           VcsUtil.isFileForVcs( file.getPath(), project, VssVcs.getInstance(project) );
   }
 
   /**

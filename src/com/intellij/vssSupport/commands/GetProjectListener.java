@@ -8,6 +8,7 @@ import com.intellij.vcsUtil.VcsUtil;
 import com.intellij.vssSupport.VssBundle;
 import com.intellij.vssSupport.VssOutputCollector;
 import com.intellij.vssSupport.VssUtil;
+import com.intellij.vssSupport.VssVcs;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
 
@@ -153,7 +154,7 @@ public class GetProjectListener extends VssOutputCollector
       else
       {
         fullPath = constructLocalPath( line, localProjectPath );
-        if( !VcsUtil.isPathUnderProject( project, fullPath ))
+        if( !VcsUtil.isFileForVcs( fullPath, project, VssVcs.getInstance(project)))
           filesAdded.add( fullPath );
       }
     }

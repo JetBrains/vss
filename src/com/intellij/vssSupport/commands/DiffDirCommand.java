@@ -6,6 +6,7 @@ import com.intellij.vcsUtil.VcsUtil;
 import com.intellij.vssSupport.DiffDirParser;
 import com.intellij.vssSupport.VssOutputCollector;
 import com.intellij.vssSupport.VssUtil;
+import com.intellij.vssSupport.VssVcs;
 import org.jetbrains.annotations.NonNls;
 
 import java.util.HashSet;
@@ -89,7 +90,7 @@ public class DiffDirCommand extends VssCommandAbstract
         DiffDirParser.parse( out );
         for( String item : DiffDirParser.filesNew )
         {
-          if( VcsUtil.isPathUnderProject( myProject, item ))
+          if( VcsUtil.isFileForVcs(item, myProject, VssVcs.getInstance(myProject)))
             filesNew.add( VssUtil.getCanonicalLocalPath( item ) );
         }
         for( String item : DiffDirParser.filesDeleted )
