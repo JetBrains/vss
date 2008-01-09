@@ -224,7 +224,9 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
   {
     for( VcsDirectoryMapping mapping : mappings )
     {
-      if( mapping.getDirectory().equalsIgnoreCase( path ) )
+      //  remove possible backslash in settings.
+      final String normalPath = VssUtil.normalizeDirPath( mapping.getDirectory() );
+      if( normalPath.equalsIgnoreCase( path ) )
         return true;
     }
     return false;

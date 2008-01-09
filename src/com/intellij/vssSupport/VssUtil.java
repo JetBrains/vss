@@ -35,11 +35,24 @@ public class VssUtil extends VcsUtil
 
   public static String getCanonicalVssPath(String vssPath)
   {
-    vssPath = VssUtil.chopTrailingChars(vssPath.trim().replace('\\', '/').toLowerCase(), ourCharsToBeChopped);
+    vssPath = chopTrailingChars( vssPath.trim().replace('\\', '/').toLowerCase(), ourCharsToBeChopped );
     if( "$".equals( vssPath ) )
       vssPath = "$/";
-
     return vssPath;
+  }
+
+  /**
+   * If we know EXACTLY that this path belongs to the folder, trim the possible
+   * slash/backslash from the end due to the requirements of other parts of the
+   * plugin's logic.
+   * NB: most urgent usage is in normalizing VcsContentRoot directory paths. 
+   */
+  public static String normalizeDirPath( final String directory )
+  {
+    if( directory.endsWith( "/" ) || directory.endsWith( "\\" ) )
+      return directory.substring( 0, directory.length() - 2 );
+    else
+      return directory; 
   }
 
   /**
@@ -141,7 +154,8 @@ public class VssUtil extends VcsUtil
     if( rootMapping == null || rootMapping.getRootSettings() == null )
       return null;
 
-    String pathDifference = localPath.getPath().substring( rootMapping.getDirectory().length() ).replace('\\', '/');
+    final String normalPath = normalizeDirPath( rootMapping.getDirectory() );
+    String pathDifference = localPath.getPath().substring( normalPath.length() ).replace('\\', '/');
     String rootVssPath = ((VssRootSettings)rootMapping.getRootSettings()).getVssProject();
     StringBuffer vssPath = new StringBuffer( rootVssPath );
     if( !StringUtil.endsWithChar( rootVssPath, '/' ) )
