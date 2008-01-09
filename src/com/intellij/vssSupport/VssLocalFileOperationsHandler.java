@@ -45,11 +45,14 @@ public class VssLocalFileOperationsHandler implements LocalFileOperationsHandler
       ChangeListManager mgr = ChangeListManager.getInstance( project );
       for( Change change : mgr.getChangesIn( file ) )
       {
-        if( change.getFileStatus() == FileStatus.ADDED ||
-            change.getFileStatus() == FileStatus.UNKNOWN )
+        if( change.getAfterRevision() != null )
         {
-          needToAsk = true;
-          break;
+          //  Exclude folder itself from the iteration.
+          if( !isFolderItself( change, file ) && isStatusSuitable( change ) )
+          {
+            needToAsk = true;
+            break;
+          }
         }
       }
 
@@ -69,4 +72,15 @@ public class VssLocalFileOperationsHandler implements LocalFileOperationsHandler
 
   public boolean createFile(VirtualFile dir, String name) throws IOException  { return false; }
   public boolean createDirectory(VirtualFile dir, String name) throws IOException { return false; }
+
+  private static boolean isFolderItself( Change change, VirtualFile folder )
+  {
+    final String filePath = change.getAfterRevision().getFile().getVirtualFile().getPath();
+    return filePath.equalsIgnoreCase( folder.getPath() );
+  }
+
+  private static boolean isStatusSuitable( Change change )
+  {
+    return (change.getFileStatus() == FileStatus.ADDED) || (change.getFileStatus() == FileStatus.UNKNOWN);
+  }
 }
