@@ -1,7 +1,7 @@
 package com.intellij.vssSupport.commands;
 
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.CharsetToolkit;
+import com.intellij.openapi.vfs.encoding.EncodingManager;
 import com.intellij.vssSupport.VssBundle;
 import org.jetbrains.annotations.NonNls;
 
@@ -55,7 +55,7 @@ public final class VssStreamReader implements Runnable
     if( myOutput == null )
     {
       try {
-        myOutput = StringUtil.convertLineSeparators( myByteContents.toString( CharsetToolkit.getIDEOptionsCharset().name() ) );
+        myOutput = StringUtil.convertLineSeparators( myByteContents.toString( EncodingManager.getInstance().getDefaultCharset().name() ) );
       }
       catch( UnsupportedEncodingException e )
       {
