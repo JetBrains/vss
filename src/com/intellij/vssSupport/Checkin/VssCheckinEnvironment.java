@@ -39,10 +39,6 @@ public class VssCheckinEnvironment implements CheckinEnvironment
 
   public String getCheckinOperationName()  {  return VssBundle.message("action.name.checkin");  }
 
-  public String prepareCheckinMessage( String text ) {  return text;  }
-
-  public boolean showCheckinDialogInAnyCase()   {  return false;  }
-
   public String getHelpId() {  return null;   }
 
   public RefreshableOnComponent createAdditionalOptionsPanel( CheckinProjectPanel panel )
@@ -341,6 +337,10 @@ public class VssCheckinEnvironment implements CheckinEnvironment
   public List<VcsException> scheduleUnversionedFilesForAddition( List<VirtualFile> files )
   {
     return scheduleUnversionedFilesForAddition( files.toArray( new VirtualFile[ files.size() ] ) );
+  }
+
+  public boolean keepChangeListAfterCommit(ChangeList changeList) {
+    return false;
   }
 
   public List<VcsException> scheduleUnversionedFilesForAddition( VirtualFile[] files )
