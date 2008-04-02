@@ -154,8 +154,9 @@ public class VssUtil extends VcsUtil
     if( rootMapping == null || rootMapping.getRootSettings() == null )
       return null;
 
-    final String normalPath = normalizeDirPath( rootMapping.getDirectory() );
-    String pathDifference = localPath.getPath().substring( normalPath.length() ).replace('\\', '/');
+    VirtualFile rootFile = ProjectLevelVcsManager.getInstance( project ).getVcsRootFor( localPath );
+    String rootPath = rootFile.getPath();
+    String pathDifference = localPath.getPath().substring( rootPath.length() ).replace('\\', '/');
     String rootVssPath = ((VssRootSettings)rootMapping.getRootSettings()).getVssProject();
     StringBuffer vssPath = new StringBuffer( rootVssPath );
     if( !StringUtil.endsWithChar( rootVssPath, '/' ) )
