@@ -175,40 +175,22 @@ public class CheckinFileCommand extends VssCommandAbstract
 
     private boolean redoAutomaticMerge()
     {
-      final boolean[] status = new boolean[ 1 ];
-      status[ 0 ] = showDialog( myProject, VssBundle.message("confirmation.text.redo.the.automatic.merge"),
+      return showDialog( myProject, VssBundle.message("confirmation.text.redo.the.automatic.merge"),
                                 VssBundle.message("confirmation.title.checkin"), Messages.getQuestionIcon() );
-      /*
-      else
-      {
-        Runnable runnable = new Runnable() {
-          public void run() { status[ 0 ] = showDialog( myProject, VssBundle.message("confirmation.text.redo.the.automatic.merge"),
-                                                        VssBundle.message("confirmation.title.checkin"), Messages.getQuestionIcon() ); } };
-        ApplicationManager.getApplication().invokeAndWait( runnable, ModalityState.defaultModalityState() );
-      }
-      */
-      return status[ 0 ];
     }
 
     private boolean fileHasBeenProperlyMerged()
     {
-      final boolean[] status = new boolean[ 1 ];
-      status[ 0 ] = showDialog( myProject, VssBundle.message("request.text.properly.merged", myFile.getPresentableUrl()),
+      return showDialog( myProject, VssBundle.message("request.text.properly.merged", myFile.getPresentableUrl()),
                                 VssBundle.message("confirmation.title.checkin"), Messages.getQuestionIcon() );
-      /*
-      {
-        Runnable runnable = new Runnable() {
-          public void run() { status[ 0 ] = showDialog( myProject, VssBundle.message("request.text.properly.merged", getPresentableUrl()),
-                                  VssBundle.message("confirmation.title.checkin"), Messages.getQuestionIcon() ); } };
-        ApplicationManager.getApplication().invokeAndWait( runnable, ModalityState.defaultModalityState() );
-      }
-      */
-      return status[ 0 ];
     }
     
-    private boolean showDialog( Project project, String message, String title, Icon icon )
+    private boolean showDialog( final Project project, final String message, final String title, final Icon icon )
     {
-      return Messages.showYesNoDialog( project, message, title, icon ) == 0;
+      final int[] status = new int[ 1 ];
+      Runnable runnable = new Runnable() { public void run() { status[ 0 ] = Messages.showYesNoDialog( project, message, title, icon ); } };
+      ApplicationManager.getApplication().invokeAndWait( runnable, ModalityState.defaultModalityState() );
+      return status[ 0 ] == 0;
     }
   }
 }
