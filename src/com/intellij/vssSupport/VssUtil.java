@@ -68,8 +68,14 @@ public class VssUtil extends VcsUtil
 
     String vssProject = ((VssRootSettings)nearestItem.getRootSettings()).getVssProject();
     String pathDifference = vssPath.substring( vssProject.length() );
-    StringBuffer sb = new StringBuffer( nearestItem.getDirectory() );
-    if( !StringUtil.endsWithChar( nearestItem.getDirectory(), '/'))
+    String baseDir = nearestItem.getDirectory();
+    if( StringUtil.isEmpty( baseDir ) )
+    {
+      baseDir = project.getBaseDir().getPath();
+    }
+
+    StringBuffer sb = new StringBuffer( baseDir );
+    if( !StringUtil.endsWithChar( baseDir, '/'))
       sb.append("/");
 
     if( StringUtil.startsWithChar( pathDifference, '/') )
