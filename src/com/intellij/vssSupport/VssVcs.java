@@ -467,6 +467,11 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
     return new VcsRevisionNumber.Int( revision );
   }
 
+  @Override
+  public String getRevisionPattern() {
+    return ourIntegerPattern;
+  }
+
   //
   // JDOMExternalizable methods
   //
