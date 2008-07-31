@@ -1,13 +1,12 @@
-<!DOCTYPE idea-plugin PUBLIC "Plugin/DTD" "http://plugins.intellij.net/plugin.dtd">
 <idea-plugin version="2">
   <name>Visual SourceSafe Integration</name>
   <id>SourceSafe</id>
   <version>2.0</version>
   <vendor logo="/general/ijLogo.png">JetBrains</vendor>
-  <idea-version since-build="3000"/>
+  <category>VCS Integration</category>
   <resource-bundle xmlns="">com.intellij.vssSupport.VssBundle</resource-bundle>
 
-  <extensions xmlns="com.intellij">
+  <extensions defaultExtensionNs="com.intellij">
     <errorHandler implementation="com.intellij.diagnostic.ITNReporter"/>
   </extensions>
 
