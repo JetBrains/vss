@@ -10,11 +10,9 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.AbstractVcsHelper;
 import com.intellij.openapi.vcs.FilePath;
 import com.intellij.openapi.vcs.VcsException;
-import com.intellij.openapi.vcs.update.FileGroup;
-import com.intellij.openapi.vcs.update.UpdateEnvironment;
-import com.intellij.openapi.vcs.update.UpdateSession;
-import com.intellij.openapi.vcs.update.UpdatedFiles;
+import com.intellij.openapi.vcs.update.*;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.util.Ref;
 import com.intellij.vssSupport.commands.GetFileCommand;
 import com.intellij.vssSupport.commands.SynchronizeCommand;
 import com.intellij.vssSupport.ui.GetDirDialog;
@@ -45,8 +43,7 @@ public class VssUpdateEnvironment implements UpdateEnvironment
   public void fillGroups( UpdatedFiles groups ){}
 
   @NotNull
-  public UpdateSession updateDirectories( @NotNull final FilePath[] roots, UpdatedFiles updatedFiles,
-                                          ProgressIndicator progress ) throws ProcessCanceledException
+  public UpdateSession updateDirectories(@NotNull final FilePath[] roots, UpdatedFiles updatedFiles, ProgressIndicator progress, @NotNull final Ref<SequentialUpdatesContext> context) throws ProcessCanceledException
   {
     final ArrayList<VcsException> errors = new ArrayList<VcsException>();
 
