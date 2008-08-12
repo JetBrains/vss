@@ -135,4 +135,8 @@ public class VssUpdateEnvironment implements UpdateEnvironment
   {
     return null;
   }
+
+  public boolean validateOptions(final Collection<FilePath> roots) {
+    return true;
+  }
 }
