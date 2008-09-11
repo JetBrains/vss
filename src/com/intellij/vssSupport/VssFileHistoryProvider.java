@@ -100,7 +100,7 @@ public class VssFileHistoryProvider implements VcsHistoryProvider
   @Nullable
   public HistoryAsTreeProvider getTreeHistoryProvider() {  return null;   }
 
-  public ColumnInfo[] getRevisionColumns() {  return new ColumnInfo[] { DATE, ACTION, LABEL };   }
+  public ColumnInfo[] getRevisionColumns(final VcsHistorySession session) {  return new ColumnInfo[] { DATE, ACTION, LABEL };   }
 
   public AnAction[] getAdditionalActions(final FileHistoryPanel panel) {  return new AnAction[0];   }
 
