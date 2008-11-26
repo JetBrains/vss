@@ -5,6 +5,7 @@
   <vendor logo="/general/ijLogo.png">JetBrains</vendor>
   <category>VCS Integration</category>
   <resource-bundle xmlns="">com.intellij.vssSupport.VssBundle</resource-bundle>
+  <depends>com.intellij.modules.vcs</depends>
 
   <extensions defaultExtensionNs="com.intellij">
     <errorHandler implementation="com.intellij.diagnostic.ITNReporter"/>

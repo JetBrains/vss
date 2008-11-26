@@ -2,7 +2,7 @@ package com.intellij.vssSupport.commands;
 
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
-import com.intellij.execution.process.DefaultJavaProcessHandler;
+import com.intellij.execution.process.OSProcessHandler;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -143,7 +143,7 @@ public class VSSExecUtil
     commandLine.setEnvParams( envParams );
     commandLine.setExePath( exePath );
 
-    final DefaultJavaProcessHandler result = new DefaultJavaProcessHandler(commandLine);
+    final OSProcessHandler result = new OSProcessHandler(commandLine.createProcess(), commandLine.getCommandLineString());
     result.startNotify();
   }
 
