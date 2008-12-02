@@ -8,10 +8,12 @@ import com.intellij.openapi.vcs.changes.Change;
 import com.intellij.openapi.vcs.changes.ChangeListManager;
 import com.intellij.openapi.vcs.changes.VcsDirtyScopeManager;
 import com.intellij.openapi.vcs.rollback.RollbackEnvironment;
+import com.intellij.openapi.vcs.rollback.RollbackProgressListener;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.vcsUtil.VcsUtil;
 import com.intellij.vssSupport.VssUtil;
 import com.intellij.vssSupport.VssVcs;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -38,32 +40,30 @@ public class VssRollbackEnvironment implements RollbackEnvironment
 
   public String getRollbackOperationName() {  return VcsBundle.message("changes.action.rollback.text");  }
 
-  public List<VcsException> rollbackChanges( List<Change> changes )
+  public void rollbackChanges(List<Change> changes, final List<VcsException> errors, @NotNull final RollbackProgressListener listener)
   {
-    List<VcsException> errors = new ArrayList<VcsException>();
     List<String> renamedFolders = new ArrayList<String>();
     HashSet<FilePath> processedFiles = new HashSet<FilePath>();
 
-    rollbackRenamedFolders( changes, processedFiles, renamedFolders );
-    rollbackNew( changes, processedFiles );
-    rollbackDeleted( changes, processedFiles, errors );
-    rollbackChanged( changes, processedFiles, errors );
+    rollbackRenamedFolders( changes, processedFiles, renamedFolders, listener);
+    rollbackNew( changes, processedFiles, listener);
+    rollbackDeleted( changes, processedFiles, errors, listener);
+    rollbackChanged( changes, processedFiles, errors, listener);
 
     for( String path : renamedFolders )
       host.renamedFolders.remove( VcsUtil.getCanonicalLocalPath( path ) );
 
     VcsUtil.refreshFiles( project, processedFiles );
-
-    return errors;
   }
 
-  private static void rollbackRenamedFolders( List<Change> changes, HashSet<FilePath> processedFiles,
-                                              List<String> renamedFolders )
+  private void rollbackRenamedFolders( List<Change> changes, HashSet<FilePath> processedFiles,
+                                              List<String> renamedFolders, @NotNull final RollbackProgressListener listener)
   {
     for( Change change : changes )
     {
       if( VcsUtil.isRenameChange( change ) && VcsUtil.isChangeForFolder( change ) )
       {
+        listener.accept(change);
         //  The only thing which we can perform on this step is physical
         //  rename of the folder back to its former name, since we can't
         //  keep track of what consequent changes were done (due to Java
@@ -84,7 +84,7 @@ public class VssRollbackEnvironment implements RollbackEnvironment
     }
   }
 
-  private void rollbackNew( List<Change> changes, HashSet<FilePath> processedFiles )
+  private void rollbackNew( List<Change> changes, HashSet<FilePath> processedFiles, @NotNull final RollbackProgressListener listener)
   {
     HashSet<FilePath> newFileAndFolders = new HashSet<FilePath>();
     collectNewChangesBack( changes, newFileAndFolders, processedFiles );
@@ -92,6 +92,7 @@ public class VssRollbackEnvironment implements RollbackEnvironment
     VcsDirtyScopeManager mgr = VcsDirtyScopeManager.getInstance(project);
     for( FilePath folder : newFileAndFolders )
     {
+      listener.accept(folder);
       host.deleteNewFile( folder.getVirtualFile() );
       mgr.fileDirty( folder );
     }
@@ -140,12 +141,13 @@ public class VssRollbackEnvironment implements RollbackEnvironment
     }
   }
 
-  private void rollbackDeleted( List<Change> changes, HashSet<FilePath> processedFiles, List<VcsException> errors )
+  private void rollbackDeleted( List<Change> changes, HashSet<FilePath> processedFiles, List<VcsException> errors, @NotNull final RollbackProgressListener listener)
   {
     for( Change change : changes )
     {
       if( VcsUtil.isChangeForDeleted( change ))
       {
+        listener.accept(change);
         FilePath filePath = change.getBeforeRevision().getFile();
         rollbackMissingFileDeletion( filePath, errors );
         processedFiles.add( filePath );
@@ -153,7 +155,7 @@ public class VssRollbackEnvironment implements RollbackEnvironment
     }
   }
 
-  private void rollbackChanged( List<Change> changes, HashSet<FilePath> processedFiles, List<VcsException> errors )
+  private void rollbackChanged( List<Change> changes, HashSet<FilePath> processedFiles, List<VcsException> errors, @NotNull final RollbackProgressListener listener)
   {
     ArrayList<String> rollbacked = new ArrayList<String>();
     for( Change change : changes )
@@ -164,6 +166,7 @@ public class VssRollbackEnvironment implements RollbackEnvironment
       {
         FilePath filePath = change.getAfterRevision().getFile();
         String path = filePath.getPath();
+        listener.accept(change);
 
         if( VcsUtil.isRenameChange( change ) )
         {
