@@ -244,15 +244,14 @@ public class VssRollbackEnvironment implements RollbackEnvironment
     return errors;
   }
 
-  public List<VcsException> rollbackMissingFileDeletion( List<FilePath> paths )
+  public void rollbackMissingFileDeletion(List<FilePath> paths, final List<VcsException> errors,
+                                                        final RollbackProgressListener listener)
   {
-    List<VcsException> errors = new ArrayList<VcsException>();
-
     for( FilePath path : paths )
     {
+      listener.accept(path);
       rollbackMissingFileDeletion( path, errors );
     }
-    return errors;
   }
 
   private void rollbackMissingFileDeletion( FilePath filePath, List<VcsException> errors )
@@ -279,17 +278,17 @@ public class VssRollbackEnvironment implements RollbackEnvironment
     mgr.fileDirty( filePath );
   }
 
-  public List<VcsException> rollbackModifiedWithoutCheckout( final List<VirtualFile> files )
+  public void rollbackModifiedWithoutCheckout(final List<VirtualFile> files, final List<VcsException> errors,
+                                                            final RollbackProgressListener listener)
   {
     VcsDirtyScopeManager mgr = VcsDirtyScopeManager.getInstance(project);
-    List<VcsException> errors = new ArrayList<VcsException>();
     for( VirtualFile file : files )
     {
+      listener.accept(file);
       host.getLatestVersion( file.getPath(), false, errors );
       file.refresh( true, file.isDirectory() );
       mgr.fileDirty( file );
     }
-    return errors;
   }
 
   public void rollbackIfUnchanged(VirtualFile file) {
