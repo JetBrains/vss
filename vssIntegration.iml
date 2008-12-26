@@ -4,6 +4,9 @@
     <option name="myJarPlugin" value="false" />
     <option name="myPluginXMLPath" value="$MODULE_DIR$" />
   </component>
+  <component name="Flex.Build.Configuration">
+    <option name="DO_BUILD" value="true" />
+  </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
