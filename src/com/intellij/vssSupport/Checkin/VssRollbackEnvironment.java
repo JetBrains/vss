@@ -45,6 +45,8 @@ public class VssRollbackEnvironment implements RollbackEnvironment
     List<String> renamedFolders = new ArrayList<String>();
     HashSet<FilePath> processedFiles = new HashSet<FilePath>();
 
+    listener.determinate();
+    
     rollbackRenamedFolders( changes, processedFiles, renamedFolders, listener);
     rollbackNew( changes, processedFiles, listener);
     rollbackDeleted( changes, processedFiles, errors, listener);
