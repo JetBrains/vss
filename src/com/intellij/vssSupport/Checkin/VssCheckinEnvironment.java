@@ -160,6 +160,10 @@ public class VssCheckinEnvironment implements CheckinEnvironment
     return errors;
   }
 
+  public List<VcsException> commit(List<Change> changes, String preparedComment, Object parameters) {
+    return commit(changes, preparedComment);
+  }
+
   private boolean adjustChangesWithRenamedParentFolders( List<Change> changes )
   {
     Set<VirtualFile> renamedFolders = new HashSet<VirtualFile>();
