@@ -441,12 +441,12 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
   public boolean isWasRenamed( String path )    {  return renamedFiles.containsValue( path );  }
   public boolean isNewOverRenamed( String path ){  return containsNew( path ) && isWasRenamed( path );  }
   
-  public ThreeStateBoolean isVersionedDirectory( VirtualFile dir )
+  public boolean isVersionedDirectory( VirtualFile dir )
   {
     final VirtualFile versionFile2003 = dir.findChild( VSSVER_FILE_SIG );
     final VirtualFile versionFile2005 = dir.findChild( VSSVER2_FILE_SIG );
 
-    return ThreeStateBoolean.getInstance((versionFile2003 != null && !versionFile2003.isDirectory()) ||
+    return ((versionFile2003 != null && !versionFile2003.isDirectory()) ||
            (versionFile2005 != null && !versionFile2005.isDirectory()));
   }
   
