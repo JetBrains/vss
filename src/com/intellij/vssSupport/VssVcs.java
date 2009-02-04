@@ -13,6 +13,7 @@ import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.UnnamedConfigurable;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.startup.StartupManager;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.JDOMExternalizable;
 import com.intellij.openapi.util.Key;
@@ -162,7 +163,11 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
       {  return new VssCheckinHandler( VssVcs.getInstance( myProject ), panel );  }
     } );
 
-    addIgnoredFiles();
+    StartupManager.getInstance(myProject).registerPostStartupActivity(new Runnable() {
+      public void run() {
+        addIgnoredFiles();
+      }
+    });
   }
 
   public void projectClosed() {}
