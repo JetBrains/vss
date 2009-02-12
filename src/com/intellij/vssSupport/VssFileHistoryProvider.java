@@ -31,6 +31,7 @@ import com.intellij.vssSupport.commands.HistoryParser;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -104,7 +105,7 @@ public class VssFileHistoryProvider implements VcsHistoryProvider
     return false;
   }
 
-  public ColumnInfo[] getRevisionColumns(final VcsHistorySession session) {  return new ColumnInfo[] { DATE, ACTION, LABEL };   }
+  public VcsDependentHistoryComponents getUICustomization(final VcsHistorySession session, JComponent forShortcutRegistration) {  return VcsDependentHistoryComponents.createOnlyColumns(new ColumnInfo[] { DATE, ACTION, LABEL });   }
 
   public AnAction[] getAdditionalActions(final FileHistoryPanel panel) {  return new AnAction[0];   }
 
