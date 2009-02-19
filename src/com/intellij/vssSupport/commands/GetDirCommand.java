@@ -18,7 +18,7 @@ import java.util.List;
 
 public class GetDirCommand extends VssCommandAbstract
 {
-  private VirtualFile myDir;
+  private final VirtualFile myDir;
 
   public GetDirCommand( Project project, VirtualFile dir, List<VcsException> errors )
   {

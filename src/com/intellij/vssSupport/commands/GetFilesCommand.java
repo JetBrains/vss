@@ -21,13 +21,13 @@ import java.util.List;
  */
 public class GetFilesCommand extends VssCommandAbstract
 {
-  private VirtualFile[] myFiles;
+  private final VirtualFile[] myFiles;
   private GetOptions myBaseOptions;
 
   /**
    * List of <code>java.io.File</code> objects. It doesn't contains directories.
    */
-  private ArrayList<File> myFilesToBeGot;
+  private final ArrayList<File> myFilesToBeGot;
   private boolean myReplaceAllWritable;
   private boolean myDoNotReplaceAllWritable;
 
@@ -134,7 +134,7 @@ public class GetFilesCommand extends VssCommandAbstract
 
   private class GetListener extends VssOutputCollector
   {
-    private int myIdx;
+    private final int myIdx;
     @NonNls private static final String NOT_EXISTING_MESSAGE = "is not an existing";
     @NonNls private static final String DELETED_MESSAGE = "has been deleted";
 

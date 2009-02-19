@@ -22,7 +22,7 @@ public class ConfirmMultipleDialog extends DialogWrapper
   public static final int NO_ALL_EXIT_CODE = 3;
   public static final int CANCEL_OPTION = 4;
 
-  private String myText;
+  private final String myText;
 
   public ConfirmMultipleDialog(String title,String text, Project project){
     super(project, false);
@@ -63,7 +63,7 @@ public class ConfirmMultipleDialog extends DialogWrapper
   }
 
   private class MyAction extends AbstractAction{
-    private int myExitCode;
+    private final int myExitCode;
 
     public MyAction(String text,int exitCode){
       super(text);

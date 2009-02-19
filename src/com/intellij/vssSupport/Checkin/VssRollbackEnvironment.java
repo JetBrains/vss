@@ -29,8 +29,8 @@ public class VssRollbackEnvironment implements RollbackEnvironment
 {
   public static final Key<Boolean> RENAME_ROLLBACK = new Key<Boolean>( "RENAME_ROLLBACK" );
 
-  private Project project;
-  private VssVcs host;
+  private final Project project;
+  private final VssVcs host;
 
   public VssRollbackEnvironment( Project project, VssVcs host )
   {

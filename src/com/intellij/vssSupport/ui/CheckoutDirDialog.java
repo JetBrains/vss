@@ -15,7 +15,7 @@ import java.awt.*;
 
 public class CheckoutDirDialog extends OptionsDialog
 {
-  private CheckoutOptions options;
+  private final CheckoutOptions options;
 
   // UI controls.
   private JTextArea myTextAreaComment;

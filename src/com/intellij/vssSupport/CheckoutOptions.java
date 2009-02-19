@@ -25,7 +25,7 @@ public class CheckoutOptions implements JDOMExternalizable, Cloneable
 {
   @NonNls public static final String TAG="CheckoutOptions";
 
-  private VssConfiguration myConfig;
+  private final VssConfiguration myConfig;
   /**
    * -C
    */

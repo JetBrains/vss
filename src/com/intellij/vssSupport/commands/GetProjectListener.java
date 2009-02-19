@@ -34,8 +34,8 @@ public class GetProjectListener extends VssOutputCollector
   @NonNls private static final String FILE_DESTROYED_PROJECT = "has been destroyed, ";
   @NonNls private static final String CONTINUE_ANYWAY_SIG = "Continue anyway?";
 
-  private Project project;
-  private VirtualFile path;
+  private final Project project;
+  private final VirtualFile path;
 
   public ArrayList<String> filesChanged;
   public ArrayList<String> filesAdded;

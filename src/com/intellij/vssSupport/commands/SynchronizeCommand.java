@@ -14,8 +14,8 @@ import java.util.List;
  */
 public class SynchronizeCommand extends VssCommandAbstract
 {
-  private VirtualFile projectRoot;
-  private GetProjectListener listener;
+  private final VirtualFile projectRoot;
+  private final GetProjectListener listener;
 
   /**
    * Creates new <code>SynchronizeCommand</code> instance.

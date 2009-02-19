@@ -22,8 +22,8 @@ public class VssConfigurable extends BaseConfigurable
 {
   private static final Icon ourIcon = IconLoader.getIcon("/general/vss.png");
 
-  private VssConfiguration myConfig;
-  private Project myProject;
+  private final VssConfiguration myConfig;
+  private final Project myProject;
 
   // UI Components.
   // The components are created on demand by first call of getComponent() method.

@@ -28,8 +28,8 @@ public class VssRootConfigurable implements UnnamedConfigurable
 {
   private final static String VSS_PROJECT_PREFIX = "$/";
 
-  private Project project;
-  private VcsDirectoryMapping myMapping;
+  private final Project project;
+  private final VcsDirectoryMapping myMapping;
   private JPanel myPanel;
   private JComboBox myComboBox1;
   private JButton btnTest;

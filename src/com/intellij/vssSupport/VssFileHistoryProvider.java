@@ -51,7 +51,7 @@ public class VssFileHistoryProvider implements VcsHistoryProvider
 
   private static final Logger LOG = Logger.getInstance("#com.intellij.vssSupport.VssFileHistoryProvider");
 
-  private Project project;
+  private final Project project;
 
   private static final ColumnInfo<VcsFileRevision, String> DATE = new ColumnInfo<VcsFileRevision, String>( DATE_COLUMN )
   {
@@ -148,15 +148,15 @@ public class VssFileHistoryProvider implements VcsHistoryProvider
 
   private class VssFileRevision implements VcsFileRevision
   {
-    private int    version;
-    private int    order;
-    private String submitter;
-    private String comment;
-    private String action;
-    private String label;
-    private String vssDate;
+    private final int    version;
+    private final int    order;
+    private final String submitter;
+    private final String comment;
+    private final String action;
+    private final String label;
+    private final String vssDate;
 
-    private FilePath path;
+    private final FilePath path;
     private byte[] content;
 
     public VssFileRevision( HistoryParser.SubmissionData data, FilePath path )

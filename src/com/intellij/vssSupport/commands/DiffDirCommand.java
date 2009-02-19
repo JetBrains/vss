@@ -26,7 +26,7 @@ public class DiffDirCommand extends VssCommandAbstract
   public HashSet<String> filesChanged = new HashSet<String>();
   public boolean         folderNotFound = false;
 
-  private String tmpPath;
+  private final String tmpPath;
 
   public DiffDirCommand( Project project, String subprojectPath )
   {

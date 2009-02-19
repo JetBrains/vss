@@ -33,7 +33,7 @@ public class VssUpdateEnvironment implements UpdateEnvironment
 {
   @NonNls
   private final static String TAB_NAME = "Update Project";
-  private Project project;
+  private final Project project;
 
   public VssUpdateEnvironment( Project project )
   {

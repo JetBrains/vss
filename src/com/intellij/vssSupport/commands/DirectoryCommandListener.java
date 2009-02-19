@@ -30,10 +30,10 @@ public class DirectoryCommandListener extends VssOutputCollector
   @NonNls private static final String NO_ITEMS_FOUND_SIG = "No items found under";
   @NonNls private static final String NOT_EXISTING_MESSAGE = "is not an existing";
 
-  private Project project;
-  private String startFolder;
-  private HashSet<String> filesInProject;
-  private HashSet<String> filesCheckedOut;
+  private final Project project;
+  private final String startFolder;
+  private final HashSet<String> filesInProject;
+  private final HashSet<String> filesCheckedOut;
 
   public DirectoryCommandListener( Project project, String startFolder,
                                    HashSet<String> projectFiles, HashSet<String> checkedOut,

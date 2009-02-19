@@ -20,7 +20,7 @@ import java.util.ArrayList;
  */
 public class VssEditFileProvider implements EditFileProvider
 {
-  private Project project;
+  private final Project project;
 
   public VssEditFileProvider( Project project )
   {

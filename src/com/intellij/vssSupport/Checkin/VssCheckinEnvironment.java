@@ -27,8 +27,8 @@ public class VssCheckinEnvironment implements CheckinEnvironment
 {
   public static final Key<Boolean> RENAME_ROLLBACK = new Key<Boolean>( "RENAME_ROLLBACK" );
 
-  private Project project;
-  private VssVcs host;
+  private final Project project;
+  private final VssVcs host;
   private double fraction;
 
   public VssCheckinEnvironment( Project project, VssVcs host )

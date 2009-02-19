@@ -101,7 +101,7 @@ public class GetFileCommand extends VssCommandAbstract
     /**
      * Index of file to be checked out.
      */
-    private String path;
+    private final String path;
     @NonNls private static final String NOT_EXISTING_MESSAGE = "is not an existing";
     @NonNls private static final String DELETED_MESSAGE = "has been deleted";
 

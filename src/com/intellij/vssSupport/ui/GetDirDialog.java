@@ -17,7 +17,7 @@ public class GetDirDialog extends OptionsDialog
 {
   private final static int SKIP_ORDER = 1;
 
-  private GetOptions options;
+  private final GetOptions options;
 
   // UI controls.
   private JComboBox myComboBoxReplaceWritable;

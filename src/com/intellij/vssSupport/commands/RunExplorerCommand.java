@@ -21,7 +21,7 @@ public class RunExplorerCommand
   @NonNls private static final String _s_OPTION = "-s";
   @NonNls private static final String _p_OPTION = "-p";
   
-  private Project myProject;
+  private final Project myProject;
   private String myVssPath;
 
   /**

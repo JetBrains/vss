@@ -15,7 +15,7 @@ import java.awt.*;
 
 public class GetFilesDialog extends OptionsDialog
 {
-  private GetOptions options;
+  private final GetOptions options;
 
   // UI controls.
   private JCheckBox myCheckBoxMakeWritable;

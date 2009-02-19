@@ -14,7 +14,7 @@ public class RenameFileCommand extends VssCommandAbstract
 {
   @NonNls private static final String RENAME_COMMAND = "Rename";
 
-  private VirtualFile file;
+  private final VirtualFile file;
   private final String myOldName;
 
   public RenameFileCommand( Project project, VirtualFile vFile, String oldName, List<VcsException> errors )

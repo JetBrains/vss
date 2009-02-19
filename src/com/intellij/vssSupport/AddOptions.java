@@ -35,7 +35,7 @@ public class AddOptions implements JDOMExternalizable
   public boolean STORE_ONLY_LATEST_VERSION;
   public boolean CHECK_OUT_IMMEDIATELY;
 
-  private VssConfiguration myConfig;
+  private final VssConfiguration myConfig;
 
   public AddOptions( VssConfiguration config )
   {

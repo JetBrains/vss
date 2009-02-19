@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class UndocheckoutFilesCommand extends VssCommandAbstract
 {
-  private VirtualFile[] myFiles;
+  private final VirtualFile[] myFiles;
   private boolean needToAsk = false;
 
   public UndocheckoutFilesCommand( Project project, VirtualFile[] files, List<VcsException> errors )

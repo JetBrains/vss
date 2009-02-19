@@ -15,7 +15,7 @@ public class CreateFolderCommand extends VssCommandAbstract
 {
   @NonNls private static final String CREATE_COMMAND = "Create";
 
-  private VirtualFile folder;
+  private final VirtualFile folder;
 
   public CreateFolderCommand( Project project, VirtualFile file, List<VcsException> errors )
   {

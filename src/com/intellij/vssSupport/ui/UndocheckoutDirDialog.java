@@ -16,7 +16,7 @@ import java.awt.*;
 
 public class UndocheckoutDirDialog extends OptionsDialog
 {
-  private UndocheckoutOptions options;
+  private final UndocheckoutOptions options;
 
   // UI controls.
   private JComboBox comboReplaceLocalCopy;

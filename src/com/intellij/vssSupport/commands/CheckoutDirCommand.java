@@ -18,7 +18,7 @@ import java.util.List;
 
 public class CheckoutDirCommand extends VssCheckoutAbstractCommand
 {
-  private VirtualFile myDir;
+  private final VirtualFile myDir;
 
   /**
    * @param project project.

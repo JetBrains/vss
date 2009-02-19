@@ -16,9 +16,9 @@ import java.util.List;
  */
 public class LabelCommand extends VssCommandAbstract
 {
-  private VirtualFile[] myFiles;
-  private String myLabel;
-  private String myComment;
+  private final VirtualFile[] myFiles;
+  private final String myLabel;
+  private final String myComment;
   @NonNls private static final String LABEL_COMMAND = "Label";
   @NonNls private static final String INLINE_LABEL_OPTION = "-L";
 //  @NonNls private static final String DONOT_ASK_OPTION = "-I-";
@@ -41,9 +41,10 @@ public class LabelCommand extends VssCommandAbstract
       throw new IllegalArgumentException( "Label parameter must be a valid string" );
     
     myLabel = label;
+    if( comment != null ) {
+      comment = comment.replace( '\n', ' ' );
+    }
     myComment = comment;
-    if( myComment != null )
-      myComment = myComment.replace( '\n', ' ' );
     myFiles = files;
   }
 

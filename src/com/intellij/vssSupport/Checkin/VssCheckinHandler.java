@@ -18,8 +18,8 @@ import java.util.Set;
  * Date: Apr 16, 2007
  */
 public class VssCheckinHandler extends CheckinHandler {
-  private VssVcs host;
-  private CheckinProjectPanel panel;
+  private final VssVcs host;
+  private final CheckinProjectPanel panel;
 
   public VssCheckinHandler( VssVcs host, final CheckinProjectPanel panel )
   {

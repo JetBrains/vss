@@ -50,7 +50,7 @@ public class UndocheckoutOptions implements JDOMExternalizable, Cloneable
    */
   public boolean RECURSIVE;
 
-  private VssConfiguration myConfig;
+  private final VssConfiguration myConfig;
 
   @NonNls private static final String UNDOCHECKOUT_COMMAND = "Undocheckout";
   @NonNls private static final String _I_N_OPTION = "-I-N";

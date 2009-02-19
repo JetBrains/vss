@@ -36,12 +36,12 @@ public class VssConfiguration implements ProjectComponent, JDOMExternalizable
   /*
    * These options are reused by dialogs to "remember" previous option set.
    */
-  private CheckoutOptions myCheckoutOptions;
-  private CheckinOptions myCheckinOptions;
-  private AddOptions myAddOptions;
-  private UndocheckoutOptions myUndocheckoutOptions;
-  private GetOptions myGetOptions;
-  private Project myProject;
+  private final CheckoutOptions myCheckoutOptions;
+  private final CheckinOptions myCheckinOptions;
+  private final AddOptions myAddOptions;
+  private final UndocheckoutOptions myUndocheckoutOptions;
+  private final GetOptions myGetOptions;
+  private final Project myProject;
 
   public VssConfiguration( Project project )
   {

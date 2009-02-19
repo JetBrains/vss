@@ -15,8 +15,8 @@ import java.awt.*;
 
 public class UndocheckoutFilesDialog extends OptionsDialog
 {
-  private VssVcs host;
-  private UndocheckoutOptions options;
+  private final VssVcs host;
+  private final UndocheckoutOptions options;
 
   // UI controls.
   private JCheckBox myCheckBoxMakeWritable;

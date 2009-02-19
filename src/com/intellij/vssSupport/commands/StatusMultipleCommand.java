@@ -28,7 +28,7 @@ public class StatusMultipleCommand extends VssCommandAbstract
 
   private static final int  CMDLINE_MAX_LENGTH = 500;
 
-  private List<String> files;
+  private final List<String> files;
 
   private HashSet<String> deletedFiles;
   private HashSet<String> nonexistingFiles;

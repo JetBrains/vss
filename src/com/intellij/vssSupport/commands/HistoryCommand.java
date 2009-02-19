@@ -20,7 +20,7 @@ public class HistoryCommand extends VssCommandAbstract
   @NonNls private static final String HISTORY_COMMAND = "History";
 
   public ArrayList<HistoryParser.SubmissionData> changes;
-  private String path;
+  private final String path;
 
   public HistoryCommand( Project project, String path, List<VcsException> errors )
   {

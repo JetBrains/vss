@@ -15,7 +15,7 @@ public class DeleteFileOrDirectoryCommand extends VssCommandAbstract
 {
   @NonNls private static final String DELETE_COMMAND = "Delete";
 
-  private String path;
+  private final String path;
 
   public DeleteFileOrDirectoryCommand( Project project, String path, List<VcsException> errors )
   {

@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class CheckoutFileCommand extends VssCheckoutAbstractCommand
 {
-  private VirtualFile myFile;
+  private final VirtualFile myFile;
 
   /**
    * Creates new <code>CheckoutFileCommand</code> instance.

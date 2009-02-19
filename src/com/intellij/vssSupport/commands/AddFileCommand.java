@@ -12,8 +12,8 @@ import java.util.List;
  */
 public class AddFileCommand extends VssCommandAbstract
 {
-  private VirtualFile file;
-  private boolean continueUponPositiveAnswer;
+  private final VirtualFile file;
+  private final boolean continueUponPositiveAnswer;
 
   public AddFileCommand( Project project, VirtualFile vFile, List<VcsException> errors )
   {

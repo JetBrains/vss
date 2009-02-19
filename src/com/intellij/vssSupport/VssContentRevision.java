@@ -32,8 +32,8 @@ public class VssContentRevision implements ContentRevision
   @NonNls private static final String GET_COMMAND = "Get";
   @NonNls private static final String TMP_FILE_NAME = "idea_vss";
 
-  private FilePath  path;
-  private Project   project;
+  private final FilePath  path;
+  private final Project   project;
   private File      myTmpFile;
   private String    myServerContent;
 

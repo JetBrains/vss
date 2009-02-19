@@ -144,7 +144,7 @@ public class CheckinFileCommand extends VssCommandAbstract
 
     private class MergeUserInput implements VSSExecUtil.UserInput
     {
-      private boolean redoMerge;
+      private final boolean redoMerge;
       public MergeUserInput( boolean redoAutoMerge )
       {
         redoMerge = redoAutoMerge; 

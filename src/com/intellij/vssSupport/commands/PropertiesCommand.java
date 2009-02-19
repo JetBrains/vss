@@ -20,8 +20,8 @@ public class PropertiesCommand extends VssCommandAbstract
   @NonNls private static final String PROPS_COMMAND = "Properties";
   @NonNls private static final String NO_RECURSIVE_SWITCH = "-R-";
 
-  private String vssPath;
-  private String tmpPath;
+  private final String vssPath;
+  private final String tmpPath;
   private boolean isValidRepositoryObject;
 
   public PropertiesCommand( Project project, String path, boolean isFolder )

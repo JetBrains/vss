@@ -32,7 +32,7 @@ public class CheckinOptions implements JDOMExternalizable
   @NonNls private static final String _I_Y_OPTION = "-I-Y";
   @NonNls private static final String _I_N_OPTION = "-I-N";
 
-  private VssConfiguration myConfig;
+  private final VssConfiguration myConfig;
   /**
    * -C
    */

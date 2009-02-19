@@ -73,11 +73,11 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
   @NonNls private static final String VSSVER2_FILE_SIG = "vssver2.scc";
 
   private VssCheckinEnvironment checkinEnvironment;
-  private VssRollbackEnvironment rollbackEnvironment;
-  private VssUpdateEnvironment updateEnvironment;
-  private VssChangeProvider  changeProvider;
-  private VssFileHistoryProvider historyProvider;
-  private EditFileProvider  editFileProvider;
+  private final VssRollbackEnvironment rollbackEnvironment;
+  private final VssUpdateEnvironment updateEnvironment;
+  private final VssChangeProvider  changeProvider;
+  private final VssFileHistoryProvider historyProvider;
+  private final EditFileProvider  editFileProvider;
   private VirtualFileListener listener;
   private LocalFileOperationsHandler removalHandler;
 
@@ -87,7 +87,7 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
   private VcsShowConfirmationOption addConfirmation;
   private VcsShowConfirmationOption removeConfirmation;
 
-  private HashSet<String>      savedProjectPaths;
+  private final HashSet<String>      savedProjectPaths;
 
   public  HashSet<String> removedFiles;
   public  HashSet<String> removedFolders;
@@ -95,7 +95,7 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
   public  HashSet<String> deletedFolders;
   public  HashMap<String, String> renamedFiles;
   public  HashMap<String, String> renamedFolders;
-  private HashSet<VirtualFile> newFiles;
+  private final HashSet<VirtualFile> newFiles;
 
   public VssVcs( Project project )
   {

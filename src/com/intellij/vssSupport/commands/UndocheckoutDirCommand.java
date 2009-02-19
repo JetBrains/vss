@@ -23,7 +23,7 @@ import java.util.List;
 
 public class UndocheckoutDirCommand extends VssCommandAbstract
 {
-  private VirtualFile myDir;
+  private final VirtualFile myDir;
 
   /**
    * Creates new <code>UndocheckoutDirCommand</code> instance.

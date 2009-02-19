@@ -40,7 +40,7 @@ public class GetOptions implements JDOMExternalizable, Cloneable
    */
   public static final int OPTION_SKIP    = 2;
 
-  private VssConfiguration myConfig;
+  private final VssConfiguration myConfig;
   /**
    * -GWR
    */

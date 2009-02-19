@@ -39,10 +39,10 @@ public class DirectoryCommand extends VssCommandAbstract
   @NonNls private static final String RECURSIVE_OPTION = "-R";
   @NonNls private static final String EXTENDED_FORMAT_OPTION = "-E";
 
-  private String localRootPath;
-  private String vssProjectPath;
-  private HashSet<String> filesInProject = new HashSet<String>();
-  private HashSet<String> filesCheckedOut = new HashSet<String>();
+  private final String localRootPath;
+  private final String vssProjectPath;
+  private final HashSet<String> filesInProject = new HashSet<String>();
+  private final HashSet<String> filesCheckedOut = new HashSet<String>();
 
   public DirectoryCommand( Project project, String path, List<VcsException> errors )
   {

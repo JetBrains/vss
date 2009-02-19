@@ -34,17 +34,17 @@ public class VssChangeProvider implements ChangeProvider
 
   private static final int PER_FILE_DIFF_MARGIN = 30;
 
-  private Project project;
-  private VssVcs  host;
+  private final Project project;
+  private final VssVcs  host;
   private boolean isBatchUpdate;
   private boolean showInvalidConfigMessage = true;
   private ProgressIndicator progress;
 
-  private HashSet<String> filesNew = new HashSet<String>();
-  private HashSet<String> filesHijacked = new HashSet<String>();
-  private HashSet<String> filesChanged = new HashSet<String>();
-  private HashSet<String> filesObsolete = new HashSet<String>();
-  private HashSet<String> filesIgnored = new HashSet<String>();
+  private final HashSet<String> filesNew = new HashSet<String>();
+  private final HashSet<String> filesHijacked = new HashSet<String>();
+  private final HashSet<String> filesChanged = new HashSet<String>();
+  private final HashSet<String> filesObsolete = new HashSet<String>();
+  private final HashSet<String> filesIgnored = new HashSet<String>();
 
   public VssChangeProvider( Project project, VssVcs host )
   {

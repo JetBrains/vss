@@ -25,7 +25,7 @@ public class DiffFileCommand extends VssCommandAbstract
   @NonNls private static final String _GL_OPTION = "-GL";
   @NonNls private static final String TMP_FILE_NAME = "idea_vss";
 
-  private VirtualFile myFile;
+  private final VirtualFile myFile;
   private File myTmpFile;
 
   public DiffFileCommand( Project project, VirtualFile vFile, List<VcsException> errors )
