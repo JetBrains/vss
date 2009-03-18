@@ -12,17 +12,14 @@
 
     <ComponentRoamingType component="VssVcs" type="DISABLED"/>
     <ComponentRoamingType component="VssConfiguration" type="DISABLED"/>
+
+    <projectService serviceInterface="com.intellij.vssSupport.Configuration.VssConfiguration"
+                    serviceImplementation="com.intellij.vssSupport.Configuration.VssConfiguration"/>
   </extensions>
 
   <project-components>
     <component>
       <implementation-class>com.intellij.vssSupport.VssVcs</implementation-class>
-      <option name="workspace" value="true"/>
-    </component>
-    
-    <component>
-      <interface-class>com.intellij.vssSupport.Configuration.VssConfiguration</interface-class>
-      <implementation-class>com.intellij.vssSupport.Configuration.VssConfiguration</implementation-class>
       <option name="workspace" value="true"/>
     </component>
   </project-components>
