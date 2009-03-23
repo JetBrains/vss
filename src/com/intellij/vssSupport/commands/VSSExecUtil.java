@@ -3,23 +3,23 @@ package com.intellij.vssSupport.commands;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.OSProcessHandler;
-import com.intellij.openapi.application.Application;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.process.InterruptibleProcess;
+import com.intellij.openapi.vcs.impl.ProcessWaiter;
 import com.intellij.vssSupport.VssBundle;
 import com.intellij.vssSupport.VssOutputCollector;
 import org.jetbrains.annotations.NonNls;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author LloiX
@@ -34,6 +34,7 @@ public class VSSExecUtil
 
   private static final int TIMEOUT_LIMIT = 40;
   private static final int TIMEOUT_EXIT_CODE = -1000;
+  private static final int DEFAULT_ERROR_EXIT_CODE = -1;
 
   private VSSExecUtil() {}
 
@@ -62,74 +63,85 @@ public class VSSExecUtil
       progress.setText2( descriptor );
     }
 
-    VssProcess worker = new VssProcess( cmdLine.createProcess(), project );
-
-    final VssStreamReader errReader = new VssStreamReader( worker.getErrorStream() );
-    final VssStreamReader outReader = new VssStreamReader( worker.getInputStream() );
-
-    final Application app = ApplicationManager.getApplication();
-    final Future<?> errorStreamReadingFuture = app.executeOnPooledThread( errReader );
-    final Future<?> outputStreamReadingFuture = app.executeOnPooledThread( outReader );
-
-    final int rc = worker.execute();
-
-    try
-    {
-      errorStreamReadingFuture.get();
-      outputStreamReadingFuture.get();
-
-      worker.getInputStream().close();
-      worker.getErrorStream().close();
-    }
-    catch( java.util.concurrent.ExecutionException e ){
-      listener.onCommandCriticalFail( e.getMessage() );
-    }
-    catch( IOException e ) {
-      listener.onCommandCriticalFail( e.getMessage() );
-    }
-    catch( InterruptedException e ) {
-      listener.onCommandCriticalFail( e.getMessage() );
-    }
-
-    //-------------------------------------------------------------------------
-    //  Process is either exits by itself with some exit code or it is aborted
-    //  by the timeout.
-    //  In the former case we PRE-analyze output and error streams, trying to
-    //  find most general error messages which require for the process to be
-    //  aborted abnormally. In the case of normal exit we notify the
-    //  VssOutputCollector instance with the result output string.
-    //-------------------------------------------------------------------------
-    if( rc == TIMEOUT_EXIT_CODE )
-    {
-      listener.onCommandCriticalFail( VssBundle.message( "message.text.process.shutdown.on.timeout" ) );
-      LOG.info( "++ Command Shutdown detected ++");
-    }
-    else
-    if( outReader.getReason() != null || errReader.getReason() != null )
-    {
-      String reason = (outReader.getReason() != null) ? outReader.getReason() : errReader.getReason();
-
-      LOG.info( "++ Critical error detected: " + reason );
-      listener.setExitCode( worker.getExitCode() );
-      listener.onCommandCriticalFail( reason );
-      listener.everythingFinishedImpl( reason );
-
-      //  Hack: there is no known (so far) way to give the necessary sequence of
-      //  characters to the input of the SS.EXE process to emulate "Enter" on its
-      //  request to reenter the password. Thus we simply notify the parent process
-      //  that it should finish.
-      worker.destroy();
-    }
-    else
-    {
-      String text = errReader.getReadString() + outReader.getReadString();
-
-      listener.setExitCode( worker.getExitCode() );
-      listener.everythingFinishedImpl( text );
-    }
+    runProcessImpl(project, listener, cmdLine);
 
     if( progress != null )
       progress.setText( "" );
+  }
+
+  private static void runProcessImpl(Project project, VssOutputCollector listener, GeneralCommandLine cmdLine) throws ExecutionException {
+    Process process = null;
+    VssProcess worker = null;
+    ProcessWaiter<VssStreamReader> waiter = null;
+    try {
+      int rc = DEFAULT_ERROR_EXIT_CODE;
+      try
+      {
+        process = cmdLine.createProcess();
+        worker = new VssProcess(process, project);
+
+        waiter = new ProcessWaiter<VssStreamReader>() {
+          protected VssStreamReader createStreamListener(InputStream stream) {
+            return new VssStreamReader(stream);
+          }
+        };
+
+        rc = waiter.execute(worker, TIMEOUT_LIMIT * 1000);
+      }
+      catch( java.util.concurrent.ExecutionException e ){
+        listener.onCommandCriticalFail( e.getMessage() );
+      }
+      catch( IOException e ) {
+        listener.onCommandCriticalFail( e.getMessage() );
+      }
+      catch( InterruptedException e ) {
+        listener.onCommandCriticalFail( e.getMessage() );
+      }
+      catch (TimeoutException e) {
+        rc = TIMEOUT_EXIT_CODE;
+      }
+
+      //-------------------------------------------------------------------------
+      //  Process is either exits by itself with some exit code or it is aborted
+      //  by the timeout.
+      //  In the former case we PRE-analyze output and error streams, trying to
+      //  find most general error messages which require for the process to be
+      //  aborted abnormally. In the case of normal exit we notify the
+      //  VssOutputCollector instance with the result output string.
+      //-------------------------------------------------------------------------
+      if( rc == TIMEOUT_EXIT_CODE )
+      {
+        listener.onCommandCriticalFail( VssBundle.message( "message.text.process.shutdown.on.timeout" ) );
+        LOG.info( "++ Command Shutdown detected ++");
+      } else if (waiter.getInStreamListener().getReason() != null || waiter.getErrStreamListener().getReason() != null ) {
+        String reason = (waiter.getInStreamListener().getReason() != null) ?
+                        waiter.getInStreamListener().getReason() : waiter.getErrStreamListener().getReason();
+
+        LOG.info( "++ Critical error detected: " + reason );
+        listener.setExitCode( worker.getExitCode() );
+        listener.onCommandCriticalFail( reason );
+        listener.everythingFinishedImpl( reason );
+
+        //  Hack: there is no known (so far) way to give the necessary sequence of
+        //  characters to the input of the SS.EXE process to emulate "Enter" on its
+        //  request to reenter the password. Thus we simply notify the parent process
+        //  that it should finish.
+        worker.destroy();
+      }
+      else
+      {
+        String text = waiter.getErrStreamListener().getReadString() + waiter.getInStreamListener().getReadString();
+
+        listener.setExitCode( worker.getExitCode() );
+        listener.everythingFinishedImpl( text );
+      }
+    } finally {
+      if (worker != null) {
+        worker.closeProcess();
+      } else if ((worker == null) && (process != null)) {
+        InterruptibleProcess.close(process);
+      }
+    }
   }
 
   public static void runProcessDoNotWaitForTermination( String exePath, String[] programParms,
