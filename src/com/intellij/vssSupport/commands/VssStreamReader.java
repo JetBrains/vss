@@ -1,6 +1,7 @@
 package com.intellij.vssSupport.commands;
 
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.vcs.impl.CancellableRunnable;
 import com.intellij.openapi.vfs.encoding.EncodingManager;
 import com.intellij.vssSupport.VssBundle;
 import org.jetbrains.annotations.NonNls;
@@ -15,7 +16,7 @@ import java.io.UnsupportedEncodingException;
  * User: lloix
  * Date: Mar 26, 2007
  */
-public final class VssStreamReader implements Runnable
+public final class VssStreamReader implements CancellableRunnable
 {
   @NonNls private static final String NO_DATABASE_MESSAGE = "No VSS database";
   @NonNls private static final String NO_ACCESS_RIGHTS_MESSAGE = "do not have access rights";
@@ -76,5 +77,8 @@ public final class VssStreamReader implements Runnable
     else
     if( text.indexOf( NO_ACCESS_RIGHTS_MESSAGE ) != -1 )
       reason = VssBundle.message("exception.text.no.rights.to.perform.operation");
+  }
+
+  public void cancel() {
   }
 }
