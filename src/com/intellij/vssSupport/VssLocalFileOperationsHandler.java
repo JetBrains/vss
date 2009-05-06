@@ -7,6 +7,7 @@ import com.intellij.openapi.vcs.changes.Change;
 import com.intellij.openapi.vcs.changes.ChangeListManager;
 import com.intellij.openapi.vfs.LocalFileOperationsHandler;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.util.ThrowableConsumer;
 import com.intellij.vcsUtil.VcsUtil;
 
 import java.io.File;
@@ -82,5 +83,8 @@ public class VssLocalFileOperationsHandler implements LocalFileOperationsHandler
   private static boolean isStatusSuitable( Change change )
   {
     return (change.getFileStatus() == FileStatus.ADDED) || (change.getFileStatus() == FileStatus.UNKNOWN);
+  }
+
+  public void afterDone(final ThrowableConsumer<LocalFileOperationsHandler, IOException> invoker) {
   }
 }
