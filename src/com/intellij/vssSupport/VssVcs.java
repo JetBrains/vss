@@ -130,7 +130,6 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
   public String getName()           {  return "SourceSafe";  }
   public String getDisplayName()    {  return "SourceSafe";  }
   public String getMenuItemText()   {  return VssBundle.message("menu.item.source.safe.group.name"); }
-  private Project getProject()      {  return myProject;  }
 
   public static VssVcs getInstance( Project project )   {  return project.getComponent(VssVcs.class);  }
 
