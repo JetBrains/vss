@@ -2,10 +2,7 @@ package com.intellij.vssSupport;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.FilePath;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VirtualFileAdapter;
-import com.intellij.openapi.vfs.VirtualFileMoveEvent;
-import com.intellij.openapi.vfs.VirtualFilePropertyEvent;
+import com.intellij.openapi.vfs.*;
 import com.intellij.vcsUtil.VcsUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -66,7 +63,9 @@ public class ContentRevisionFactory
 
     public void beforePropertyChange( VirtualFilePropertyEvent e )
     {
-      String oldName = e.getFile().getParent().getPath() + "/" + e.getOldValue();
+      final VirtualFile parent = e.getFile().getParent();
+      if (parent == null) return;
+      String oldName = parent.getPath() + "/" + e.getOldValue();
       analyzeEvent( oldName );
     }
 
