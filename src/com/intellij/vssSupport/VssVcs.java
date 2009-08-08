@@ -72,6 +72,8 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
 
   @NonNls private static final String VSSVER_FILE_SIG = "vssver.scc";
   @NonNls private static final String VSSVER2_FILE_SIG = "vssver2.scc";
+  private static final String NAME = "SourceSafe";
+  private static final VcsKey ourKey = createKey(NAME);
 
   private VssCheckinEnvironment checkinEnvironment;
   private final VssRollbackEnvironment rollbackEnvironment;
@@ -100,7 +102,7 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
 
   public VssVcs( Project project )
   {
-    super( project );
+    super( project, NAME);
 
     checkinEnvironment = new VssCheckinEnvironment( project, this );
     rollbackEnvironment = new VssRollbackEnvironment( project, this );
@@ -127,8 +129,7 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
 
   @NotNull
   public String getComponentName()  {  return "VssVcs";  }
-  public String getName()           {  return "SourceSafe";  }
-  public String getDisplayName()    {  return "SourceSafe";  }
+  public String getDisplayName()    {  return NAME;  }
   public String getMenuItemText()   {  return VssBundle.message("menu.item.source.safe.group.name"); }
 
   public static VssVcs getInstance( Project project )   {  return project.getComponent(VssVcs.class);  }
@@ -652,5 +653,9 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
       //  Nothing to do, no special treatment is necessary, the file
       //  can be recovered next time.
     }
+  }
+
+  public static VcsKey getKey() {
+    return ourKey;
   }
 }

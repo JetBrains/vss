@@ -429,7 +429,7 @@ public class VssChangeProvider implements ChangeProvider
       if( host.containsNew( fileName ) || host.containsNew( refName ))
       {
         FilePath path = VcsUtil.getFilePath( fileName );
-        builder.processChange( new Change( null, new CurrentContentRevision( path ) ));
+        builder.processChange( new Change( null, new CurrentContentRevision( path ) ), VssVcs.getKey());
       }
       else
       {
@@ -446,7 +446,7 @@ public class VssChangeProvider implements ChangeProvider
       final FilePath fp = VcsUtil.getFilePath( validRefName );
       final FilePath currfp = VcsUtil.getFilePath( fileName );
       VssContentRevision revision = ContentRevisionFactory.getRevision( fp, project );
-      builder.processChange( new Change( revision, new CurrentContentRevision( currfp ), FileStatus.HIJACKED ));
+      builder.processChange( new Change( revision, new CurrentContentRevision( currfp ), FileStatus.HIJACKED ), VssVcs.getKey());
     }
   }
 
@@ -456,7 +456,7 @@ public class VssChangeProvider implements ChangeProvider
     {
       final FilePath fp = VcsUtil.getFilePath( fileName );
       VssContentRevision revision = ContentRevisionFactory.getRevision( fp, project );
-      builder.processChange( new Change( revision, new CurrentContentRevision( fp ), FileStatus.OBSOLETE ));
+      builder.processChange( new Change( revision, new CurrentContentRevision( fp ), FileStatus.OBSOLETE ), VssVcs.getKey());
     }
   }
 
@@ -475,7 +475,7 @@ public class VssChangeProvider implements ChangeProvider
       final FilePath currPath = VcsUtil.getFilePath( fileName );
       
       VssContentRevision revision = ContentRevisionFactory.getRevision( refPath, project );
-      builder.processChange( new Change( revision, new CurrentContentRevision( currPath )));
+      builder.processChange( new Change( revision, new CurrentContentRevision( currPath )), VssVcs.getKey());
     }
 
     for( String folderName : host.renamedFolders.keySet() )
@@ -484,7 +484,7 @@ public class VssChangeProvider implements ChangeProvider
       final FilePath refPath = VcsUtil.getFilePathForDeletedFile( oldFolderName, true );
       final FilePath currPath = VcsUtil.getFilePath( folderName );
 
-      builder.processChange( new Change( new VssContentRevision( refPath, project ), new CurrentContentRevision( currPath )));
+      builder.processChange( new Change( new VssContentRevision( refPath, project ), new CurrentContentRevision( currPath )), VssVcs.getKey());
     }
   }
 
@@ -498,13 +498,13 @@ public class VssChangeProvider implements ChangeProvider
 
     for( String path : host.deletedFolders )
       builder.processChange( new Change( new CurrentContentRevision( VcsUtil.getFilePathForDeletedFile( path, true )),
-                                                                     null, FileStatus.DELETED ));
+                                                                     null, FileStatus.DELETED ), VssVcs.getKey());
 
     for( String path : host.deletedFiles )
     {
       FilePath refPath = VcsUtil.getFilePathForDeletedFile( path, false );
       VssContentRevision revision = ContentRevisionFactory.getRevision( refPath, project );
-      builder.processChange( new Change( revision, null, FileStatus.DELETED ));
+      builder.processChange( new Change( revision, null, FileStatus.DELETED ), VssVcs.getKey());
     }
   }
 
