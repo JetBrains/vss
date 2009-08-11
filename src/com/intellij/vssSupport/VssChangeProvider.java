@@ -67,7 +67,7 @@ public class VssChangeProvider implements ChangeProvider
     if( project.isDisposed() )
       return;
 
-    validateChangesOverTheHost( dirtyScope );
+    //validateChangesOverTheHost( dirtyScope );
     logChangesContent( dirtyScope );
 
     isBatchUpdate = isBatchUpdate( dirtyScope );
@@ -122,6 +122,9 @@ public class VssChangeProvider implements ChangeProvider
   {
     for( FilePath path : dirtyScope.getDirtyFiles() )
     {
+      if (progress != null) {
+        progress.checkCanceled();
+      }
       String fileName = path.getPath();
       VirtualFile file = path.getVirtualFile();
 
@@ -156,6 +159,9 @@ public class VssChangeProvider implements ChangeProvider
     List<String> paths = new ArrayList<String>();
     for( FilePath path : scope.getDirtyFiles() )
     {
+      if (progress != null) {
+        progress.checkCanceled();
+      }
       VirtualFile file = path.getVirtualFile();
       String fileName = VssUtil.getCanonicalLocalPath( path.getPath() );
 
@@ -202,15 +208,19 @@ public class VssChangeProvider implements ChangeProvider
   private void iterateOverProjectPath( FilePath path )
   {
     LOG.info( "-- ChangeProvider - Iterating over project structure starting from scope root: " + path.getPath() );
-    if( progress != null )
+    if( progress != null ) {
       progress.setText( VssBundle.message( "message.statusbar.collect.writables" ) );
+      progress.checkCanceled();
+    }
 
     List<String> writableFiles = new ArrayList<String>();
     collectSuspiciousFiles( path, writableFiles );
     LOG.info( "-- ChangeProvider - Found: " + writableFiles.size() + " writable files." );
 
-    if( progress != null )
+    if( progress != null ) {
       progress.setText( VssBundle.message( "message.statusbar.searching.new" ) );
+      progress.checkCanceled();
+    }
     analyzeWritableFiles( path, writableFiles );
   }
 
@@ -222,6 +232,9 @@ public class VssChangeProvider implements ChangeProvider
       ProjectLevelVcsManager.getInstance(project).iterateVcsRoot( vf, new Processor<FilePath>()
         {
           public boolean process(final FilePath file) {
+            if (progress != null) {
+              progress.checkCanceled();
+            }
             String path = file.getPath();
             VirtualFile vFile = file.getVirtualFile();
             if(vFile != null) {
@@ -265,6 +278,9 @@ public class VssChangeProvider implements ChangeProvider
       final HashSet<String> processedFolders = new HashSet<String>();
       for( String file : newFiles )
       {
+        if (progress != null) {
+          progress.checkCanceled();
+        }
         if( !isPathUnderProcessedFolders( processedFolders, file ))
           analyzeParentFolderStructureForPresence( file, newFolders, processedFolders );
       }
@@ -350,6 +366,9 @@ public class VssChangeProvider implements ChangeProvider
     {
       for( String path : writableFiles )
       {
+        if (progress != null) {
+          progress.checkCanceled();
+        }
         String oldPath = VssChangeProvider.discoverOldName( host, path ).toLowerCase();
         if( !cmd.isInProject( oldPath ) )
           newFiles.add( path );
@@ -401,6 +420,9 @@ public class VssChangeProvider implements ChangeProvider
     // 1.
     for( Iterator<String> it = filesChanged.iterator(); it.hasNext(); )
     {
+      if (progress != null) {
+        progress.checkCanceled();
+      }
       String fileName = it.next();
       if( host.isWasRenamed( fileName ) )
       {
@@ -421,6 +443,9 @@ public class VssChangeProvider implements ChangeProvider
   {
     for( String fileName : filesNew )
     {
+      if (progress != null) {
+        progress.checkCanceled();
+      }
       //  In the case of file rename or parent folder rename we should
       //  refer to the list of new files by the 
       String refName = discoverOldName( host, fileName );
@@ -442,6 +467,9 @@ public class VssChangeProvider implements ChangeProvider
   {
     for( String fileName : filesHijacked )
     {
+      if (progress != null) {
+        progress.checkCanceled();
+      }
       String validRefName = discoverOldName( host, fileName );
       final FilePath fp = VcsUtil.getFilePath( validRefName );
       final FilePath currfp = VcsUtil.getFilePath( fileName );
@@ -454,6 +482,9 @@ public class VssChangeProvider implements ChangeProvider
   {
     for( String fileName : filesObsolete )
     {
+      if (progress != null) {
+        progress.checkCanceled();
+      }
       final FilePath fp = VcsUtil.getFilePath( fileName );
       VssContentRevision revision = ContentRevisionFactory.getRevision( fp, project );
       builder.processChange( new Change( revision, new CurrentContentRevision( fp ), FileStatus.OBSOLETE ), VssVcs.getKey());
@@ -470,6 +501,9 @@ public class VssChangeProvider implements ChangeProvider
   {
     for( String fileName : filesChanged )
     {
+      if (progress != null) {
+        progress.checkCanceled();
+      }
       String validRefName = discoverOldName( host, fileName );
       final FilePath refPath = VcsUtil.getFilePath( validRefName );
       final FilePath currPath = VcsUtil.getFilePath( fileName );
@@ -480,6 +514,9 @@ public class VssChangeProvider implements ChangeProvider
 
     for( String folderName : host.renamedFolders.keySet() )
     {
+      if (progress != null) {
+        progress.checkCanceled();
+      }
       String oldFolderName = host.renamedFolders.get( folderName );
       final FilePath refPath = VcsUtil.getFilePathForDeletedFile( oldFolderName, true );
       final FilePath currPath = VcsUtil.getFilePath( folderName );
@@ -502,6 +539,9 @@ public class VssChangeProvider implements ChangeProvider
 
     for( String path : host.deletedFiles )
     {
+      if (progress != null) {
+        progress.checkCanceled();
+      }
       FilePath refPath = VcsUtil.getFilePathForDeletedFile( path, false );
       VssContentRevision revision = ContentRevisionFactory.getRevision( refPath, project );
       builder.processChange( new Change( revision, null, FileStatus.DELETED ), VssVcs.getKey());
