@@ -9,6 +9,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.LineTokenizer;
 import com.intellij.openapi.vcs.ProjectLevelVcsManager;
 import com.intellij.openapi.vcs.VcsException;
+import com.intellij.openapi.vcs.VcsKey;
 import com.intellij.openapi.vcs.update.FileGroup;
 import com.intellij.openapi.vcs.update.UpdatedFiles;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -16,6 +17,7 @@ import com.intellij.vcsUtil.VcsUtil;
 import com.intellij.vssSupport.VssBundle;
 import com.intellij.vssSupport.VssOutputCollector;
 import com.intellij.vssSupport.VssUtil;
+import com.intellij.vssSupport.VssVcs;
 import org.jetbrains.annotations.NonNls;
 
 import java.io.File;
@@ -81,6 +83,7 @@ public class UndocheckoutDirCommand extends VssCommandAbstract
       String lastFolderName = myDir.getPath();
 
       String[] lines = LineTokenizer.tokenize( output, false );
+      final VcsKey vcsKey = VssVcs.getKey();
       for( String line : lines )
       {
         if( line.length() == 0 )
@@ -108,7 +111,7 @@ public class UndocheckoutDirCommand extends VssCommandAbstract
           fileName = line.substring( 0, index - 1 );
 
           logRecordsCount++;
-          updatedFiles.getGroupById( FileGroup.SKIPPED_ID ).add( fileName );
+          updatedFiles.getGroupById( FileGroup.SKIPPED_ID ).add(fileName, vcsKey, null);
         }
         else
         if( (index = line.indexOf( NOT_EXISTING_MESSAGE )) != -1 )
@@ -117,21 +120,21 @@ public class UndocheckoutDirCommand extends VssCommandAbstract
           fileName = VssUtil.getLocalPath( fileName, myProject );
 
           logRecordsCount++;
-          updatedFiles.getGroupById( NOT_EXISTING_GROUP ).add( fileName );
+          updatedFiles.getGroupById( NOT_EXISTING_GROUP ).add(fileName, vcsKey, null);
         }
         else
         if( (index = line.indexOf( CHECKED_OUT_MESSAGE )) != -1 )
         {
           fileName = line.substring( 0, index );
           logRecordsCount++;
-          updatedFiles.getGroupById( NOT_CHECKED_OUT_GROUP ).add( fileName );
+          updatedFiles.getGroupById( NOT_CHECKED_OUT_GROUP ).add(fileName, vcsKey, null);
         }
         else
         if( (index = line.indexOf( DELETED_MESSAGE )) != -1 )
         {
           fileName = line.substring( 0, index );
           logRecordsCount++;
-          updatedFiles.getGroupById( FileGroup.REMOVED_FROM_REPOSITORY_ID ).add( fileName );
+          updatedFiles.getGroupById( FileGroup.REMOVED_FROM_REPOSITORY_ID ).add(fileName, vcsKey, null);
         }
         else
         if( line.indexOf( REPLACING_LOCAL_COPY_MESSAGE ) != -1 )

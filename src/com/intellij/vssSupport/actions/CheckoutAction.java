@@ -7,6 +7,7 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vcs.FileStatus;
 import com.intellij.openapi.vcs.ProjectLevelVcsManager;
 import com.intellij.openapi.vcs.VcsException;
+import com.intellij.openapi.vcs.VcsKey;
 import com.intellij.openapi.vcs.changes.ChangeListManager;
 import com.intellij.openapi.vcs.update.FileGroup;
 import com.intellij.openapi.vcs.update.UpdatedFiles;
@@ -138,23 +139,24 @@ public class CheckoutAction extends VssAction
 
   private static void storeResult( VssCheckoutAbstractCommand cmd, UpdatedFiles updatedFiles )
   {
+    final VcsKey vcsKey = VssVcs.getKey();
     for( String fileName : cmd.successFiles )
-      updatedFiles.getGroupById( SUCCESS_GROUP_ID ).add( fileName );
+      updatedFiles.getGroupById( SUCCESS_GROUP_ID ).add(fileName, vcsKey, null);
 
     for( String fileName : cmd.writableFiles )
-      updatedFiles.getGroupById( WRITABLE_GROUP_ID ).add( fileName );
+      updatedFiles.getGroupById( WRITABLE_GROUP_ID ).add(fileName, vcsKey, null);
 
     for( String fileName : cmd.checkedAlready )
-      updatedFiles.getGroupById( ALREADY_CHECKED_OUT_GROUP_ID ).add( fileName );
+      updatedFiles.getGroupById( ALREADY_CHECKED_OUT_GROUP_ID ).add(fileName, vcsKey, null);
 
     for( String fileName : cmd.checkedByOther )
-      updatedFiles.getGroupById( CHECKED_BY_ANOTHER_GROUP_ID ).add( fileName );
+      updatedFiles.getGroupById( CHECKED_BY_ANOTHER_GROUP_ID ).add(fileName, vcsKey, null);
 
     for( String fileName : cmd.deletedFiles )
-      updatedFiles.getGroupById( FILE_DELETED_GROUP_ID ).add( fileName );
+      updatedFiles.getGroupById( FILE_DELETED_GROUP_ID ).add(fileName, vcsKey, null);
 
     for( String fileName : cmd.notexistingFiles )
-      updatedFiles.getGroupById( NO_EXISING_FILE_GROUP_ID ).add( fileName );
+      updatedFiles.getGroupById( NO_EXISING_FILE_GROUP_ID ).add(fileName, vcsKey, null);
   }
 
   public static void initializeGroups( UpdatedFiles groups )

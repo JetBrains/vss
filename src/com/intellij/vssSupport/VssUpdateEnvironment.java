@@ -127,7 +127,7 @@ public class VssUpdateEnvironment implements UpdateEnvironment
   private static void fillGroup( UpdatedFiles updatedFiles, String id, Collection<String> list )
   {
     for( String file : list )
-      updatedFiles.getGroupById( id ).add( file );
+      updatedFiles.getGroupById(id).add(file, VssVcs.getKey(), null);
   }
 
   @Nullable
