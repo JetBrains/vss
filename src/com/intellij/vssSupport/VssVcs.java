@@ -660,4 +660,9 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
   public static VcsKey getKey() {
     return ourKey;
   }
+
+  @Override
+  public VcsRootSettings createEmptyVcsRootSettings() {
+    return new VssRootSettings();
+  }
 }
