@@ -7,6 +7,7 @@ import com.intellij.execution.ExecutionException;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.util.ArrayUtil;
 import com.intellij.vssSupport.Configuration.VssConfiguration;
 import com.intellij.vssSupport.VssBundle;
 import com.intellij.vssSupport.VssUtil;
@@ -50,8 +51,7 @@ public class RunExplorerCommand
 
     try
     {
-      VSSExecUtil.runProcessDoNotWaitForTermination( config.getExplorerPath(), options.toArray(new String[ options.size() ]),
-                                                     config.getSSDIREnv() );
+      VSSExecUtil.runProcessDoNotWaitForTermination(config.getExplorerPath(), ArrayUtil.toStringArray(options), config.getSSDIREnv());
     }
     catch( ExecutionException exc )
     {

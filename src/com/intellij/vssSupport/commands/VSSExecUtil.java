@@ -9,6 +9,7 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.process.InterruptibleProcess;
 import com.intellij.openapi.vcs.impl.ProcessWaiter;
+import com.intellij.util.ArrayUtil;
 import com.intellij.vssSupport.VssBundle;
 import com.intellij.vssSupport.VssOutputCollector;
 import org.jetbrains.annotations.NonNls;
@@ -45,7 +46,7 @@ public class VSSExecUtil
                                               HashMap<String, String> envParams, String workingDir,
                                               VssOutputCollector listener) throws ExecutionException
   {
-    String[] programParams = paremeters.toArray( new String[ paremeters.size() ] );
+    String[] programParams = ArrayUtil.toStringArray(paremeters);
     addVSS2005Values( envParams );
 
     GeneralCommandLine cmdLine = new GeneralCommandLine();

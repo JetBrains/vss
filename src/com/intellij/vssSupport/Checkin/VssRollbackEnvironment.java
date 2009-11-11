@@ -10,6 +10,7 @@ import com.intellij.openapi.vcs.changes.VcsDirtyScopeManager;
 import com.intellij.openapi.vcs.rollback.RollbackEnvironment;
 import com.intellij.openapi.vcs.rollback.RollbackProgressListener;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.util.ArrayUtil;
 import com.intellij.vcsUtil.VcsUtil;
 import com.intellij.vssSupport.VssUtil;
 import com.intellij.vssSupport.VssVcs;
@@ -227,7 +228,7 @@ public class VssRollbackEnvironment implements RollbackEnvironment
 
     if( rollbacked.size() > 0 )
     {
-      String[] files = rollbacked.toArray( new String[ rollbacked.size() ] );
+      String[] files = ArrayUtil.toStringArray(rollbacked);
       host.rollbackChanges( files, errors );
     }
   }
