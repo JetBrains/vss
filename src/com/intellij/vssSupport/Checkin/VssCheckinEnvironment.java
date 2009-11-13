@@ -12,6 +12,7 @@ import com.intellij.openapi.vcs.*;
 import com.intellij.openapi.vcs.changes.*;
 import com.intellij.openapi.vcs.checkin.CheckinEnvironment;
 import com.intellij.openapi.vcs.ui.RefreshableOnComponent;
+import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.vcsUtil.VcsUtil;
 import com.intellij.vssSupport.AddOptions;
@@ -340,7 +341,7 @@ public class VssCheckinEnvironment implements CheckinEnvironment
 
   public List<VcsException> scheduleUnversionedFilesForAddition( List<VirtualFile> files )
   {
-    return scheduleUnversionedFilesForAddition( files.toArray( new VirtualFile[ files.size() ] ) );
+    return scheduleUnversionedFilesForAddition(VfsUtil.toVirtualFileArray(files));
   }
 
   public boolean keepChangeListAfterCommit(ChangeList changeList) {
