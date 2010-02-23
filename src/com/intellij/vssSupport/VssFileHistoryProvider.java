@@ -98,16 +98,13 @@ public class VssFileHistoryProvider implements VcsHistoryProvider
   @NonNls @Nullable
   public String getHelpId() {  return null;  }
 
-  @Nullable
-  public HistoryAsTreeProvider getTreeHistoryProvider() {  return null;   }
-
   public boolean supportsHistoryForDirectories() {
     return false;
   }
 
   public VcsDependentHistoryComponents getUICustomization(final VcsHistorySession session, JComponent forShortcutRegistration) {  return VcsDependentHistoryComponents.createOnlyColumns(new ColumnInfo[] { DATE, ACTION, LABEL });   }
 
-  public AnAction[] getAdditionalActions(final FileHistoryPanel panel) {  return new AnAction[0];   }
+  public AnAction[] getAdditionalActions(final Runnable refresher) {  return new AnAction[0];   }
 
   public boolean isDateOmittable() {  return true;  }
 
@@ -144,6 +141,11 @@ public class VssFileHistoryProvider implements VcsHistoryProvider
       //  This is one of the potential problems. And most common.
       throw new VcsException( VssBundle.message("message.file.deleted.or.not.in.repository") );
     }
+  }
+
+  public void reportAppendableHistory(FilePath path, VcsAppendableHistorySessionPartner partner) throws VcsException {
+    final VcsHistorySession session = createSessionFor(path);
+    partner.reportCreatedEmptySession((VcsAbstractHistorySession) session);
   }
 
   private class VssFileRevision implements VcsFileRevision
@@ -218,7 +220,7 @@ public class VssFileHistoryProvider implements VcsHistoryProvider
     }
   }
 
-  private static class VssHistorySession extends VcsHistorySession
+  private static class VssHistorySession extends VcsAbstractHistorySession
   {
     public VssHistorySession( ArrayList<VcsFileRevision> revs )
     {
@@ -246,8 +248,12 @@ public class VssFileHistoryProvider implements VcsHistoryProvider
       return revision;
     }
 
+    public HistoryAsTreeProvider getHistoryAsTreeProvider() {
+      return null;
+    }
+
     @Override
-    public synchronized boolean refresh() {
+    public synchronized boolean shouldBeRefreshed() {
       // Don't refresh history by timer - this is too expensive performance-wise
       return false;
     }
