@@ -14,12 +14,15 @@ import com.intellij.openapi.vcs.checkin.CheckinEnvironment;
 import com.intellij.openapi.vcs.ui.RefreshableOnComponent;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.util.NullableFunction;
+import com.intellij.util.PairConsumer;
 import com.intellij.vcsUtil.VcsUtil;
 import com.intellij.vssSupport.AddOptions;
 import com.intellij.vssSupport.CheckinOptions;
 import com.intellij.vssSupport.Configuration.VssConfiguration;
 import com.intellij.vssSupport.VssBundle;
 import com.intellij.vssSupport.VssVcs;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.util.*;
@@ -42,7 +45,8 @@ public class VssCheckinEnvironment implements CheckinEnvironment
 
   public String getHelpId() {  return null;   }
 
-  public RefreshableOnComponent createAdditionalOptionsPanel( CheckinProjectPanel panel )
+  public RefreshableOnComponent createAdditionalOptionsPanel(CheckinProjectPanel panel,
+                                                             PairConsumer<Object, Object> additionalDataConsumer)
   {
     VssConfiguration config = VssConfiguration.getInstance( project );
     final CheckinOptions checkinOptions = config.getCheckinOptions();
@@ -161,7 +165,7 @@ public class VssCheckinEnvironment implements CheckinEnvironment
     return errors;
   }
 
-  public List<VcsException> commit(List<Change> changes, String preparedComment, Object parameters) {
+  public List<VcsException> commit(List<Change> changes, String preparedComment, @NotNull NullableFunction<Object, Object> parametersHolder) {
     return commit(changes, preparedComment);
   }
 
