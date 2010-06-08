@@ -115,7 +115,7 @@ public class VssCheckinEnvironment implements CheckinEnvironment
                                                         config.getCheckoutOptions().COMMENT;
   }
 
-  public List<VcsException> commit( List<Change> changes, String comment )
+  public List<VcsException> commit(List<Change> changes, String comment, @NotNull NullableFunction<Object, Object> parametersHolder)
   {
     List<VcsException> errors = new ArrayList<VcsException>();
     HashSet<FilePath> processedFiles = new HashSet<FilePath>();
@@ -165,8 +165,8 @@ public class VssCheckinEnvironment implements CheckinEnvironment
     return errors;
   }
 
-  public List<VcsException> commit(List<Change> changes, String preparedComment, @NotNull NullableFunction<Object, Object> parametersHolder) {
-    return commit(changes, preparedComment);
+  public List<VcsException> commit(List<Change> changes, String preparedComment) {
+    return commit(changes, preparedComment, NullableFunction.NULL);
   }
 
   private boolean adjustChangesWithRenamedParentFolders( List<Change> changes )
