@@ -4,7 +4,7 @@
 package com.intellij.vssSupport.ui;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.ui.components.JBScrollPane;
+import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.util.ui.OptionsDialog;
 import com.intellij.vssSupport.CheckoutOptions;
 import com.intellij.vssSupport.Configuration.VssConfiguration;
@@ -51,7 +51,7 @@ public class CheckoutFilesDialog extends OptionsDialog
     lblComment.setLabelFor(myTextAreaComment);
     panel.add( lblComment, new GridBagConstraints(0,0,1,1,0,0,GridBagConstraints.WEST,GridBagConstraints.NONE,new Insets(0,0,3,5),0,0) );
 
-    JBScrollPane scrollPane = new JBScrollPane(myTextAreaComment);
+    JScrollPane scrollPane = ScrollPaneFactory.createScrollPane(myTextAreaComment);
     scrollPane.setPreferredSize(new Dimension(250,70));
     panel.add( scrollPane, new GridBagConstraints(0,1,1,1,1,1,GridBagConstraints.CENTER,GridBagConstraints.BOTH,new Insets(0,0,5,0),0,0) );
 
