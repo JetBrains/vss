@@ -3,6 +3,7 @@ package com.intellij.vssSupport.ui;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.ui.components.JBScrollPane;
 import com.intellij.vssSupport.VssBundle;
 
 import javax.swing.*;
@@ -55,7 +56,7 @@ public class SetLabelDialog extends DialogWrapper
     panel.add( lblComment,
                new GridBagConstraints(0,1,1,1,0,0,GridBagConstraints.WEST,GridBagConstraints.NONE,new Insets(0,0,3,5),0,0) );
 
-    JScrollPane scrollPane = new JScrollPane( myTextAreaComment );
+    JBScrollPane scrollPane = new JBScrollPane( myTextAreaComment );
     scrollPane.setPreferredSize( new Dimension(250,70) );
     panel.add( scrollPane,
                new GridBagConstraints(1,1,1,1,1,1,GridBagConstraints.CENTER,GridBagConstraints.BOTH,new Insets(0,0,5,0),0,0) );
