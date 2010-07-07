@@ -222,7 +222,7 @@ public class VssFileHistoryProvider implements VcsHistoryProvider
 
   private static class VssHistorySession extends VcsAbstractHistorySession
   {
-    public VssHistorySession( ArrayList<VcsFileRevision> revs )
+    public VssHistorySession( List<VcsFileRevision> revs )
     {
       super( revs );
     }
@@ -256,6 +256,11 @@ public class VssFileHistoryProvider implements VcsHistoryProvider
     public synchronized boolean shouldBeRefreshed() {
       // Don't refresh history by timer - this is too expensive performance-wise
       return false;
+    }
+
+    @Override
+    public VcsHistorySession copy() {
+      return new VssHistorySession(getRevisionList());
     }
   }
 }
