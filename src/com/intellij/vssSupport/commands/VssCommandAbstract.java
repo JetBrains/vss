@@ -38,6 +38,7 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vcs.VcsException;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.util.containers.ContainerUtil;
 import com.intellij.vcsUtil.VcsUtil;
 import com.intellij.vssSupport.Configuration.VssConfiguration;
 import com.intellij.vssSupport.VssBundle;
@@ -166,13 +167,12 @@ public abstract class VssCommandAbstract
     runProcess( cpParams, workingFolder );
   }
 
-  protected List<String> formOptions( @NonNls String... subcmd )
-  {
+  protected List<String> formOptions( @NonNls String... subcmd ) {
     List<String> params = new ArrayList<String>();
-    params.addAll( Arrays.asList( subcmd ) );
+    ContainerUtil.addAll(params, subcmd);
 
-    if( myConfig.USER_NAME.length() > 0 )
-      params.add( myConfig.getYOption() );
+    if (myConfig.USER_NAME.length() > 0)
+      params.add(myConfig.getYOption());
 
     return params;
   }
