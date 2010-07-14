@@ -16,7 +16,7 @@
 
     <projectService serviceInterface="com.intellij.vssSupport.Configuration.VssConfiguration"
                     serviceImplementation="com.intellij.vssSupport.Configuration.VssConfiguration"/>
-    <vcs name="SourceSafe" vcsClass="com.intellij.vssSupport.VssVcs"/>
+    <vcs name="SourceSafe" vcsClass="com.intellij.vssSupport.VssVcs" displayName="SourceSafe" administrativeAreaName="vssver.scc, vssver2.scc"/>
   </extensions>
 
   <project-components>
