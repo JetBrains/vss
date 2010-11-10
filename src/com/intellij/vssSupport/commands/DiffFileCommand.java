@@ -3,6 +3,7 @@ package com.intellij.vssSupport.commands;
 import com.intellij.openapi.diff.*;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vcs.VcsException;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.vssSupport.VssBundle;
@@ -46,7 +47,7 @@ public class DiffFileCommand extends VssCommandAbstract
     {
       // The name of temporary copy is the name of temporary directory concatenated
       // with the name of file.
-      File tmpFile = File.createTempFile(TMP_FILE_NAME, "." + myFile.getExtension());
+      File tmpFile = FileUtil.createTempFile(TMP_FILE_NAME, "." + myFile.getExtension());
       tmpFile.deleteOnExit();
       File tmpDir = tmpFile.getParentFile();
       myTmpFile = new File(tmpDir, myFile.getName());

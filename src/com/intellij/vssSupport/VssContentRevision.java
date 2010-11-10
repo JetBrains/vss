@@ -72,7 +72,7 @@ public class VssContentRevision implements ContentRevision
       {
         //  The name of temporary copy is the name of temporary directory concatenated
         //  with the name of file.
-        File tmpFile = File.createTempFile( TMP_FILE_NAME, "." + path.getName() );
+        File tmpFile = FileUtil.createTempFile(TMP_FILE_NAME, "." + path.getName());
         tmpFile.deleteOnExit();
         File tmpDir = tmpFile.getParentFile();
         myTmpFile = new File( tmpDir, path.getName() );
