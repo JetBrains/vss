@@ -138,13 +138,13 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
   public static VssVcs getInstance( Project project )   {  return project.getComponent(VssVcs.class);  }
 
   public Configurable         getConfigurable()         {  return new VssConfigurable( myProject );  }
-  public CheckinEnvironment   getCheckinEnvironment()   {  return checkinEnvironment;  }
-  public RollbackEnvironment  getRollbackEnvironment()  {  return rollbackEnvironment; }
+  public CheckinEnvironment   createCheckinEnvironment()   {  return checkinEnvironment;  }
+  public RollbackEnvironment  createRollbackEnvironment()  {  return rollbackEnvironment; }
 
   public ChangeProvider       getChangeProvider()       {  return changeProvider;    }
   public VcsHistoryProvider   getVcsHistoryProvider()   {  return historyProvider;   }
   public EditFileProvider     getEditFileProvider()     {  return editFileProvider;  }
-  public UpdateEnvironment    getUpdateEnvironment()    {  return updateEnvironment; }
+  public UpdateEnvironment    createUpdateEnvironment()    {  return updateEnvironment; }
   public HashSet<String>      getSavedProjectPaths()    {  return savedProjectPaths;  }
   public void                 addSavedProjectPath( String path ) {  savedProjectPaths.add( path );  } 
 
