@@ -210,8 +210,7 @@ public class VFSListener extends VirtualFileAdapter implements CommandListener
    */
   private boolean isFileProcessable( VirtualFile file )
   {
-    return !host.isFileIgnored( file ) &&
-           !FileTypeManager.getInstance().isFileIgnored( file.getName() );
+    return !host.isFileIgnored( file ) && !FileTypeManager.getInstance().isFileIgnored( file );
   }
 
   private boolean isIgnoredEvent( VirtualFileEvent e )
