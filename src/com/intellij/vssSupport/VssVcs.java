@@ -24,8 +24,6 @@ import com.intellij.openapi.vcs.*;
 import com.intellij.openapi.vcs.changes.ChangeListManager;
 import com.intellij.openapi.vcs.changes.ChangeProvider;
 import com.intellij.openapi.vcs.checkin.CheckinEnvironment;
-import com.intellij.openapi.vcs.checkin.CheckinHandler;
-import com.intellij.openapi.vcs.checkin.CheckinHandlerFactory;
 import com.intellij.openapi.vcs.history.VcsHistoryProvider;
 import com.intellij.openapi.vcs.history.VcsRevisionNumber;
 import com.intellij.openapi.vcs.rollback.RollbackEnvironment;
@@ -40,7 +38,6 @@ import com.intellij.util.ArrayUtil;
 import com.intellij.util.containers.HashSet;
 import com.intellij.vcsUtil.VcsUtil;
 import com.intellij.vssSupport.Checkin.VssCheckinEnvironment;
-import com.intellij.vssSupport.Checkin.VssCheckinHandler;
 import com.intellij.vssSupport.Checkin.VssRollbackEnvironment;
 import com.intellij.vssSupport.Configuration.MapItem;
 import com.intellij.vssSupport.Configuration.VssConfigurable;
@@ -161,11 +158,6 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
 
     addConfirmation = vcsManager.getStandardConfirmation( VcsConfiguration.StandardConfirmation.ADD, this );
     removeConfirmation = vcsManager.getStandardConfirmation( VcsConfiguration.StandardConfirmation.REMOVE, this );
-
-    vcsManager.registerCheckinHandlerFactory( new CheckinHandlerFactory() {
-      @NotNull public CheckinHandler createHandler(final CheckinProjectPanel panel)
-      {  return new VssCheckinHandler( VssVcs.getInstance( myProject ), panel );  }
-    } );
 
     StartupManager.getInstance(myProject).registerPostStartupActivity(new DumbAwareRunnable() {
       public void run() {
