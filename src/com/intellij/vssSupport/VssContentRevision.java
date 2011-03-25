@@ -136,8 +136,7 @@ public class VssContentRevision implements ContentRevision
       {
         try
         {
-          char[] charContent = FileUtil.loadFileText( myTmpFile );
-          content = new String( charContent );  
+          content = FileUtil.loadFile(myTmpFile);
         }
         catch( IOException e ) { content = null; }
       }
