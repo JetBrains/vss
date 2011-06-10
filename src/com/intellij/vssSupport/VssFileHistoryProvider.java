@@ -184,9 +184,9 @@ public class VssFileHistoryProvider implements VcsHistoryProvider
     public String getAuthor()     { return submitter; }
     public String getCommitMessage() { return comment; }
 
-    public byte[] getContent()    { return content; }
+    public byte[] getContent() throws IOException, VcsException { return content; }
 
-    public void loadContent()
+    public byte[] loadContent() throws IOException, VcsException
     {
       ArrayList<VcsException> errors = new ArrayList<VcsException>();
       String tmpDir = FileUtil.getTempDirectory();
@@ -205,6 +205,7 @@ public class VssFileHistoryProvider implements VcsHistoryProvider
       catch( IOException e ){
         LOG.error( e.getMessage() );
       }
+      return content;
     }
 
     public int compareTo( Object revision )
