@@ -6,6 +6,7 @@ import com.intellij.openapi.vcs.FilePath;
 import com.intellij.openapi.vcs.ProjectLevelVcsManager;
 import com.intellij.openapi.vcs.VcsDirectoryMapping;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.vcsUtil.VcsImplUtil;
 import com.intellij.vcsUtil.VcsUtil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
@@ -179,6 +180,7 @@ public class VssUtil extends VcsUtil
   }
 
   public static void showErrorOutput( @NonNls String message, Project project) {
-    showErrorMessage(project, VssBundle.message("message.text.operation.failed.text", message), VssBundle.message("message.title.error"));
+    VcsImplUtil
+      .showErrorMessage(project, VssBundle.message("message.text.operation.failed.text", message), VssBundle.message("message.title.error"));
   }
 }

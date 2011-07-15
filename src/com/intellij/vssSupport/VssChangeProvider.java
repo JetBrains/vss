@@ -10,6 +10,7 @@ import com.intellij.openapi.vcs.*;
 import com.intellij.openapi.vcs.changes.*;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.Processor;
+import com.intellij.vcsUtil.VcsImplUtil;
 import com.intellij.vcsUtil.VcsUtil;
 import com.intellij.vssSupport.Configuration.VssConfiguration;
 import com.intellij.vssSupport.commands.DirectoryCommand;
@@ -309,8 +310,8 @@ public class VssChangeProvider implements ChangeProvider
       //  processed on the "by line" basis (and per file correspondingly).
       if( cmd.getErrors().size() > 0 )
       {
-        VcsUtil.showErrorMessage( project, cmd.getErrors().get( 0 ).getMessage(),
-                                  VssBundle.message("message.title.check.status"));
+        VcsImplUtil.showErrorMessage(project, cmd.getErrors().get(0).getMessage(),
+                                     VssBundle.message("message.title.check.status"));
       }
       else
       {
@@ -359,8 +360,8 @@ public class VssChangeProvider implements ChangeProvider
     //  processed on the "by line" basis (and per file correspondingly).
     if( errors.size() > 0 )
     {
-      VcsUtil.showErrorMessage( project, cmd.getErrors().get( 0 ).getMessage(),
-                                VssBundle.message("message.title.check.status"));
+      VcsImplUtil.showErrorMessage(project, cmd.getErrors().get(0).getMessage(),
+                                   VssBundle.message("message.title.check.status"));
     }
     else
     {
@@ -763,8 +764,8 @@ public class VssChangeProvider implements ChangeProvider
 
     if( !checkPassed && showInvalidConfigMessage )
     {
-      VcsUtil.showErrorMessage( project, VssBundle.message( "message.text.specify.content.roots" ),
-                                         VssBundle.message( "message.text.operation.failed" ) );
+      VcsImplUtil.showErrorMessage(project, VssBundle.message("message.text.specify.content.roots"),
+                                   VssBundle.message("message.text.operation.failed"));
       showInvalidConfigMessage = false;
     }
     
@@ -777,7 +778,7 @@ public class VssChangeProvider implements ChangeProvider
     final String checkMsg = config.checkCmdPath();
     if( checkMsg != null )
     {
-      VcsUtil.showErrorMessage( project, checkMsg, VssBundle.message( "message.text.operation.failed" ) );
+      VcsImplUtil.showErrorMessage(project, checkMsg, VssBundle.message("message.text.operation.failed"));
     }
     return checkMsg == null;
   }
