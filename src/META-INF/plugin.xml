@@ -24,6 +24,7 @@
     <component>
       <implementation-class>com.intellij.vssSupport.VssVcs</implementation-class>
       <option name="workspace" value="true"/>
+      <loadForDefaultProject/>
     </component>
   </project-components>
 
