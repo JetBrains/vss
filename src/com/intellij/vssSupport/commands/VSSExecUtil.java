@@ -55,7 +55,7 @@ public class VSSExecUtil
     cmdLine.setEnvParams( envParams );
     cmdLine.setExePath( exePath );
 
-    LOG.info( cmdLine.getCommandLineParams() );
+    LOG.info(cmdLine.getCommandLineString());
 
     final ProgressIndicator progress = ProgressManager.getInstance().getProgressIndicator();
     if( progress != null )
@@ -152,7 +152,6 @@ public class VSSExecUtil
 
     GeneralCommandLine commandLine = new GeneralCommandLine();
     commandLine.addParameters(programParms);
-    commandLine.setWorkDirectory( null );
     commandLine.setEnvParams( envParams );
     commandLine.setExePath( exePath );
 
