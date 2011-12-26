@@ -355,6 +355,11 @@ public class VssCheckinEnvironment implements CheckinEnvironment
     return false;
   }
 
+  @Override
+  public boolean isRefreshAfterCommitNeeded() {
+    return true;
+  }
+
   public List<VcsException> scheduleUnversionedFilesForAddition( VirtualFile[] files )
   {
     for( VirtualFile file : files )
