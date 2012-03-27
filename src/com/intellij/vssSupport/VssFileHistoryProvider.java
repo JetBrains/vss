@@ -21,6 +21,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vcs.FilePath;
+import com.intellij.openapi.vcs.RepositoryLocation;
 import com.intellij.openapi.vcs.VcsException;
 import com.intellij.openapi.vcs.history.*;
 import com.intellij.util.ArrayUtil;
@@ -172,6 +173,11 @@ public class VssFileHistoryProvider implements VcsHistoryProvider
       vssDate = data.changeDate;
 
       this.path = path;
+    }
+
+    @Override
+    public RepositoryLocation getChangedRepositoryPath() {
+      return null;
     }
 
     public VcsRevisionNumber getRevisionNumber() { return new VcsRevisionNumber.Int( version ); }
