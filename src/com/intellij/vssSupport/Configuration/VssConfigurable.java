@@ -55,7 +55,6 @@ public class VssConfigurable extends BaseConfigurable
 
   public void disposeUIResources() {  myPanel = null;  }
   public String getHelpTopic() {  return "project.propVSS";  }
-  public Icon getIcon() {  return ourIcon;  }
 
   public JComponent createComponent()
   {
