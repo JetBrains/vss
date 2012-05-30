@@ -3,11 +3,11 @@
  */
 package com.intellij.vssSupport.Configuration;
 
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.options.BaseConfigurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
-import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.wm.WindowManager;
 import com.intellij.vssSupport.VssBundle;
 import org.jetbrains.annotations.NonNls;
@@ -20,7 +20,7 @@ import java.io.File;
 
 public class VssConfigurable extends BaseConfigurable
 {
-  private static final Icon ourIcon = IconLoader.getIcon("/general/vss.png");
+  private static final Icon ourIcon = AllIcons.General.Vss;
 
   private final VssConfiguration myConfig;
   private final Project myProject;
