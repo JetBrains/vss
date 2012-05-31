@@ -3,7 +3,6 @@
  */
 package com.intellij.vssSupport.Configuration;
 
-import com.intellij.icons.AllIcons;
 import com.intellij.openapi.options.BaseConfigurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
@@ -20,7 +19,6 @@ import java.io.File;
 
 public class VssConfigurable extends BaseConfigurable
 {
-  private static final Icon ourIcon = AllIcons.General.Vss;
 
   private final VssConfiguration myConfig;
   private final Project myProject;
