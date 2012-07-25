@@ -103,6 +103,11 @@ public class VssFileHistoryProvider implements VcsHistoryProvider
     return false;
   }
 
+  @Override
+  public DiffFromHistoryHandler getHistoryDiffHandler() {
+    return null;
+  }
+
   public VcsDependentHistoryComponents getUICustomization(final VcsHistorySession session, JComponent forShortcutRegistration) {  return VcsDependentHistoryComponents.createOnlyColumns(new ColumnInfo[] { DATE, ACTION, LABEL });   }
 
   public AnAction[] getAdditionalActions(final Runnable refresher) {  return new AnAction[0];   }
