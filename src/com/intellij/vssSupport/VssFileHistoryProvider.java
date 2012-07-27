@@ -24,12 +24,14 @@ import com.intellij.openapi.vcs.FilePath;
 import com.intellij.openapi.vcs.RepositoryLocation;
 import com.intellij.openapi.vcs.VcsException;
 import com.intellij.openapi.vcs.history.*;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.ui.ColumnInfo;
 import com.intellij.vssSupport.commands.GetFileCommand;
 import com.intellij.vssSupport.commands.HistoryCommand;
 import com.intellij.vssSupport.commands.HistoryParser;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -106,6 +108,11 @@ public class VssFileHistoryProvider implements VcsHistoryProvider
   @Override
   public DiffFromHistoryHandler getHistoryDiffHandler() {
     return null;
+  }
+
+  @Override
+  public boolean canShowHistoryFor(@NotNull VirtualFile file) {
+    return true;
   }
 
   public VcsDependentHistoryComponents getUICustomization(final VcsHistorySession session, JComponent forShortcutRegistration) {  return VcsDependentHistoryComponents.createOnlyColumns(new ColumnInfo[] { DATE, ACTION, LABEL });   }
