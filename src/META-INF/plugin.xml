@@ -2,7 +2,7 @@
   <name>Visual SourceSafe Integration</name>
   <id>SourceSafe</id>
   <version>2.0</version>
-  <vendor logo="/general/ijLogo.png">JetBrains</vendor>
+  <vendor>JetBrains</vendor>
   <category>VCS Integration</category>
   <resource-bundle xmlns="">com.intellij.vssSupport.VssBundle</resource-bundle>
   <depends>com.intellij.modules.vcs</depends>
