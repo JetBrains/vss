@@ -187,6 +187,7 @@ public class VssFileHistoryProvider implements VcsHistoryProvider
       this.path = path;
     }
 
+    @Nullable
     @Override
     public RepositoryLocation getChangedRepositoryPath() {
       return null;
