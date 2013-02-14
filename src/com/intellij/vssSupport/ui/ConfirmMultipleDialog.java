@@ -9,6 +9,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.MultiLineLabelUI;
 import com.intellij.util.ui.UIUtil;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,6 +33,7 @@ public class ConfirmMultipleDialog extends DialogWrapper
     init();
   }
 
+  @NotNull
   protected Action[] createActions(){
     return new Action[]{
       new MyAction(CommonBundle.getYesButtonText(),YES_EXIT_CODE),
