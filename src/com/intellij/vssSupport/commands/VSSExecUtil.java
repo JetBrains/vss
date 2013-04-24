@@ -52,7 +52,7 @@ public class VSSExecUtil
     GeneralCommandLine cmdLine = new GeneralCommandLine();
     cmdLine.addParameters( programParams );
     cmdLine.setWorkDirectory( workingDir );
-    cmdLine.setEnvironment(envParams);
+    cmdLine.getEnvironment().putAll( envParams );
     cmdLine.setExePath( exePath );
 
     LOG.info(cmdLine.getCommandLineString());
@@ -152,7 +152,7 @@ public class VSSExecUtil
 
     GeneralCommandLine commandLine = new GeneralCommandLine();
     commandLine.addParameters(programParms);
-    commandLine.setEnvironment(envParams);
+    commandLine.getEnvironment().putAll( envParams );
     commandLine.setExePath( exePath );
 
     final OSProcessHandler result = new OSProcessHandler(commandLine.createProcess(), commandLine.getCommandLineString());
