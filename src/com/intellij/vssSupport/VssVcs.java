@@ -143,7 +143,7 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
   public EditFileProvider     getEditFileProvider()     {  return editFileProvider;  }
   public UpdateEnvironment    createUpdateEnvironment()    {  return updateEnvironment; }
   public HashSet<String>      getSavedProjectPaths()    {  return savedProjectPaths;  }
-  public void                 addSavedProjectPath( String path ) {  savedProjectPaths.add( path );  } 
+  public void                 addSavedProjectPath( String path ) {  savedProjectPaths.add( path );  }
 
   public void   initComponent()     {}
   public void   disposeComponent()  {  checkinEnvironment = null;  }
@@ -281,7 +281,7 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
     File file = new File(path);
     File newFile = new File( file.getParentFile(), newName );
     VirtualFile newVFile = VcsUtil.getVirtualFile( newFile );
-    RenameFileCommand cmd = new RenameFileCommand( myProject, newVFile, file.getName(), errors ); 
+    RenameFileCommand cmd = new RenameFileCommand( myProject, newVFile, file.getName(), errors );
     cmd.execute();
   }
 
@@ -403,7 +403,7 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
 
   /**
    * Consults <code>ChangeListManager</code> whether the file belongs to the list of ignored
-   * files or resides under the ignored folder. 
+   * files or resides under the ignored folder.
    */
   public boolean isFileIgnored( VirtualFile file )
   {
@@ -441,7 +441,7 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
 
   public boolean isWasRenamed( String path )    {  return renamedFiles.containsValue( path );  }
   public boolean isNewOverRenamed( String path ){  return containsNew( path ) && isWasRenamed( path );  }
-  
+
   public boolean isVersionedDirectory( VirtualFile dir )
   {
     final VirtualFile versionFile2003 = dir.findChild( VSSVER_FILE_SIG );
@@ -450,13 +450,13 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
     return ((versionFile2003 != null && !versionFile2003.isDirectory()) ||
            (versionFile2005 != null && !versionFile2005.isDirectory()));
   }
-  
+
   @Override
   public UnnamedConfigurable getRootConfigurable( final VcsDirectoryMapping mapping )
   {
     return new VssRootConfigurable( mapping, myProject );
   }
-  
+
   @Override
   @Nullable
   public VcsRevisionNumber parseRevisionNumber(final String revisionNumberString)
@@ -464,7 +464,7 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
     int revision;
     try { revision = (int)Long.parseLong( revisionNumberString );  }
     catch( NumberFormatException ex ) {  return null;  }
-    
+
     return new VcsRevisionNumber.Int( revision );
   }
 
@@ -598,22 +598,21 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
 
   private void readUsedProjectPaths()
   {
-    String configPath = PathManager.getConfigPath( true );
-    String optionsFile = configPath + File.separatorChar + OPTIONS_FOLDER +
-                                      File.separatorChar + OPTIONS_FILE;
     savedProjectPaths.clear();
-    try
-    {
-      //noinspection IOResourceOpenedButNotSafelyClosed
-      BufferedReader reader = new BufferedReader( new FileReader( optionsFile ) );
-
-      String line;
-      while(( line = reader.readLine()) != null )
-        savedProjectPaths.add( line );
-
-      reader.close();
+    try {
+      String optionsFile = PathManager.getConfigPath() + File.separatorChar + OPTIONS_FOLDER + File.separatorChar + OPTIONS_FILE;
+      BufferedReader reader = new BufferedReader(new FileReader(optionsFile));
+      try {
+        String line;
+        while ((line = reader.readLine()) != null) {
+          savedProjectPaths.add(line);
+        }
+      }
+      finally {
+        reader.close();
+      }
     }
-    catch( Exception e ) {
+    catch (Exception e) {
       //  Nothing to do, no special treatment is necessary, the file
       //  can be recovered next time.
     }
@@ -621,30 +620,30 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
 
   private void writeUsedProjectPaths()
   {
-    try
-    {
+    try {
       //  Create folder "VSS" under the predefined config folder,
       //  and put paths into the special file under that folder.
-
-      String configPath = PathManager.getConfigPath( true );
-      configPath += File.separatorChar + OPTIONS_FOLDER;
-      new File( configPath ).mkdir();
+      String configPath = PathManager.getConfigPath() + File.separatorChar + OPTIONS_FOLDER;
+      new File(configPath).mkdir();
 
       String optionsFile = configPath + File.separatorChar + OPTIONS_FILE;
 
       //  Do not forget to clear the content of the file - we always overwrite
       //  the available information anew.
-      File file = new File( optionsFile );
+      File file = new File(optionsFile);
       file.delete();
 
-      //noinspection IOResourceOpenedButNotSafelyClosed
-      PrintWriter writer = new PrintWriter( optionsFile );
-      for( String path : savedProjectPaths )
-        writer.write( path + "\n" );
-
-      writer.close();
+      PrintWriter writer = new PrintWriter(optionsFile);
+      try {
+        for (String path : savedProjectPaths) {
+          writer.write(path + "\n");
+        }
+      }
+      finally {
+        writer.close();
+      }
     }
-    catch( IOException e ) {
+    catch (IOException e) {
       //  Nothing to do, no special treatment is necessary, the file
       //  can be recovered next time.
     }
