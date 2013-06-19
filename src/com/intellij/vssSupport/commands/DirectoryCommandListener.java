@@ -173,7 +173,7 @@ public class DirectoryCommandListener extends VssOutputCollector
 
   private static boolean hasLoginName( String line, String login )
   {
-    return StringUtil.startsWithConcatenationOf(line.substring(20).toLowerCase(), login, " ");
+    return StringUtil.startsWithConcatenation(line.substring(20).toLowerCase(), login, " ");
   }
   
   /**
