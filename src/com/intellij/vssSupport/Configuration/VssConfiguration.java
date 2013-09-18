@@ -24,6 +24,7 @@ import java.util.Iterator;
 
 @State(
   name="VssConfiguration",
+  roamingType = RoamingType.DISABLED,
   storages= {
     @Storage(
       file = StoragePathMacros.WORKSPACE_FILE

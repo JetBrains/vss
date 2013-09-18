@@ -12,7 +12,6 @@
     <errorHandler implementation="com.intellij.diagnostic.ITNReporter"/>
 
     <ComponentRoamingType component="VssVcs" type="DISABLED"/>
-    <ComponentRoamingType component="VssConfiguration" type="DISABLED"/>
 
     <projectService serviceInterface="com.intellij.vssSupport.Configuration.VssConfiguration"
                     serviceImplementation="com.intellij.vssSupport.Configuration.VssConfiguration"/>
