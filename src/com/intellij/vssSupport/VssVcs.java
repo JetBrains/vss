@@ -15,10 +15,7 @@ import com.intellij.openapi.options.UnnamedConfigurable;
 import com.intellij.openapi.project.DumbAwareRunnable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.StartupManager;
-import com.intellij.openapi.util.InvalidDataException;
-import com.intellij.openapi.util.JDOMExternalizable;
-import com.intellij.openapi.util.Key;
-import com.intellij.openapi.util.WriteExternalException;
+import com.intellij.openapi.util.*;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vcs.*;
 import com.intellij.openapi.vcs.changes.ChangeListManager;
@@ -55,7 +52,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExternalizable
+public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExternalizable, RoamingTypeDisabled
 {
   public static final Key<String> FILE_TYPE = new Key<String>("FILE_TYPE");
 
