@@ -2,6 +2,7 @@ package com.intellij.vssSupport.actions;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.project.Project;
@@ -28,7 +29,7 @@ abstract class VssAction extends AnAction
     Presentation presentation = e.getPresentation();
 
     //  Do not show anything if no project is set.
-    Project project = e.getData( PlatformDataKeys.PROJECT );
+    Project project = e.getData( CommonDataKeys.PROJECT );
     if( project == null )
     {
       presentation.setVisible( false );

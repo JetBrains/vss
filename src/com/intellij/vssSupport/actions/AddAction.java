@@ -1,6 +1,7 @@
 package com.intellij.vssSupport.actions;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.project.Project;
@@ -19,7 +20,7 @@ public class AddAction extends VssAction
 {
   public void actionPerformed(AnActionEvent e)
   {
-    Project project = e.getData( PlatformDataKeys.PROJECT );
+    Project project = e.getData( CommonDataKeys.PROJECT );
     VirtualFile[] files = VcsUtil.getVirtualFiles( e );
     VssVcs host = VssVcs.getInstance( project );
 
@@ -39,7 +40,7 @@ public class AddAction extends VssAction
     Presentation  presentation = e.getPresentation();
     if( presentation.isEnabled() )
     {
-      Project project = e.getData( PlatformDataKeys.PROJECT );
+      Project project = e.getData( CommonDataKeys.PROJECT );
       VssVcs  host = VssVcs.getInstance( project );
       VirtualFile[] files = VcsUtil.getVirtualFiles( e );
       
