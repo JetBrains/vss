@@ -192,7 +192,7 @@ public class CheckinFileCommand extends VssCommandAbstract
       final int[] status = new int[ 1 ];
       Runnable runnable = new Runnable() { public void run() { status[ 0 ] = Messages.showYesNoDialog( project, message, title, icon ); } };
       ApplicationManager.getApplication().invokeAndWait( runnable, ModalityState.defaultModalityState() );
-      return status[ 0 ] == 0;
+      return status[ 0 ] == Messages.YES;
     }
   }
 }

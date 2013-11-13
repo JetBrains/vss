@@ -34,7 +34,6 @@ package com.intellij.vssSupport.commands;
 import com.intellij.execution.ExecutionException;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vcs.VcsException;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -47,7 +46,6 @@ import com.intellij.vssSupport.VssUtil;
 import org.jetbrains.annotations.NonNls;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public abstract class VssCommandAbstract
@@ -125,7 +123,7 @@ public abstract class VssCommandAbstract
 
       String request = errorOutput.substring(0, questionIndex);
       int answer = Messages.showYesNoDialog(request, VssBundle.message("message.title.source.safe"), Messages.getQuestionIcon());
-      if( answer != DialogWrapper.OK_EXIT_CODE )
+      if( answer != Messages.YES )
       {
 //        setExecutionState( false );
       }
