@@ -56,7 +56,7 @@ public class VssCheckinHandler extends CheckinHandler {
       int result = Messages.showOkCancelDialog( VssBundle.message("message.add.renamed.folders"),
                                                 VssBundle.message("message.add.renamed.folders.title"),
                                                 Messages.getWarningIcon() );
-      if( result != 0 )
+      if( result != Messages.OK )
         return ReturnResult.CANCEL;
     }
     return ReturnResult.COMMIT;

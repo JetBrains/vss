@@ -62,7 +62,7 @@ public class VssLocalFileOperationsHandler implements LocalFileOperationsHandler
         int result = Messages.showOkCancelDialog( project, VssBundle.message("dialog.text.folder.contains.unversioned"),
                                                   VssBundle.message("dialog.title.folder.contains.unversioned"),
                                                   Messages.getQuestionIcon() );
-        return ( result != 0 );
+        return ( result != Messages.OK );
       }
     }
     return false;
