@@ -27,6 +27,8 @@ import com.intellij.openapi.vcs.actions.VcsContextFactory;
 import com.intellij.openapi.vcs.changes.ChangeListManager;
 import com.intellij.openapi.vfs.*;
 import com.intellij.vcsUtil.VcsUtil;
+import org.jetbrains.annotations.NotNull;
+
 import static com.intellij.vssSupport.Checkin.VssCheckinEnvironment.RENAME_ROLLBACK;
 
 import java.util.*;
@@ -47,7 +49,7 @@ public class VFSListener extends VirtualFileAdapter implements CommandListener
 
   public VFSListener( Project project, VssVcs host ) {  this.project = project; this.host = host; }
 
-  public void fileCreated( VirtualFileEvent event )
+  public void fileCreated( @NotNull VirtualFileEvent event )
   {
     VirtualFile file = event.getFile();
 
@@ -82,7 +84,7 @@ public class VFSListener extends VirtualFileAdapter implements CommandListener
     }
   }
 
-  public void beforeFileDeletion( VirtualFileEvent event )
+  public void beforeFileDeletion( @NotNull VirtualFileEvent event )
   {
     if( !isIgnoredEvent( event ) )
     {
@@ -118,7 +120,7 @@ public class VFSListener extends VirtualFileAdapter implements CommandListener
     }
   }
 
-  public void beforePropertyChange( VirtualFilePropertyEvent event )
+  public void beforePropertyChange( @NotNull VirtualFilePropertyEvent event )
   {
     VirtualFile file = event.getFile();
 
@@ -164,7 +166,7 @@ public class VFSListener extends VirtualFileAdapter implements CommandListener
     store.remove( oldName );
   }
 
-  public void beforeFileMovement( VirtualFileMoveEvent event )
+  public void beforeFileMovement( @NotNull VirtualFileMoveEvent event )
   {
     if( isIgnoredEvent( event ) )
         return;
