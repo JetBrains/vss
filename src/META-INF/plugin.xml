@@ -7,6 +7,20 @@
   <resource-bundle xmlns="">com.intellij.vssSupport.VssBundle</resource-bundle>
   <depends>com.intellij.modules.vcs</depends>
   <depends>com.intellij.modules.ultimate</depends>
+  <description>
+      <![CDATA[
+       <a href="http://msdn.microsoft.com/en-us/library/3h0544kx(v=vs.80).aspx">Visual SourceSafe</a> is a file-level version control system.
+       This integration allows using Visual SourceSafe from within the product,
+       making even refactoring consequences transparent for the user.
+      The following features are available:
+      <ul>
+      <li>Dedicated page under the Version Control node in the Settings/Preferences dialog.</li>
+      <li>Implementing the most frequently needed commands
+      (Open Source Safe Explorer, Check In/Out, Add, Undo Checkout, Get Latest Version); Next, Previous, Rollback,
+      Old text actions are available from the dedicated gutter bar in changed locations.</li>
+      </ul>
+      ]]>
+  </description>
 
   <extensions defaultExtensionNs="com.intellij">
     <errorHandler implementation="com.intellij.diagnostic.ITNReporter"/>
