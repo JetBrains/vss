@@ -2,7 +2,6 @@ package com.intellij.vssSupport.actions;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vcs.FileStatus;
@@ -59,15 +58,14 @@ public class GetAction extends VssAction
     try
     {
       boolean showOptions = VssVcs.getInstance( project ).getGetOptions().getValue();
-      if( showOptions || isShiftPressed( e ) )
-      {
-        OptionsDialog editor = allFilesAreFolders( files ) ? new GetDirDialog( project ) :
-                                                             new GetFilesDialog( project );
-        editor.setTitle( (files.length == 1) ? VssBundle.message( "dialog.title.get.file", files[ 0 ].getName() ) :
-                                               VssBundle.message( "dialog.title.get.multiple" ) );
-        editor.show();
-        if( !editor.isOK())
+      if( showOptions || isShiftPressed( e ) ) {
+        OptionsDialog editor = allFilesAreFolders(files) ? new GetDirDialog(project) :
+                               new GetFilesDialog(project);
+        editor.setTitle((files.length == 1) ? VssBundle.message("dialog.title.get.file", files[0].getName()) :
+                        VssBundle.message("dialog.title.get.multiple"));
+        if (!editor.showAndGet()) {
           return;
+        }
       }
       if( allFilesAreFolders( files ) )
       {

@@ -2,7 +2,6 @@ package com.intellij.vssSupport.actions;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vcs.FileStatus;
@@ -81,16 +80,15 @@ public class CheckoutAction extends VssAction
     try
     {
       boolean showOptions = VssVcs.getInstance( project ).getCheckoutOptions().getValue();
-      if( showOptions || isShiftPressed( e ) )
-      {
+      if( showOptions || isShiftPressed( e ) ) {
         OptionsDialog editor;
-        editor = allFilesAreFolders( files ) ? new CheckoutDirDialog( project ) :
-                                               new CheckoutFilesDialog( project );
-        editor.setTitle( (files.length == 1) ? VssBundle.message("dialog.title.check.out.file", files[ 0 ].getName()) :
-                                               VssBundle.message("dialog.title.check.out.multiple"));
-        editor.show();
-        if( !editor.isOK() )
+        editor = allFilesAreFolders(files) ? new CheckoutDirDialog(project) :
+                 new CheckoutFilesDialog(project);
+        editor.setTitle((files.length == 1) ? VssBundle.message("dialog.title.check.out.file", files[0].getName()) :
+                        VssBundle.message("dialog.title.check.out.multiple"));
+        if (!editor.showAndGet()) {
           return;
+        }
       }
 
       isActionProduces = true;

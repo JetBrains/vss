@@ -37,13 +37,12 @@ public class VssEditFileProvider implements EditFileProvider
       //  Calc options for each iteration since user can set "do not show"
       //  in the middle.
       boolean showOptions = VssVcs.getInstance( project ).getCheckoutOptions().getValue();
-      if( showOptions )
-      {
-        CheckoutFilesDialog editor = new CheckoutFilesDialog( project );
-        editor.setTitle( VssBundle.message( "dialog.title.check.out.file", file.getName()) );
-        editor.show();
-        if( !editor.isOK() )
+      if( showOptions ) {
+        CheckoutFilesDialog editor = new CheckoutFilesDialog(project);
+        editor.setTitle(VssBundle.message("dialog.title.check.out.file", file.getName()));
+        if (!editor.showAndGet()) {
           return;
+        }
       }
       ( new CheckoutFileCommand( project, file, errors )).execute();
 

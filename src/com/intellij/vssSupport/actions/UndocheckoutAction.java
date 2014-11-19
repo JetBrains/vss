@@ -2,7 +2,6 @@ package com.intellij.vssSupport.actions;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vcs.FileStatus;
@@ -65,15 +64,14 @@ public class UndocheckoutAction extends VssAction
     {
       VssConfiguration config = VssConfiguration.getInstance(project);
       boolean showOptions = VssVcs.getInstance(config.getProject()).getUndoCheckoutOptions().getValue();
-      if( showOptions || isShiftPressed( e ) )
-      {
-        OptionsDialog editor = allFilesAreFolders( files ) ? new UndocheckoutDirDialog( project ) :
-                                                             new UndocheckoutFilesDialog( project );
-        editor.setTitle( (files.length == 1) ? VssBundle.message( "dialog.title.undo.check.out", files[ 0 ].getName()) :
-                                               VssBundle.message( "dialog.title.undo.check.out.multiple" ) );
-        editor.show();
-        if( !editor.isOK())
+      if( showOptions || isShiftPressed( e ) ) {
+        OptionsDialog editor = allFilesAreFolders(files) ? new UndocheckoutDirDialog(project) :
+                               new UndocheckoutFilesDialog(project);
+        editor.setTitle((files.length == 1) ? VssBundle.message("dialog.title.undo.check.out", files[0].getName()) :
+                        VssBundle.message("dialog.title.undo.check.out.multiple"));
+        if (!editor.showAndGet()) {
           return;
+        }
       }
 
       if( allFilesAreFolders( files ))

@@ -2,7 +2,6 @@ package com.intellij.vssSupport.actions;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
@@ -23,19 +22,16 @@ import java.util.ArrayList;
  */
 public class LabelAction extends VssAction
 {
-  public void actionPerformed( AnActionEvent e )
-  {
-    Project project = e.getData( CommonDataKeys.PROJECT );
-    SetLabelDialog dlg = new SetLabelDialog( project );
-    dlg.show();
-    if( dlg.isOK() && StringUtil.isNotEmpty( dlg.getLabel() ) )
-    {
-      VirtualFile[] files = VssUtil.getVirtualFiles( e );
+  public void actionPerformed( AnActionEvent e ) {
+    Project project = e.getData(CommonDataKeys.PROJECT);
+    SetLabelDialog dlg = new SetLabelDialog(project);
+    if (dlg.showAndGet() && StringUtil.isNotEmpty(dlg.getLabel())) {
+      VirtualFile[] files = VssUtil.getVirtualFiles(e);
       ArrayList<VcsException> errors = new ArrayList<VcsException>();
-      (new LabelCommand( project, dlg.getLabel(), dlg.getComment(), files, errors )).execute();
+      (new LabelCommand(project, dlg.getLabel(), dlg.getComment(), files, errors)).execute();
 
-      if( !errors.isEmpty() )
-        Messages.showErrorDialog( errors.get( 0 ).getLocalizedMessage(), VssBundle.message("message.title.could.not.start.process") );
+      if (!errors.isEmpty())
+        Messages.showErrorDialog(errors.get(0).getLocalizedMessage(), VssBundle.message("message.title.could.not.start.process"));
     }
   }
 
