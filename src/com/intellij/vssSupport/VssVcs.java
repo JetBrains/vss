@@ -97,7 +97,7 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
   public  HashMap<String, String> renamedFolders;
   private final HashSet<VirtualFile> newFiles;
 
-  public VssVcs(Project project, UltimateVerifier verifier) {
+  public VssVcs(@NotNull Project project, UltimateVerifier verifier) {
     super( project, NAME);
     PluginVerifier.verifyUltimatePlugin(verifier);
 

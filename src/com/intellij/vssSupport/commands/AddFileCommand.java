@@ -3,6 +3,7 @@ package com.intellij.vssSupport.commands;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.VcsException;
 import com.intellij.openapi.vfs.VirtualFile;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.List;
@@ -15,7 +16,7 @@ public class AddFileCommand extends VssCommandAbstract
   private final VirtualFile file;
   private final boolean continueUponPositiveAnswer;
 
-  public AddFileCommand( Project project, VirtualFile vFile, List<VcsException> errors )
+  public AddFileCommand( @NotNull Project project, VirtualFile vFile, List<VcsException> errors )
   {
     super( project, errors );
     file = vFile;

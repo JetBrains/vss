@@ -7,6 +7,7 @@ import com.intellij.openapi.vcs.VcsException;
 import com.intellij.vssSupport.VssOutputCollector;
 import com.intellij.vssSupport.VssUtil;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.HashSet;
@@ -34,7 +35,7 @@ public class StatusMultipleCommand extends VssCommandAbstract
   private HashSet<String> nonexistingFiles;
   private HashSet<String> checkoutFiles;
 
-  public StatusMultipleCommand( Project project, List<String> paths )
+  public StatusMultipleCommand( @NotNull Project project, List<String> paths )
   {
     super( project );
     files = paths;

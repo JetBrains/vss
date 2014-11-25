@@ -37,7 +37,7 @@ public class VssContentRevision implements ContentRevision
   private File      myTmpFile;
   private String    myServerContent;
 
-  public VssContentRevision( FilePath path, Project proj )
+  public VssContentRevision( FilePath path, @NotNull Project proj )
   {
     this.path = path;
     project = proj;

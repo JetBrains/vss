@@ -16,13 +16,15 @@ import com.intellij.vssSupport.Configuration.VssConfiguration;
 import com.intellij.vssSupport.commands.DirectoryCommand;
 import com.intellij.vssSupport.commands.PropertiesCommand;
 import com.intellij.vssSupport.commands.StatusMultipleCommand;
-import static com.intellij.vssSupport.commands.VssCheckoutAbstractCommand.SUCCESSFUL_CHECKOUT;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+
+import static com.intellij.vssSupport.commands.VssCheckoutAbstractCommand.SUCCESSFUL_CHECKOUT;
 
 /**
  * Created by IntelliJ IDEA.
@@ -35,6 +37,7 @@ public class VssChangeProvider implements ChangeProvider
 
   private static final int PER_FILE_DIFF_MARGIN = 30;
 
+  @NotNull
   private final Project project;
   private final VssVcs  host;
   private boolean isBatchUpdate;
@@ -47,7 +50,7 @@ public class VssChangeProvider implements ChangeProvider
   private final HashSet<String> filesObsolete = new HashSet<String>();
   private final HashSet<String> filesIgnored = new HashSet<String>();
 
-  public VssChangeProvider( Project project, VssVcs host )
+  public VssChangeProvider( @NotNull Project project, VssVcs host )
   {
     this.project = project;
     this.host = host;

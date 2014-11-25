@@ -44,6 +44,7 @@ import com.intellij.vssSupport.VssBundle;
 import com.intellij.vssSupport.VssOutputCollector;
 import com.intellij.vssSupport.VssUtil;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,18 +57,18 @@ public abstract class VssCommandAbstract
   @NonNls protected static final String _I_Y_OPTION = "-I-Y";
   @NonNls protected static final String _I__OPTION = "-I-";
 
-  protected final Project myProject;
+  @NotNull protected final Project myProject;
   protected final VssConfiguration myConfig;
   protected final List<VcsException> myErrors;
 
-  protected VssCommandAbstract( Project project )
+  protected VssCommandAbstract( @NotNull Project project )
   {
     myProject = project;
     myErrors = new ArrayList<VcsException>();
     myConfig = VssConfiguration.getInstance( project );
   }
 
-  protected VssCommandAbstract( Project project, List<VcsException> errors )
+  protected VssCommandAbstract( @NotNull Project project, List<VcsException> errors )
   {
     myProject = project;
     myErrors = errors;
