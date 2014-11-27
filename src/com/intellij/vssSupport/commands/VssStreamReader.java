@@ -1,10 +1,12 @@
 package com.intellij.vssSupport.commands;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vcs.impl.CancellableRunnable;
-import com.intellij.openapi.vfs.encoding.EncodingManager;
+import com.intellij.openapi.vfs.encoding.EncodingProjectManager;
 import com.intellij.vssSupport.VssBundle;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -24,12 +26,14 @@ public final class VssStreamReader implements CancellableRunnable
 
   private final ByteArrayOutputStream myByteContents;
   private final InputStream is;
+  @NotNull private final Project myProject;
   private String myOutput;
   private String reason;
 
-  public VssStreamReader(final InputStream is)
+  public VssStreamReader(final InputStream is, @NotNull Project project)
   {
     this.is = is;
+    myProject = project;
     myByteContents = new ByteArrayOutputStream();
     reason = null;
   }
@@ -56,7 +60,7 @@ public final class VssStreamReader implements CancellableRunnable
     if( myOutput == null )
     {
       try {
-        myOutput = StringUtil.convertLineSeparators( myByteContents.toString( EncodingManager.getInstance().getDefaultCharset().name() ) );
+        myOutput = StringUtil.convertLineSeparators( myByteContents.toString( EncodingProjectManager.getInstance(myProject).getDefaultCharset().name() ) );
       }
       catch( UnsupportedEncodingException e )
       {

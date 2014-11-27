@@ -13,6 +13,7 @@ import com.intellij.util.ArrayUtil;
 import com.intellij.vssSupport.VssBundle;
 import com.intellij.vssSupport.VssOutputCollector;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,7 +42,7 @@ public class VSSExecUtil
 
   public static interface UserInput {  void doInput(Writer writer);  }
 
-  public synchronized static void runProcess( final Project project,
+  public synchronized static void runProcess( @NotNull Project project,
                                               String exePath, List<String> paremeters,
                                               HashMap<String, String> envParams, String workingDir,
                                               VssOutputCollector listener) throws ExecutionException
@@ -70,7 +71,7 @@ public class VSSExecUtil
       progress.setText( "" );
   }
 
-  private static void runProcessImpl(Project project, VssOutputCollector listener, GeneralCommandLine cmdLine) throws ExecutionException {
+  private static void runProcessImpl(@NotNull final Project project, VssOutputCollector listener, GeneralCommandLine cmdLine) throws ExecutionException {
     Process process = null;
     VssProcess worker = null;
     ProcessWaiter<VssStreamReader> waiter = null;
@@ -83,7 +84,7 @@ public class VSSExecUtil
 
         waiter = new ProcessWaiter<VssStreamReader>() {
           protected VssStreamReader createStreamListener(InputStream stream) {
-            return new VssStreamReader(stream);
+            return new VssStreamReader(stream, project);
           }
         };
 
@@ -190,8 +191,8 @@ public class VSSExecUtil
 
   private static class VssProcess extends InterruptibleProcess
   {
-    private final Project project;
-    public VssProcess( Process process, Project project )
+    @NotNull private final Project project;
+    public VssProcess( Process process, @NotNull Project project )
     {
       super( process, TIMEOUT_LIMIT, TimeUnit.SECONDS );
       this.project = project;
