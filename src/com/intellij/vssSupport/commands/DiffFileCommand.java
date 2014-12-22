@@ -1,10 +1,15 @@
 package com.intellij.vssSupport.commands;
 
-import com.intellij.openapi.diff.*;
+import com.intellij.diff.DiffContentFactory;
+import com.intellij.diff.DiffManager;
+import com.intellij.diff.contents.DiffContent;
+import com.intellij.diff.requests.DiffRequest;
+import com.intellij.diff.requests.SimpleDiffRequest;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vcs.VcsException;
+import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.vssSupport.VssBundle;
 import com.intellij.vssSupport.VssOutputCollector;
@@ -93,13 +98,23 @@ public class DiffFileCommand extends VssCommandAbstract
         }
         try
         {
-          SimpleDiffRequest diffData = new SimpleDiffRequest(myProject, VssBundle.message("dialog.title.diff.for.file", myFile.getPresentableUrl()));
-          diffData.setContentTitles(VssBundle.message("diff.content.title.repository"), VssBundle.message("diff.content.title.local"));
-          DiffContent currentContent = FileContent.fromFile(myProject, myFile);
-          DiffContent vssContent =
-            SimpleContent.fromIoFile(myTmpFile, myFile.getCharset().name(), currentContent.getContentType());
-          diffData.setContents( vssContent, currentContent );
-          DiffManager.getInstance().getDiffTool().show( diffData );
+          String title = VssBundle.message("dialog.title.diff.for.file", myFile.getPresentableUrl());
+
+          String title1 = VssBundle.message("diff.content.title.repository");
+          String title2 = VssBundle.message("diff.content.title.local");
+
+          final LocalFileSystem lfs = LocalFileSystem.getInstance();
+          VirtualFile tmpFile = lfs.findFileByIoFile(myTmpFile);
+          if (tmpFile == null) {
+            tmpFile = lfs.refreshAndFindFileByIoFile(myTmpFile);
+          }
+          if (tmpFile == null) throw new IOException("File not found" + tmpFile);
+
+          DiffContent vssContent = DiffContentFactory.getInstance().create(myProject, tmpFile);
+          DiffContent currentContent = DiffContentFactory.getInstance().create(myProject, myFile);
+
+          DiffRequest request = new SimpleDiffRequest(title, vssContent, currentContent, title1, title2);
+          DiffManager.getInstance().showDiff(myProject, request);
         }
         catch (IOException e) {
           myErrors.add( new VcsException(e.getLocalizedMessage()) );
