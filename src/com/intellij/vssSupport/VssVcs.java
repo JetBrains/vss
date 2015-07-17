@@ -124,27 +124,40 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
   public VcsShowConfirmationOption getAddConfirmation()   {  return addConfirmation;     }
   public VcsShowConfirmationOption getRemoveConfirmation(){  return removeConfirmation;  }
 
+  @Override
   @NotNull
   public String getComponentName()  {  return "VssVcs";  }
+  @Override
   public String getDisplayName()    {  return NAME;  }
+  @Override
   public String getMenuItemText()   {  return VssBundle.message("menu.item.source.safe.group.name"); }
 
   public static VssVcs getInstance( Project project )   {  return project.getComponent(VssVcs.class);  }
 
-  public Configurable         getConfigurable()         {  return new VssConfigurable( myProject );  }
+  @Override
+  public Configurable         getConfigurable()         {  return new VssConfigurable(myProject );  }
+  @Override
   public CheckinEnvironment   createCheckinEnvironment()   {  return checkinEnvironment;  }
+  @Override
   public RollbackEnvironment  createRollbackEnvironment()  {  return rollbackEnvironment; }
 
+  @Override
   public ChangeProvider       getChangeProvider()       {  return changeProvider;    }
+  @Override
   public VcsHistoryProvider   getVcsHistoryProvider()   {  return historyProvider;   }
+  @Override
   public EditFileProvider     getEditFileProvider()     {  return editFileProvider;  }
+  @Override
   public UpdateEnvironment    createUpdateEnvironment()    {  return updateEnvironment; }
   public HashSet<String>      getSavedProjectPaths()    {  return savedProjectPaths;  }
   public void                 addSavedProjectPath( String path ) {  savedProjectPaths.add( path );  }
 
+  @Override
   public void   initComponent()     {}
-  public void   disposeComponent()  {  checkinEnvironment = null;  }
+  @Override
+  public void   disposeComponent()  {checkinEnvironment = null;  }
 
+  @Override
   public void projectOpened()
   {
     final ProjectLevelVcsManager vcsManager = ProjectLevelVcsManager.getInstance(getProject());
@@ -157,14 +170,17 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
     removeConfirmation = vcsManager.getStandardConfirmation( VcsConfiguration.StandardConfirmation.REMOVE, this );
 
     StartupManager.getInstance(myProject).registerPostStartupActivity(new DumbAwareRunnable() {
+      @Override
       public void run() {
         addIgnoredFiles();
       }
     });
   }
 
+  @Override
   public void projectClosed() {}
 
+  @Override
   public void activate()
   {
     //  Control the appearance of project items so that we can easily
@@ -209,6 +225,7 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
     }
   }
 
+  @Override
   public void deactivate()
   {
     LocalFileSystem.getInstance().removeVirtualFileListener( listener );
@@ -253,7 +270,8 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
     {
       final String newPat = newPattern;
       ApplicationManager.getApplication().runWriteAction( new Runnable()
-        { public void run() { FileTypeManager.getInstance().setIgnoredFilesList( newPat ); } }
+        { @Override
+                                                            public void run() { FileTypeManager.getInstance().setIgnoredFilesList(newPat ); } }
       );
     }
   }
@@ -408,11 +426,13 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
     return mgr.isIgnoredFile( file );
   }
 
-  public boolean fileExistsInVcs( FilePath path ) {
+  @Override
+  public boolean fileExistsInVcs(FilePath path ) {
     return fileIsUnderVcs( path ) && super.fileExistsInVcs( path );
   }
 
-  public boolean fileIsUnderVcs( FilePath path )
+  @Override
+  public boolean fileIsUnderVcs(FilePath path )
   {
     ProjectLevelVcsManager pm = ProjectLevelVcsManager.getInstance( getProject() );
     return pm.getVcsFor( path ) == this;
@@ -439,7 +459,8 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
   public boolean isWasRenamed( String path )    {  return renamedFiles.containsValue( path );  }
   public boolean isNewOverRenamed( String path ){  return containsNew( path ) && isWasRenamed( path );  }
 
-  public boolean isVersionedDirectory( VirtualFile dir )
+  @Override
+  public boolean isVersionedDirectory(VirtualFile dir )
   {
     final VirtualFile versionFile2003 = dir.findChild( VSSVER_FILE_SIG );
     final VirtualFile versionFile2005 = dir.findChild( VSSVER2_FILE_SIG );
@@ -474,7 +495,8 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
   // JDOMExternalizable methods
   //
 
-  public void readExternal( final Element element ) throws InvalidDataException
+  @Override
+  public void readExternal(final Element element ) throws InvalidDataException
   {
     readElements( element, removedFiles, PERSISTENCY_REMOVED_FILE_TAG, false );
     readElements( element, removedFolders, PERSISTENCY_REMOVED_FOLDER_TAG, false );
@@ -538,6 +560,7 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
     }
   }
 
+  @Override
   public void writeExternal(final Element element) throws WriteExternalException
   {
     writeElement( element, removedFiles, PERSISTENCY_REMOVED_FILE_TAG );
