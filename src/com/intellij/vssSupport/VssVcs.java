@@ -1,7 +1,3 @@
-/*
- * Created by IntelliJ IDEA.
- * User: LloiX
- */
 package com.intellij.vssSupport;
 
 import com.intellij.openapi.application.ApplicationManager;
@@ -15,7 +11,10 @@ import com.intellij.openapi.options.UnnamedConfigurable;
 import com.intellij.openapi.project.DumbAwareRunnable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.StartupManager;
-import com.intellij.openapi.util.*;
+import com.intellij.openapi.util.InvalidDataException;
+import com.intellij.openapi.util.JDOMExternalizable;
+import com.intellij.openapi.util.RoamingTypeDisabled;
+import com.intellij.openapi.util.WriteExternalException;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vcs.*;
 import com.intellij.openapi.vcs.changes.ChangeListManager;
@@ -52,10 +51,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExternalizable, RoamingTypeDisabled
-{
-  public static final Key<String> FILE_TYPE = new Key<String>("FILE_TYPE");
-
+public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExternalizable, RoamingTypeDisabled {
   @NonNls private static final String PERSISTENCY_REMOVED_FILE_TAG = "SourceSafePersistencyRemovedFile";
   @NonNls private static final String PERSISTENCY_REMOVED_FOLDER_TAG = "SourceSafePersistencyRemovedFolder";
   @NonNls private static final String PERSISTENCY_RENAMED_FILE_TAG = "SourceSafePersistencyRenamedFile";
@@ -75,9 +71,9 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
   private VssCheckinEnvironment checkinEnvironment;
   private final VssRollbackEnvironment rollbackEnvironment;
   private final VssUpdateEnvironment updateEnvironment;
-  private final VssChangeProvider  changeProvider;
+  private final VssChangeProvider changeProvider;
   private final VssFileHistoryProvider historyProvider;
-  private final EditFileProvider  editFileProvider;
+  private final EditFileProvider editFileProvider;
   private VirtualFileListener listener;
   private LocalFileOperationsHandler removalHandler;
 
@@ -87,26 +83,26 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
   private VcsShowConfirmationOption addConfirmation;
   private VcsShowConfirmationOption removeConfirmation;
 
-  private final HashSet<String>      savedProjectPaths;
+  private final HashSet<String> savedProjectPaths;
 
-  public  HashSet<String> removedFiles;
-  public  HashSet<String> removedFolders;
-  public  HashSet<String> deletedFiles;
-  public  HashSet<String> deletedFolders;
-  public  HashMap<String, String> renamedFiles;
-  public  HashMap<String, String> renamedFolders;
+  public HashSet<String> removedFiles;
+  public HashSet<String> removedFolders;
+  public HashSet<String> deletedFiles;
+  public HashSet<String> deletedFolders;
+  public HashMap<String, String> renamedFiles;
+  public HashMap<String, String> renamedFolders;
   private final HashSet<VirtualFile> newFiles;
 
   public VssVcs(@NotNull Project project, UltimateVerifier verifier) {
-    super( project, NAME);
+    super(project, NAME);
     PluginVerifier.verifyUltimatePlugin(verifier);
 
-    checkinEnvironment = new VssCheckinEnvironment( project, this );
-    rollbackEnvironment = new VssRollbackEnvironment( project, this );
-    updateEnvironment = new VssUpdateEnvironment( project );
-    changeProvider = new VssChangeProvider( project, this );
-    historyProvider = new VssFileHistoryProvider( project );
-    editFileProvider = new VssEditFileProvider( project );
+    checkinEnvironment = new VssCheckinEnvironment(project, this);
+    rollbackEnvironment = new VssRollbackEnvironment(project, this);
+    updateEnvironment = new VssUpdateEnvironment(project);
+    changeProvider = new VssChangeProvider(project, this);
+    historyProvider = new VssFileHistoryProvider(project);
+    editFileProvider = new VssEditFileProvider(project);
 
     removedFiles = new HashSet<String>();
     removedFolders = new HashSet<String>();
@@ -118,56 +114,100 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
     savedProjectPaths = new HashSet<String>();
   }
 
-  public VcsShowSettingOption getCheckoutOptions()        {  return myCheckoutOptions;   }
-  public VcsShowSettingOption getUndoCheckoutOptions()    {  return myUndoCheckoutOptions;  }
-  public VcsShowSettingOption getGetOptions()             {  return myGetOptions;        }
-  public VcsShowConfirmationOption getAddConfirmation()   {  return addConfirmation;     }
-  public VcsShowConfirmationOption getRemoveConfirmation(){  return removeConfirmation;  }
+  public VcsShowSettingOption getCheckoutOptions() {
+    return myCheckoutOptions;
+  }
+
+  public VcsShowSettingOption getUndoCheckoutOptions() {
+    return myUndoCheckoutOptions;
+  }
+
+  public VcsShowSettingOption getGetOptions() {
+    return myGetOptions;
+  }
+
+  public VcsShowConfirmationOption getAddConfirmation() {
+    return addConfirmation;
+  }
+
+  public VcsShowConfirmationOption getRemoveConfirmation() {
+    return removeConfirmation;
+  }
 
   @Override
   @NotNull
-  public String getComponentName()  {  return "VssVcs";  }
-  @Override
-  public String getDisplayName()    {  return NAME;  }
-  @Override
-  public String getMenuItemText()   {  return VssBundle.message("menu.item.source.safe.group.name"); }
-
-  public static VssVcs getInstance( Project project )   {  return project.getComponent(VssVcs.class);  }
+  public String getComponentName() {
+    return "VssVcs";
+  }
 
   @Override
-  public Configurable         getConfigurable()         {  return new VssConfigurable(myProject );  }
-  @Override
-  public CheckinEnvironment   createCheckinEnvironment()   {  return checkinEnvironment;  }
-  @Override
-  public RollbackEnvironment  createRollbackEnvironment()  {  return rollbackEnvironment; }
+  public String getDisplayName() {
+    return NAME;
+  }
 
   @Override
-  public ChangeProvider       getChangeProvider()       {  return changeProvider;    }
-  @Override
-  public VcsHistoryProvider   getVcsHistoryProvider()   {  return historyProvider;   }
-  @Override
-  public EditFileProvider     getEditFileProvider()     {  return editFileProvider;  }
-  @Override
-  public UpdateEnvironment    createUpdateEnvironment()    {  return updateEnvironment; }
-  public HashSet<String>      getSavedProjectPaths()    {  return savedProjectPaths;  }
-  public void                 addSavedProjectPath( String path ) {  savedProjectPaths.add( path );  }
+  public String getMenuItemText() {
+    return VssBundle.message("menu.item.source.safe.group.name");
+  }
+
+  public static VssVcs getInstance(Project project) {
+    return project.getComponent(VssVcs.class);
+  }
 
   @Override
-  public void   initComponent()     {}
-  @Override
-  public void   disposeComponent()  {checkinEnvironment = null;  }
+  public Configurable getConfigurable() {
+    return new VssConfigurable(myProject);
+  }
 
   @Override
-  public void projectOpened()
-  {
+  public CheckinEnvironment createCheckinEnvironment() {
+    return checkinEnvironment;
+  }
+
+  @Override
+  public RollbackEnvironment createRollbackEnvironment() {
+    return rollbackEnvironment;
+  }
+
+  @Override
+  public ChangeProvider getChangeProvider() {
+    return changeProvider;
+  }
+
+  @Override
+  public VcsHistoryProvider getVcsHistoryProvider() {
+    return historyProvider;
+  }
+
+  @Override
+  public EditFileProvider getEditFileProvider() {
+    return editFileProvider;
+  }
+
+  @Override
+  public UpdateEnvironment createUpdateEnvironment() {
+    return updateEnvironment;
+  }
+
+  @Override
+  public void initComponent() {
+  }
+
+  @Override
+  public void disposeComponent() {
+    checkinEnvironment = null;
+  }
+
+  @Override
+  public void projectOpened() {
     final ProjectLevelVcsManager vcsManager = ProjectLevelVcsManager.getInstance(getProject());
 
     myCheckoutOptions = vcsManager.getStandardOption(VcsConfiguration.StandardOption.CHECKOUT, this);
     myUndoCheckoutOptions = vcsManager.getOrCreateCustomOption(VssBundle.message("action.name.undo.check.out"), this);
     myGetOptions = vcsManager.getOrCreateCustomOption(VssBundle.message("action.name.get.latest.version"), this);
 
-    addConfirmation = vcsManager.getStandardConfirmation( VcsConfiguration.StandardConfirmation.ADD, this );
-    removeConfirmation = vcsManager.getStandardConfirmation( VcsConfiguration.StandardConfirmation.REMOVE, this );
+    addConfirmation = vcsManager.getStandardConfirmation(VcsConfiguration.StandardConfirmation.ADD, this);
+    removeConfirmation = vcsManager.getStandardConfirmation(VcsConfiguration.StandardConfirmation.REMOVE, this);
 
     StartupManager.getInstance(myProject).registerPostStartupActivity(new DumbAwareRunnable() {
       @Override
@@ -178,71 +218,64 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
   }
 
   @Override
-  public void projectClosed() {}
+  public void projectClosed() {
+  }
 
   @Override
-  public void activate()
-  {
+  public void activate() {
     //  Control the appearance of project items so that we can easily
     //  track down potential changes in the repository.
-    listener = new VFSListener( getProject(), this );
-    removalHandler = new VssLocalFileOperationsHandler( myProject, this );
-    LocalFileSystem.getInstance().addVirtualFileListener( listener );
-    CommandProcessor.getInstance().addCommandListener( (CommandListener)listener );
-    LocalFileSystem.getInstance().registerAuxiliaryFileOperationsHandler( removalHandler );
+    listener = new VFSListener(getProject(), this);
+    removalHandler = new VssLocalFileOperationsHandler(myProject, this);
+    LocalFileSystem.getInstance().addVirtualFileListener(listener);
+    CommandProcessor.getInstance().addCommandListener((CommandListener)listener);
+    LocalFileSystem.getInstance().registerAuxiliaryFileOperationsHandler(removalHandler);
 
-    VssConfiguration config = VssConfiguration.getInstance( myProject );
-    ProjectLevelVcsManager mgr = ProjectLevelVcsManager.getInstance( myProject );
+    VssConfiguration config = VssConfiguration.getInstance(myProject);
+    ProjectLevelVcsManager mgr = ProjectLevelVcsManager.getInstance(myProject);
     List<VcsDirectoryMapping> currentMappings = mgr.getDirectoryMappings();
     List<VcsDirectoryMapping> newMappings = new ArrayList<VcsDirectoryMapping>();
 
     //  Load old-formatted content root mappings, transform them into new ones.
     //  VssConfiguration reads them but never writes down again, so this procedure
     //  will be performed once per old-formatted project.
-    if( config.getMapItemCount() > 0 )
-    {
-      for( int i = 0; i < config.getMapItemCount(); i++ )
-      {
-        MapItem item = config.getMapItem( i );
-        if( !hasMappedFolder( item.LOCAL_PATH, currentMappings ) )
-        {
-          VcsDirectoryMapping mapping = new VcsDirectoryMapping( item.LOCAL_PATH, getName() );
-          mapping.setRootSettings( new VssRootSettings( item.VSS_PATH ) );
-          newMappings.add( mapping );
+    if (config.getMapItemCount() > 0) {
+      for (int i = 0; i < config.getMapItemCount(); i++) {
+        MapItem item = config.getMapItem(i);
+        if (!hasMappedFolder(item.LOCAL_PATH, currentMappings)) {
+          VcsDirectoryMapping mapping = new VcsDirectoryMapping(item.LOCAL_PATH, getName());
+          mapping.setRootSettings(new VssRootSettings(item.VSS_PATH));
+          newMappings.add(mapping);
         }
       }
     }
-    if( newMappings.size() > 0 )
-    {
-      mgr.setDirectoryMappings( newMappings );
+    if (newMappings.size() > 0) {
+      mgr.setDirectoryMappings(newMappings);
     }
 
     //  Add information about VSS project roots from the local project.
     List<VcsDirectoryMapping> list = mgr.getDirectoryMappings();
-    for( VcsDirectoryMapping pair : list )
-    {
-      savedProjectPaths.add( pair.getVcs() );
+    for (VcsDirectoryMapping pair : list) {
+      savedProjectPaths.add(pair.getVcs());
     }
   }
 
   @Override
-  public void deactivate()
-  {
-    LocalFileSystem.getInstance().removeVirtualFileListener( listener );
-    CommandProcessor.getInstance().removeCommandListener( (CommandListener)listener );
-    LocalFileSystem.getInstance().unregisterAuxiliaryFileOperationsHandler( removalHandler );
+  public void deactivate() {
+    LocalFileSystem.getInstance().removeVirtualFileListener(listener);
+    CommandProcessor.getInstance().removeCommandListener((CommandListener)listener);
+    LocalFileSystem.getInstance().unregisterAuxiliaryFileOperationsHandler(removalHandler);
 
     ContentRevisionFactory.detachListeners();
   }
 
-  private static boolean hasMappedFolder( String path, List<VcsDirectoryMapping> mappings )
-  {
-    for( VcsDirectoryMapping mapping : mappings )
-    {
+  private static boolean hasMappedFolder(String path, List<VcsDirectoryMapping> mappings) {
+    for (VcsDirectoryMapping mapping : mappings) {
       //  remove possible backslash in settings.
-      final String normalPath = VssUtil.normalizeDirPath( mapping.getDirectory() );
-      if( normalPath.equalsIgnoreCase( path ) )
+      final String normalPath = VssUtil.normalizeDirPath(mapping.getDirectory());
+      if (normalPath.equalsIgnoreCase(path)) {
         return true;
+      }
     }
     return false;
   }
@@ -251,133 +284,109 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
    * Automatically add "vssver.scc" pattern into the list of ignored file so that
    * they are not becoming the part of the project.
    */
-  private static void addIgnoredFiles()
-  {
+  private static void addIgnoredFiles() {
     String patterns = FileTypeManager.getInstance().getIgnoredFilesList();
 
     //  This code corrects the obvious bug in the previous installations
     @NonNls String errorPattern = "vssver.sccvssver2.scc;";
-    patterns = patterns.replaceAll( errorPattern, "" );
+    patterns = patterns.replaceAll(errorPattern, "");
 
     String newPattern = patterns;
-    if( patterns.indexOf( VSSVER_FILE_SIG ) == -1 )
-      newPattern += (( newPattern.charAt( newPattern.length() - 1 ) == ';') ? "" : ";" ) + VSSVER_FILE_SIG;
+    if (!patterns.contains(VSSVER_FILE_SIG)) {
+      newPattern += ((newPattern.charAt(newPattern.length() - 1) == ';') ? "" : ";") + VSSVER_FILE_SIG;
+    }
 
-    if( patterns.indexOf( VSSVER2_FILE_SIG ) == -1 )
-      newPattern += (( newPattern.charAt( newPattern.length() - 1 ) == ';') ? "" : ";" ) + VSSVER2_FILE_SIG;
+    if (!patterns.contains(VSSVER2_FILE_SIG)) {
+      newPattern += ((newPattern.charAt(newPattern.length() - 1) == ';') ? "" : ";") + VSSVER2_FILE_SIG;
+    }
 
-    if( !newPattern.equals( patterns ))
-    {
+    if (!newPattern.equals(patterns)) {
       final String newPat = newPattern;
-      ApplicationManager.getApplication().runWriteAction( new Runnable()
-        { @Override
-                                                            public void run() { FileTypeManager.getInstance().setIgnoredFilesList(newPat ); } }
+      ApplicationManager.getApplication().runWriteAction(new Runnable() {
+                                                           @Override
+                                                           public void run() {
+                                                             FileTypeManager.getInstance().setIgnoredFilesList(newPat);
+                                                           }
+                                                         }
       );
     }
   }
 
-  public void checkinFile( VirtualFile file, List<VcsException> errors, boolean suppressWarns )
-  {
-    new CheckinFileCommand( myProject, file, errors, suppressWarns ).execute();
+  public void checkinFile(VirtualFile file, List<VcsException> errors, boolean suppressWarns) {
+    new CheckinFileCommand(myProject, file, errors, suppressWarns).execute();
   }
 
-  public void renameAndCheckInFile( String path, String newName, List<VcsException> errors )
-  {
-    File file = new File( path );
-    File newFile = new File( file.getParentFile(), newName );
-    VirtualFile newVFile = VcsUtil.getVirtualFile( newFile );
-
-    new RenameFileCommand( myProject, newVFile, file.getName(), errors ).execute();
-    new CheckinFileCommand( myProject, newVFile, errors ).execute();
-  }
-
-  public void renameDirectory( String path, String newName, List<VcsException> errors )
-  {
+  public void renameAndCheckInFile(String path, String newName, List<VcsException> errors) {
     File file = new File(path);
-    File newFile = new File( file.getParentFile(), newName );
-    VirtualFile newVFile = VcsUtil.getVirtualFile( newFile );
-    RenameFileCommand cmd = new RenameFileCommand( myProject, newVFile, file.getName(), errors );
+    File newFile = new File(file.getParentFile(), newName);
+    VirtualFile newVFile = VcsUtil.getVirtualFile(newFile);
+
+    new RenameFileCommand(myProject, newVFile, file.getName(), errors).execute();
+    new CheckinFileCommand(myProject, newVFile, errors).execute();
+  }
+
+  public void renameDirectory(String path, String newName, List<VcsException> errors) {
+    File file = new File(path);
+    File newFile = new File(file.getParentFile(), newName);
+    VirtualFile newVFile = VcsUtil.getVirtualFile(newFile);
+    RenameFileCommand cmd = new RenameFileCommand(myProject, newVFile, file.getName(), errors);
     cmd.execute();
   }
 
-  public void moveRenameAndCheckInFile( String path, String newParentPath, String newName,
-                                        List<VcsException> errors )
-  {
-    File oldFile = new File( path );
-    File newParent = new File( newParentPath );
-    File newFile = new File( newParent, newName );
+  public void moveRenameAndCheckInFile(String path, String newParentPath, String newName,
+                                       List<VcsException> errors) {
+    File oldFile = new File(path);
+    File newParent = new File(newParentPath);
+    File newFile = new File(newParent, newName);
 
-    boolean isRenamed = !oldFile.getName().equals( newName );
+    boolean isRenamed = !oldFile.getName().equals(newName);
 
-    try
-    {
-      FileUtil.copy( newFile, oldFile );
-      VirtualFile newVFile = VcsUtil.getVirtualFile( newFile );
-      VirtualFile oldVFile = VcsUtil.waitForTheFile( oldFile.getPath() );
+    try {
+      FileUtil.copy(newFile, oldFile);
+      VirtualFile newVFile = VcsUtil.getVirtualFile(newFile);
+      VirtualFile oldVFile = VcsUtil.waitForTheFile(oldFile.getPath());
 
-      new CheckinFileCommand( myProject, oldVFile, errors ).execute();
-      new ShareFileCommand( myProject, oldFile, newFile, errors ).execute();
-      new DeleteFileOrDirectoryCommand( myProject, oldFile.getAbsolutePath(), errors ).execute();
-      if( isRenamed )
-      {
-        new RenameFileCommand( myProject, newVFile, oldFile.getName(), errors ).execute();
+      new CheckinFileCommand(myProject, oldVFile, errors).execute();
+      new ShareFileCommand(myProject, oldFile, newFile, errors).execute();
+      new DeleteFileOrDirectoryCommand(myProject, oldFile.getAbsolutePath(), errors).execute();
+      if (isRenamed) {
+        new RenameFileCommand(myProject, newVFile, oldFile.getName(), errors).execute();
       }
       oldFile.delete();
       newFile.setReadOnly();
     }
-    catch( IOException e )
-    {
-      errors.add( new VcsException( e.getMessage() ));
+    catch (IOException e) {
+      errors.add(new VcsException(e.getMessage()));
     }
   }
 
-  public void moveAndRenameDirectory(String path, String newParentPath, String newName, List<VcsException> errors )
-  {
-    File oldFile = new File( path );
-    boolean isRenamed = (oldFile.getName() != newName);
-    new MoveDirectoryCommand( myProject, oldFile, new File( newParentPath, oldFile.getName() ), errors ).execute();
-
-    if( isRenamed )
-    {
-      File newFile = new File( new File( newParentPath ), newName );
-      VirtualFile newVFile = VcsUtil.getVirtualFile( newFile );
-      new RenameFileCommand( myProject, newVFile, oldFile.getName(), errors ).execute();
-    }
-  }
-
-  public void addFile( VirtualFile file, List<VcsException> errors )
-  {
-    AddFileCommand cmd = new AddFileCommand( myProject, file, errors );
+  public void addFile(VirtualFile file, List<VcsException> errors) {
+    AddFileCommand cmd = new AddFileCommand(myProject, file, errors);
     cmd.execute();
   }
 
-  public void addFolder( VirtualFile folder, List<VcsException> errors )
-  {
-    CreateFolderCommand cmd = new CreateFolderCommand( myProject, folder, errors );
+  public void addFolder(VirtualFile folder, List<VcsException> errors) {
+    CreateFolderCommand cmd = new CreateFolderCommand(myProject, folder, errors);
     cmd.execute();
   }
 
-  public void removeFile( String path, List<VcsException> errors )
-  {
-    DeleteFileOrDirectoryCommand cmd = new DeleteFileOrDirectoryCommand( myProject, path, errors );
+  public void removeFile(String path, List<VcsException> errors) {
+    DeleteFileOrDirectoryCommand cmd = new DeleteFileOrDirectoryCommand(myProject, path, errors);
     cmd.execute();
   }
 
-  public boolean getLatestVersion( String path, boolean makeWritable, List<VcsException> errors )
-  {
-    GetFileCommand cmd = new GetFileCommand( getProject(), path, makeWritable, errors );
+  public boolean getLatestVersion(String path, boolean makeWritable, List<VcsException> errors) {
+    GetFileCommand cmd = new GetFileCommand(getProject(), path, makeWritable, errors);
     cmd.execute();
     return cmd.isFileNonExistent();
   }
 
-  public void rollbackDeleted( final String path, List<VcsException> errors )
-  {
-    getLatestVersion( path, false, errors );
+  public void rollbackDeleted(final String path, List<VcsException> errors) {
+    getLatestVersion(path, false, errors);
 
     //  Do not forget to refresh the VFS file holder.
-    VirtualFile file = VcsUtil.waitForTheFile( path );
-    if( file != null )
-    {
+    VirtualFile file = VcsUtil.waitForTheFile(path);
+    if (file != null) {
       //  During file deletion IDEA clears RO status from the file (if it is not
       //  cleared yet). If the file under the repository, this step causes checkout
       //  automatically (otherwise, RO status is not cleared and file can not be
@@ -387,32 +396,29 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
       //  Errors list is fake since we do not want to propagate any errors on this
       //  step back.
       List<VcsException> errorsFake = new ArrayList<VcsException>();
-      rollbackChanges( path, errorsFake );
+      rollbackChanges(path, errorsFake);
     }
   }
 
-  public void rollbackChanges( String path, List<VcsException> errors )
-  {
-    VirtualFile file = VcsUtil.getVirtualFile( path );
-    if( file != null )
-    {
-      if( file.isDirectory() )
-        (new UndocheckoutDirCommand( myProject, file, errors )).execute();
-      else
-        (new UndocheckoutFilesCommand( myProject, new VirtualFile[]{ file }, errors )).execute();
+  public void rollbackChanges(String path, List<VcsException> errors) {
+    VirtualFile file = VcsUtil.getVirtualFile(path);
+    if (file != null) {
+      if (file.isDirectory()) {
+        (new UndocheckoutDirCommand(myProject, file, errors)).execute();
+      }
+      else {
+        (new UndocheckoutFilesCommand(myProject, new VirtualFile[]{file}, errors)).execute();
+      }
     }
   }
 
-  public void rollbackChanges( String[] paths, List<VcsException> errors )
-  {
-    VirtualFile[] files = VcsUtil.paths2VFiles( paths );
-    if( files.length == 1 && files[ 0 ].isDirectory() )
-    {
-      (new UndocheckoutDirCommand( myProject, files[ 0 ], errors )).execute();
+  public void rollbackChanges(String[] paths, List<VcsException> errors) {
+    VirtualFile[] files = VcsUtil.paths2VFiles(paths);
+    if (files.length == 1 && files[0].isDirectory()) {
+      (new UndocheckoutDirCommand(myProject, files[0], errors)).execute();
     }
-    else
-    {
-      (new UndocheckoutFilesCommand( myProject, files, errors )).execute();
+    else {
+      (new UndocheckoutFilesCommand(myProject, files, errors)).execute();
     }
   }
 
@@ -420,70 +426,69 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
    * Consults <code>ChangeListManager</code> whether the file belongs to the list of ignored
    * files or resides under the ignored folder.
    */
-  public boolean isFileIgnored( VirtualFile file )
-  {
-    ChangeListManager mgr = ChangeListManager.getInstance( myProject );
-    return mgr.isIgnoredFile( file );
+  public boolean isFileIgnored(VirtualFile file) {
+    ChangeListManager mgr = ChangeListManager.getInstance(myProject);
+    return mgr.isIgnoredFile(file);
   }
 
   @Override
-  public boolean fileExistsInVcs(FilePath path ) {
-    return fileIsUnderVcs( path ) && super.fileExistsInVcs( path );
+  public boolean fileExistsInVcs(FilePath path) {
+    return fileIsUnderVcs(path) && super.fileExistsInVcs(path);
   }
 
   @Override
-  public boolean fileIsUnderVcs(FilePath path )
-  {
-    ProjectLevelVcsManager pm = ProjectLevelVcsManager.getInstance( getProject() );
-    return pm.getVcsFor( path ) == this;
+  public boolean fileIsUnderVcs(FilePath path) {
+    ProjectLevelVcsManager pm = ProjectLevelVcsManager.getInstance(getProject());
+    return pm.getVcsFor(path) == this;
   }
 
-  public boolean fileIsUnderVcs( VirtualFile file )
-  {
-    ProjectLevelVcsManager pm = ProjectLevelVcsManager.getInstance( getProject() );
-    return file != null && (pm.getVcsFor( file ) == this);
+  public void add2NewFile(@NotNull VirtualFile file) {
+    newFiles.add(file);
   }
 
-  public void add2NewFile( @NotNull VirtualFile file )    {  newFiles.add( file );             }
-  public void deleteNewFile( @NotNull VirtualFile file )  {  newFiles.remove( file );          }
-  public boolean containsNew( @NotNull VirtualFile file ) {  return newFiles.contains( file ); }
-  public boolean containsNew( String path )
-  {
-    VirtualFile file = VcsUtil.getVirtualFile( path );
-    return newFiles.contains( file );
+  public void deleteNewFile(@NotNull VirtualFile file) {
+    newFiles.remove(file);
   }
 
-  public boolean isDeletedFile( String path )   {  return deletedFiles.contains( path ) || removedFiles.contains( path );  }
-  public boolean isDeletedFolder( String path ) {  return deletedFolders.contains( path ) || removedFolders.contains( path );  }
+  public boolean containsNew(String path) {
+    VirtualFile file = VcsUtil.getVirtualFile(path);
+    return newFiles.contains(file);
+  }
 
-  public boolean isWasRenamed( String path )    {  return renamedFiles.containsValue( path );  }
-  public boolean isNewOverRenamed( String path ){  return containsNew( path ) && isWasRenamed( path );  }
+  public boolean isDeletedFolder(String path) {
+    return deletedFolders.contains(path) || removedFolders.contains(path);
+  }
+
+  public boolean isWasRenamed(String path) {
+    return renamedFiles.containsValue(path);
+  }
 
   @Override
-  public boolean isVersionedDirectory(VirtualFile dir )
-  {
-    final VirtualFile versionFile2003 = dir.findChild( VSSVER_FILE_SIG );
-    final VirtualFile versionFile2005 = dir.findChild( VSSVER2_FILE_SIG );
+  public boolean isVersionedDirectory(VirtualFile dir) {
+    final VirtualFile versionFile2003 = dir.findChild(VSSVER_FILE_SIG);
+    final VirtualFile versionFile2005 = dir.findChild(VSSVER2_FILE_SIG);
 
     return ((versionFile2003 != null && !versionFile2003.isDirectory()) ||
-           (versionFile2005 != null && !versionFile2005.isDirectory()));
+            (versionFile2005 != null && !versionFile2005.isDirectory()));
   }
 
   @Override
-  public UnnamedConfigurable getRootConfigurable( final VcsDirectoryMapping mapping )
-  {
-    return new VssRootConfigurable( mapping, myProject );
+  public UnnamedConfigurable getRootConfigurable(final VcsDirectoryMapping mapping) {
+    return new VssRootConfigurable(mapping, myProject);
   }
 
   @Override
   @Nullable
-  public VcsRevisionNumber parseRevisionNumber(final String revisionNumberString)
-  {
+  public VcsRevisionNumber parseRevisionNumber(final String revisionNumberString) {
     int revision;
-    try { revision = (int)Long.parseLong( revisionNumberString );  }
-    catch( NumberFormatException ex ) {  return null;  }
+    try {
+      revision = (int)Long.parseLong(revisionNumberString);
+    }
+    catch (NumberFormatException ex) {
+      return null;
+    }
 
-    return new VcsRevisionNumber.Int( revision );
+    return new VcsRevisionNumber.Int(revision);
   }
 
   @Override
@@ -496,128 +501,115 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
   //
 
   @Override
-  public void readExternal(final Element element ) throws InvalidDataException
-  {
-    readElements( element, removedFiles, PERSISTENCY_REMOVED_FILE_TAG, false );
-    readElements( element, removedFolders, PERSISTENCY_REMOVED_FOLDER_TAG, false );
-    readElements( element, deletedFiles, PERSISTENCY_DELETED_FILE_TAG, false );
-    readElements( element, deletedFolders, PERSISTENCY_DELETED_FOLDER_TAG, false );
+  public void readExternal(final Element element) throws InvalidDataException {
+    readElements(element, removedFiles, PERSISTENCY_REMOVED_FILE_TAG, false);
+    readElements(element, removedFolders, PERSISTENCY_REMOVED_FOLDER_TAG, false);
+    readElements(element, deletedFiles, PERSISTENCY_DELETED_FILE_TAG, false);
+    readElements(element, deletedFolders, PERSISTENCY_DELETED_FOLDER_TAG, false);
 
     HashSet<String> tmp = new HashSet<String>();
-    readElements( element, tmp, PERSISTENCY_NEW_FILE_TAG, true );
+    readElements(element, tmp, PERSISTENCY_NEW_FILE_TAG, true);
 
-    readRenamedElements( element, renamedFiles, PERSISTENCY_RENAMED_FILE_TAG, true );
-    readRenamedElements( element, renamedFolders, PERSISTENCY_RENAMED_FOLDER_TAG, true );
+    readRenamedElements(element, renamedFiles, PERSISTENCY_RENAMED_FILE_TAG, true);
+    readRenamedElements(element, renamedFolders, PERSISTENCY_RENAMED_FOLDER_TAG, true);
 
     readUsedProjectPaths();
 
-    for( String path : tmp )
-    {
-      VirtualFile file = VcsUtil.getVirtualFile( path );
-      if( file != null )
-        newFiles.add( file );
-    }
-  }
-
-  private static void readElements( final Element element, HashSet<String> list, String tag, boolean isExist )
-  {
-    List files = element.getChildren( tag );
-    for (Object cclObj : files)
-    {
-      if (cclObj instanceof Element)
-      {
-        final Element currentCLElement = ((Element)cclObj);
-        final String path = currentCLElement.getValue();
-
-        // Safety check - file can be added again between IDE sessions.
-        if( new File( path ).exists() == isExist )
-          list.add( path );
+    for (String path : tmp) {
+      VirtualFile file = VcsUtil.getVirtualFile(path);
+      if (file != null) {
+        newFiles.add(file);
       }
     }
   }
 
-  private static void readRenamedElements( final Element element, HashMap<String, String> list,
-                                           String tag, boolean isExist )
-  {
-    List files = element.getChildren( tag );
-    for (Object cclObj : files)
-    {
-      if (cclObj instanceof Element)
-      {
+  private static void readElements(final Element element, HashSet<String> list, String tag, boolean isExist) {
+    List files = element.getChildren(tag);
+    for (Object cclObj : files) {
+      if (cclObj instanceof Element) {
+        final Element currentCLElement = ((Element)cclObj);
+        final String path = currentCLElement.getValue();
+
+        // Safety check - file can be added again between IDE sessions.
+        if (new File(path).exists() == isExist) {
+          list.add(path);
+        }
+      }
+    }
+  }
+
+  private static void readRenamedElements(final Element element, HashMap<String, String> list,
+                                          String tag, boolean isExist) {
+    List files = element.getChildren(tag);
+    for (Object cclObj : files) {
+      if (cclObj instanceof Element) {
         final Element currentCLElement = ((Element)cclObj);
         final String pathPair = currentCLElement.getValue();
-        int delimIndex = pathPair.indexOf( PATH_DELIMITER );
-        if( delimIndex != -1 )
-        {
-          final String newName = pathPair.substring( 0, delimIndex );
-          final String oldName = pathPair.substring( delimIndex + PATH_DELIMITER.length() );
+        int delimIndex = pathPair.indexOf(PATH_DELIMITER);
+        if (delimIndex != -1) {
+          final String newName = pathPair.substring(0, delimIndex);
+          final String oldName = pathPair.substring(delimIndex + PATH_DELIMITER.length());
 
           // Safety check - file can be deleted or changed between IDE sessions.
-          if( new File( newName ).exists() == isExist )
-            list.put( newName, oldName );
+          if (new File(newName).exists() == isExist) {
+            list.put(newName, oldName);
+          }
         }
       }
     }
   }
 
   @Override
-  public void writeExternal(final Element element) throws WriteExternalException
-  {
-    writeElement( element, removedFiles, PERSISTENCY_REMOVED_FILE_TAG );
-    writeElement( element, removedFolders, PERSISTENCY_REMOVED_FOLDER_TAG );
-    writeElement( element, deletedFiles, PERSISTENCY_DELETED_FILE_TAG );
-    writeElement( element, deletedFolders, PERSISTENCY_DELETED_FOLDER_TAG );
+  public void writeExternal(final Element element) throws WriteExternalException {
+    writeElement(element, removedFiles, PERSISTENCY_REMOVED_FILE_TAG);
+    writeElement(element, removedFolders, PERSISTENCY_REMOVED_FOLDER_TAG);
+    writeElement(element, deletedFiles, PERSISTENCY_DELETED_FILE_TAG);
+    writeElement(element, deletedFolders, PERSISTENCY_DELETED_FOLDER_TAG);
 
     HashSet<String> tmp = new HashSet<String>();
-    for( VirtualFile file : newFiles )
-    {
-      FileStatus status = FileStatusManager.getInstance( myProject ).getStatus( file );
-      if( status == FileStatus.ADDED )
-        tmp.add( file.getPath() );
+    for (VirtualFile file : newFiles) {
+      FileStatus status = FileStatusManager.getInstance(myProject).getStatus(file);
+      if (status == FileStatus.ADDED) {
+        tmp.add(file.getPath());
+      }
     }
-    writeElement( element, tmp, PERSISTENCY_NEW_FILE_TAG );
+    writeElement(element, tmp, PERSISTENCY_NEW_FILE_TAG);
 
-    writeRenElement( element, renamedFiles, PERSISTENCY_RENAMED_FILE_TAG );
-    writeRenElement( element, renamedFolders, PERSISTENCY_RENAMED_FOLDER_TAG );
+    writeRenElement(element, renamedFiles, PERSISTENCY_RENAMED_FILE_TAG);
+    writeRenElement(element, renamedFolders, PERSISTENCY_RENAMED_FOLDER_TAG);
 
     //  Do not write to the file which is shared between several projects since
     //  the default settings may be incomplete and they override the current
     //  project's settings.
-    if( !myProject.isDefault() )
-    {
+    if (!myProject.isDefault()) {
       writeUsedProjectPaths();
     }
   }
 
-  private static void writeElement( final Element element, HashSet<String> files, String tag )
-  {
+  private static void writeElement(final Element element, HashSet<String> files, String tag) {
     //  Sort elements of the list so that there is no perturbation in .ipr/.iml
     //  files in the case when no data has changed.
     String[] sorted = ArrayUtil.toStringArray(files);
-    Arrays.sort( sorted );
+    Arrays.sort(sorted);
 
-    for( String file : sorted )
-    {
-      final Element listElement = new Element( tag );
-      listElement.addContent( file );
-      element.addContent( listElement );
+    for (String file : sorted) {
+      final Element listElement = new Element(tag);
+      listElement.addContent(file);
+      element.addContent(listElement);
     }
   }
 
-  private static void writeRenElement( final Element element, HashMap<String, String> files, String tag )
-  {
-    for( String file : files.keySet() )
-    {
-      final Element listElement = new Element( tag );
-      final String pathPair = file.concat( PATH_DELIMITER ).concat( files.get( file ) );
+  private static void writeRenElement(final Element element, HashMap<String, String> files, String tag) {
+    for (String file : files.keySet()) {
+      final Element listElement = new Element(tag);
+      final String pathPair = file.concat(PATH_DELIMITER).concat(files.get(file));
 
-      listElement.addContent( pathPair );
-      element.addContent( listElement );
+      listElement.addContent(pathPair);
+      element.addContent(listElement);
     }
   }
 
-  private void readUsedProjectPaths()
-  {
+  private void readUsedProjectPaths() {
     savedProjectPaths.clear();
     try {
       String optionsFile = PathManager.getConfigPath() + File.separatorChar + OPTIONS_FOLDER + File.separatorChar + OPTIONS_FILE;
@@ -638,8 +630,7 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
     }
   }
 
-  private void writeUsedProjectPaths()
-  {
+  private void writeUsedProjectPaths() {
     try {
       //  Create folder "VSS" under the predefined config folder,
       //  and put paths into the special file under that folder.
