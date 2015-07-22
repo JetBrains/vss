@@ -16,6 +16,7 @@ import com.intellij.openapi.util.JDOMExternalizable;
 import com.intellij.openapi.util.RoamingTypeDisabled;
 import com.intellij.openapi.util.WriteExternalException;
 import com.intellij.openapi.util.io.FileUtil;
+import com.intellij.openapi.util.io.FileUtilRt;
 import com.intellij.openapi.vcs.*;
 import com.intellij.openapi.vcs.changes.ChangeListManager;
 import com.intellij.openapi.vcs.changes.ChangeProvider;
@@ -632,29 +633,26 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
 
   private void writeUsedProjectPaths() {
     try {
-      //  Create folder "VSS" under the predefined config folder,
-      //  and put paths into the special file under that folder.
-      String configPath = PathManager.getConfigPath() + File.separatorChar + OPTIONS_FOLDER;
-      new File(configPath).mkdir();
+      File optionsFile = new File(PathManager.getConfigPath() + File.separatorChar + OPTIONS_FOLDER, OPTIONS_FILE);
+      if (savedProjectPaths.isEmpty()) {
+        FileUtil.delete(optionsFile);
+      }
+      else {
+        FileUtilRt.createParentDirs(optionsFile);
+      }
 
-      String optionsFile = configPath + File.separatorChar + OPTIONS_FILE;
-
-      //  Do not forget to clear the content of the file - we always overwrite
-      //  the available information anew.
-      File file = new File(optionsFile);
-      file.delete();
-
-      PrintWriter writer = new PrintWriter(optionsFile);
+      OutputStreamWriter writer = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(optionsFile)));
       try {
         for (String path : savedProjectPaths) {
-          writer.write(path + "\n");
+          writer.write(path);
+          writer.write("\n");
         }
       }
       finally {
         writer.close();
       }
     }
-    catch (IOException e) {
+    catch (IOException ignored) {
       //  Nothing to do, no special treatment is necessary, the file
       //  can be recovered next time.
     }
