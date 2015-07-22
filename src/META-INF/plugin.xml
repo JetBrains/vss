@@ -30,15 +30,9 @@
                     serviceImplementation="com.intellij.vssSupport.Configuration.VssConfiguration"/>
     <vcs name="SourceSafe" vcsClass="com.intellij.vssSupport.VssVcs" displayName="SourceSafe" administrativeAreaName="vssver.scc, vssver2.scc"/>
     <vcsCheckinHandlerFactory implementation="com.intellij.vssSupport.VssVcsCheckinHandlerFactory"/>
-  </extensions>
 
-  <project-components>
-    <component>
-      <implementation-class>com.intellij.vssSupport.VssVcs</implementation-class>
-      <option name="workspace" value="true"/>
-      <loadForDefaultProject/>
-    </component>
-  </project-components>
+    <projectService serviceImplementation="com.intellij.vssSupport.VssVcs"/>
+  </extensions>
 
   <actions>
     <group id="VssGlobalGroup" class="com.intellij.vssSupport.actions.VssGroup" popup="true" >

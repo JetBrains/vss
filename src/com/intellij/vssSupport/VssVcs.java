@@ -1,20 +1,12 @@
 package com.intellij.vssSupport;
 
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.command.CommandListener;
 import com.intellij.openapi.command.CommandProcessor;
-import com.intellij.openapi.components.ProjectComponent;
-import com.intellij.openapi.fileTypes.FileTypeManager;
+import com.intellij.openapi.components.*;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.UnnamedConfigurable;
-import com.intellij.openapi.project.DumbAwareRunnable;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.startup.StartupManager;
-import com.intellij.openapi.util.InvalidDataException;
-import com.intellij.openapi.util.JDOMExternalizable;
-import com.intellij.openapi.util.RoamingTypeDisabled;
-import com.intellij.openapi.util.WriteExternalException;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.io.FileUtilRt;
 import com.intellij.openapi.vcs.*;
@@ -52,7 +44,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExternalizable, RoamingTypeDisabled {
+@State(name = "VssVcs", storages = @Storage(file = StoragePathMacros.WORKSPACE_FILE))
+public class VssVcs extends AbstractVcs implements PersistentStateComponent<Element> {
   @NonNls private static final String PERSISTENCY_REMOVED_FILE_TAG = "SourceSafePersistencyRemovedFile";
   @NonNls private static final String PERSISTENCY_REMOVED_FOLDER_TAG = "SourceSafePersistencyRemovedFolder";
   @NonNls private static final String PERSISTENCY_RENAMED_FILE_TAG = "SourceSafePersistencyRenamedFile";
@@ -113,6 +106,15 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
     deletedFiles = new HashSet<String>();
     deletedFolders = new HashSet<String>();
     savedProjectPaths = new HashSet<String>();
+
+    ProjectLevelVcsManager vcsManager = ProjectLevelVcsManager.getInstance(getProject());
+
+    myCheckoutOptions = vcsManager.getStandardOption(VcsConfiguration.StandardOption.CHECKOUT, this);
+    myUndoCheckoutOptions = vcsManager.getOrCreateCustomOption(VssBundle.message("action.name.undo.check.out"), this);
+    myGetOptions = vcsManager.getOrCreateCustomOption(VssBundle.message("action.name.get.latest.version"), this);
+
+    addConfirmation = vcsManager.getStandardConfirmation(VcsConfiguration.StandardConfirmation.ADD, this);
+    removeConfirmation = vcsManager.getStandardConfirmation(VcsConfiguration.StandardConfirmation.REMOVE, this);
   }
 
   public VcsShowSettingOption getCheckoutOptions() {
@@ -136,12 +138,6 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
   }
 
   @Override
-  @NotNull
-  public String getComponentName() {
-    return "VssVcs";
-  }
-
-  @Override
   public String getDisplayName() {
     return NAME;
   }
@@ -152,7 +148,7 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
   }
 
   public static VssVcs getInstance(Project project) {
-    return project.getComponent(VssVcs.class);
+    return ServiceManager.getService(project, VssVcs.class);
   }
 
   @Override
@@ -188,38 +184,6 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
   @Override
   public UpdateEnvironment createUpdateEnvironment() {
     return updateEnvironment;
-  }
-
-  @Override
-  public void initComponent() {
-  }
-
-  @Override
-  public void disposeComponent() {
-    checkinEnvironment = null;
-  }
-
-  @Override
-  public void projectOpened() {
-    final ProjectLevelVcsManager vcsManager = ProjectLevelVcsManager.getInstance(getProject());
-
-    myCheckoutOptions = vcsManager.getStandardOption(VcsConfiguration.StandardOption.CHECKOUT, this);
-    myUndoCheckoutOptions = vcsManager.getOrCreateCustomOption(VssBundle.message("action.name.undo.check.out"), this);
-    myGetOptions = vcsManager.getOrCreateCustomOption(VssBundle.message("action.name.get.latest.version"), this);
-
-    addConfirmation = vcsManager.getStandardConfirmation(VcsConfiguration.StandardConfirmation.ADD, this);
-    removeConfirmation = vcsManager.getStandardConfirmation(VcsConfiguration.StandardConfirmation.REMOVE, this);
-
-    StartupManager.getInstance(myProject).registerPostStartupActivity(new DumbAwareRunnable() {
-      @Override
-      public void run() {
-        addIgnoredFiles();
-      }
-    });
-  }
-
-  @Override
-  public void projectClosed() {
   }
 
   @Override
@@ -279,38 +243,6 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
       }
     }
     return false;
-  }
-
-  /**
-   * Automatically add "vssver.scc" pattern into the list of ignored file so that
-   * they are not becoming the part of the project.
-   */
-  private static void addIgnoredFiles() {
-    String patterns = FileTypeManager.getInstance().getIgnoredFilesList();
-
-    //  This code corrects the obvious bug in the previous installations
-    @NonNls String errorPattern = "vssver.sccvssver2.scc;";
-    patterns = patterns.replaceAll(errorPattern, "");
-
-    String newPattern = patterns;
-    if (!patterns.contains(VSSVER_FILE_SIG)) {
-      newPattern += ((newPattern.charAt(newPattern.length() - 1) == ';') ? "" : ";") + VSSVER_FILE_SIG;
-    }
-
-    if (!patterns.contains(VSSVER2_FILE_SIG)) {
-      newPattern += ((newPattern.charAt(newPattern.length() - 1) == ';') ? "" : ";") + VSSVER2_FILE_SIG;
-    }
-
-    if (!newPattern.equals(patterns)) {
-      final String newPat = newPattern;
-      ApplicationManager.getApplication().runWriteAction(new Runnable() {
-                                                           @Override
-                                                           public void run() {
-                                                             FileTypeManager.getInstance().setIgnoredFilesList(newPat);
-                                                           }
-                                                         }
-      );
-    }
   }
 
   public void checkinFile(VirtualFile file, List<VcsException> errors, boolean suppressWarns) {
@@ -497,12 +429,8 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
     return ourIntegerPattern;
   }
 
-  //
-  // JDOMExternalizable methods
-  //
-
   @Override
-  public void readExternal(final Element element) throws InvalidDataException {
+  public void loadState(Element element) {
     readElements(element, removedFiles, PERSISTENCY_REMOVED_FILE_TAG, false);
     readElements(element, removedFolders, PERSISTENCY_REMOVED_FOLDER_TAG, false);
     readElements(element, deletedFiles, PERSISTENCY_DELETED_FILE_TAG, false);
@@ -560,8 +488,10 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
     }
   }
 
+  @Nullable
   @Override
-  public void writeExternal(final Element element) throws WriteExternalException {
+  public Element getState() {
+    Element element = new Element("state");
     writeElement(element, removedFiles, PERSISTENCY_REMOVED_FILE_TAG);
     writeElement(element, removedFolders, PERSISTENCY_REMOVED_FOLDER_TAG);
     writeElement(element, deletedFiles, PERSISTENCY_DELETED_FILE_TAG);
@@ -585,6 +515,7 @@ public class VssVcs extends AbstractVcs implements ProjectComponent, JDOMExterna
     if (!myProject.isDefault()) {
       writeUsedProjectPaths();
     }
+    return element;
   }
 
   private static void writeElement(final Element element, HashSet<String> files, String tag) {
