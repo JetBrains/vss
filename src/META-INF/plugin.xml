@@ -2,7 +2,7 @@
   <name>Visual SourceSafe Integration</name>
   <id>SourceSafe</id>
   <version>999.999</version>
-  <idea-version since-build="142.1" until-build="143.0"/>
+  <idea-version since-build="142.1" until-build="145.0"/>
   <vendor>JetBrains</vendor>
   <category>VCS Integration</category>
   <resource-bundle xmlns="">com.intellij.vssSupport.VssBundle</resource-bundle>
