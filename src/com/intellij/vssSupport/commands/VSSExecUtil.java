@@ -156,7 +156,7 @@ public class VSSExecUtil
     commandLine.getEnvironment().putAll( envParams );
     commandLine.setExePath( exePath );
 
-    final OSProcessHandler result = new OSProcessHandler(commandLine.createProcess(), commandLine.getCommandLineString());
+    final OSProcessHandler result = new OSProcessHandler(commandLine);
     result.startNotify();
   }
 
