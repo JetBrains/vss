@@ -6,13 +6,14 @@ import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vcs.FilePath;
 import com.intellij.openapi.vcs.ProjectLevelVcsManager;
 import com.intellij.openapi.vcs.VcsException;
-import com.intellij.openapi.vcs.changes.ContentRevision;
+import com.intellij.openapi.vcs.changes.ByteBackedContentRevision;
 import com.intellij.openapi.vcs.history.VcsRevisionNumber;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.vssSupport.Configuration.VssConfiguration;
 import com.intellij.vssSupport.commands.VSSExecUtil;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +26,7 @@ import java.util.List;
  * User: lloix
  * Date: Feb 21, 2007
  */
-public class VssContentRevision implements ContentRevision
+public class VssContentRevision implements ByteBackedContentRevision
 {
   @NonNls private static final String _GWR_OPTION = "-GWR";
   @NonNls private static final String _GL_OPTION = "-GL";
@@ -35,7 +36,7 @@ public class VssContentRevision implements ContentRevision
   private final FilePath  path;
   private final Project   project;
   private File      myTmpFile;
-  private String    myServerContent;
+  private byte[]    myServerContent;
 
   public VssContentRevision( FilePath path, @NotNull Project proj )
   {
@@ -45,13 +46,20 @@ public class VssContentRevision implements ContentRevision
 
   public String getContent()
   {
+    byte[] byteContent = getContentAsBytes();
+    return byteContent == null ? null : new String(byteContent);
+  }
+
+  @Nullable
+  @Override
+  public byte[] getContentAsBytes() {
     if( myServerContent == null )
       myServerContent = getServerContent();
 
     return myServerContent;
   }
 
-  private String getServerContent()
+  private byte[] getServerContent()
   {
     List<VcsException> errors = new ArrayList<VcsException>();
     GetContentListener listener = new GetContentListener( errors );
@@ -121,7 +129,7 @@ public class VssContentRevision implements ContentRevision
     @NonNls private static final String DELETED_MESSAGE = "has been deleted";
     @NonNls private static final String NOT_EXISTING_MESSAGE = "is not an existing";
 
-    public String content = null;
+    public byte[] content = null;
 
     public GetContentListener( List<VcsException> errors ) { super( errors ); }
 
@@ -136,7 +144,7 @@ public class VssContentRevision implements ContentRevision
       {
         try
         {
-          content = FileUtil.loadFile(myTmpFile);
+          content = FileUtil.loadFileBytes(myTmpFile);
         }
         catch( IOException e ) { content = null; }
       }
