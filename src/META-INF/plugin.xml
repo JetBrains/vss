@@ -24,7 +24,6 @@
   </description>
 
   <extensions defaultExtensionNs="com.intellij">
-    <errorHandler implementation="com.intellij.diagnostic.ITNReporter"/>
 
     <projectService serviceInterface="com.intellij.vssSupport.Configuration.VssConfiguration"
                     serviceImplementation="com.intellij.vssSupport.Configuration.VssConfiguration"/>
