@@ -103,9 +103,6 @@ public class UndocheckoutFilesCommand extends VssCommandAbstract
       exitCode[ 0 ] = dialog.getExitCode();
     } };
 
-    if( ApplicationManager.getApplication().isDispatchThread() )
-      runnable.run();
-    else
       ApplicationManager.getApplication().invokeAndWait( runnable, ModalityState.defaultModalityState() );
 
     return exitCode[ 0 ];
