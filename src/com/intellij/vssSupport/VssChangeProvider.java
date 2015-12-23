@@ -61,8 +61,8 @@ public class VssChangeProvider implements ChangeProvider
   public void doCleanup(final List<VirtualFile> files) {
   }
 
-  public void getChanges(final VcsDirtyScope dirtyScope, final ChangelistBuilder builder, final ProgressIndicator indicator,
-                         final ChangeListManagerGate addGate)
+  public void getChanges(@NotNull final VcsDirtyScope dirtyScope, @NotNull final ChangelistBuilder builder, @NotNull final ProgressIndicator indicator,
+                         @NotNull final ChangeListManagerGate addGate)
   {
     //-------------------------------------------------------------------------
     //  Protect ourselves from the calls which come during the unsafe project
