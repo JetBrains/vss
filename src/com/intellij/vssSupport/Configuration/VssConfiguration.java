@@ -24,7 +24,7 @@ import java.util.Iterator;
 @State(
   name = "VssConfiguration",
   storages = {
-    @Storage(file = StoragePathMacros.WORKSPACE_FILE)
+    @Storage(StoragePathMacros.WORKSPACE_FILE)
   }
 )
 public class VssConfiguration implements PersistentStateComponent<Element>

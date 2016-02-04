@@ -44,7 +44,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-@State(name = "VssVcs", storages = @Storage(file = StoragePathMacros.WORKSPACE_FILE))
+@State(name = "VssVcs", storages = @Storage(StoragePathMacros.WORKSPACE_FILE))
 public class VssVcs extends AbstractVcs implements PersistentStateComponent<Element> {
   @NonNls private static final String PERSISTENCY_REMOVED_FILE_TAG = "SourceSafePersistencyRemovedFile";
   @NonNls private static final String PERSISTENCY_REMOVED_FOLDER_TAG = "SourceSafePersistencyRemovedFolder";
