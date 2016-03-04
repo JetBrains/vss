@@ -2,6 +2,7 @@ package com.intellij.vssSupport.actions;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vcs.FileStatus;
@@ -73,6 +74,8 @@ public class UndocheckoutAction extends VssAction
           return;
         }
       }
+
+      FileDocumentManager.getInstance().saveAllDocuments();
 
       if( allFilesAreFolders( files ))
       {

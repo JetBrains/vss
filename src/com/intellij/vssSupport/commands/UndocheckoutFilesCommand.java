@@ -34,8 +34,6 @@ public class UndocheckoutFilesCommand extends VssCommandAbstract
   @SuppressWarnings({"AssignmentToForLoopParameter"})
   public void execute()
   {
-    FileDocumentManager.getInstance().saveAllDocuments();
-
     final UndocheckoutOptions baseOptions = myConfig.getUndocheckoutOptions();
     int savedActionType = baseOptions.REPLACE_LOCAL_COPY;
     boolean replaceInstance = false;

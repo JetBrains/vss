@@ -41,7 +41,6 @@ public class UndocheckoutDirCommand extends VssCommandAbstract
 
   public void execute()
   {
-    FileDocumentManager.getInstance().saveAllDocuments();
     List<String> options = myConfig.getUndocheckoutOptions().getOptions( myDir );
     String workingPath = myDir.getPath().replace('/', File.separatorChar);
 
