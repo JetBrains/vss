@@ -2,7 +2,6 @@ package com.intellij.vssSupport;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.progress.ProgressIndicator;
@@ -48,7 +47,6 @@ public class VssUpdateEnvironment implements UpdateEnvironment
     final ArrayList<VcsException> errors = new ArrayList<VcsException>();
 
     progress.setText( VssBundle.message("message.synch.with.repository") );
-    FileDocumentManager.getInstance().saveAllDocuments();
 
     final boolean cancelled = showOptions( roots );
     if( !cancelled )
