@@ -3,7 +3,10 @@ package com.intellij.vssSupport;
 import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.command.CommandListener;
 import com.intellij.openapi.command.CommandProcessor;
-import com.intellij.openapi.components.*;
+import com.intellij.openapi.components.PersistentStateComponent;
+import com.intellij.openapi.components.State;
+import com.intellij.openapi.components.Storage;
+import com.intellij.openapi.components.StoragePathMacros;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.UnnamedConfigurable;
 import com.intellij.openapi.project.Project;
@@ -148,7 +151,7 @@ public class VssVcs extends AbstractVcs implements PersistentStateComponent<Elem
   }
 
   public static VssVcs getInstance(Project project) {
-    return ServiceManager.getService(project, VssVcs.class);
+    return (VssVcs)ProjectLevelVcsManager.getInstance(project).findVcsByName(NAME);
   }
 
   @Override
