@@ -105,7 +105,7 @@ public class VssUpdateEnvironment implements UpdateEnvironment
     final boolean[] cancelled = new boolean[ 1 ]; cancelled[ 0 ] = false;
     if( VssVcs.getInstance( project ).getGetOptions().getValue() )
     {
-      Runnable runnable = new Runnable() { public void run() {
+      Runnable runnable = () -> {
           GetDirDialog editor = new GetDirDialog( project );
           if( roots.length == 1 )
             editor.setTitle( VssBundle.message( "dialog.title.get.directory", roots[ 0 ].getPath() ) );
@@ -115,8 +115,7 @@ public class VssUpdateEnvironment implements UpdateEnvironment
           editor.show();
 
           cancelled[ 0 ] = !editor.isOK();
-        }
-      };
+        };
       ApplicationManager.getApplication().invokeAndWait( runnable, ModalityState.defaultModalityState() );
     }
     return cancelled[ 0 ];

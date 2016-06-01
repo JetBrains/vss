@@ -93,13 +93,13 @@ public class UndocheckoutFilesCommand extends VssCommandAbstract
   private int askOption( final String fileName )
   {
     final int[] exitCode = new int[ 1 ];
-    Runnable runnable = new Runnable() {  public void run() {
+    Runnable runnable = () -> {
       ConfirmMultipleDialog dialog = new ConfirmMultipleDialog( VssBundle.message("confirm.text.undo.check.out"),
                                                                 VssBundle.message("confirm.text.file.changed.undo", fileName ),
                                                                 myProject);
       dialog.show();
       exitCode[ 0 ] = dialog.getExitCode();
-    } };
+    };
 
       ApplicationManager.getApplication().invokeAndWait( runnable, ModalityState.defaultModalityState() );
 

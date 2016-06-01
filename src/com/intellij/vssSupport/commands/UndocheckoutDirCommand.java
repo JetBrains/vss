@@ -146,12 +146,10 @@ public class UndocheckoutDirCommand extends VssCommandAbstract
       }
       if( logRecordsCount > 0 )
       {
-        ApplicationManager.getApplication().invokeLater( new Runnable() {
-          public void run() {
-            if (myProject.isDisposed()) return;
-            ProjectLevelVcsManager.getInstance(myProject).showProjectOperationInfo(
-              updatedFiles, VssBundle.message("dialog.title.undo.check.out", myDir.getName()) );
-          }
+        ApplicationManager.getApplication().invokeLater(() -> {
+          if (myProject.isDisposed()) return;
+          ProjectLevelVcsManager.getInstance(myProject).showProjectOperationInfo(
+            updatedFiles, VssBundle.message("dialog.title.undo.check.out", myDir.getName()) );
         });
       }
       else

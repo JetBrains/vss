@@ -233,25 +233,21 @@ public class VssChangeProvider implements ChangeProvider
     VirtualFile vf = filePath.getVirtualFile();
     if( vf != null )
     {
-      ProjectLevelVcsManager.getInstance(project).iterateVcsRoot( vf, new Processor<FilePath>()
-        {
-          public boolean process(final FilePath file) {
-            if (progress != null) {
-              progress.checkCanceled();
-            }
-            String path = file.getPath();
-            VirtualFile vFile = file.getVirtualFile();
-            if(vFile != null) {
-              if( host.isFileIgnored(vFile) )
-                filesIgnored.add( path );
-              else if (vFile.isWritable() && !vFile.isDirectory() )
-                writableFiles.add( path );
-            }
-
-            return true;
-          }
-
+      ProjectLevelVcsManager.getInstance(project).iterateVcsRoot(vf, file -> {
+        if (progress != null) {
+          progress.checkCanceled();
         }
+        String path = file.getPath();
+        VirtualFile vFile = file.getVirtualFile();
+        if(vFile != null) {
+          if( host.isFileIgnored(vFile) )
+            filesIgnored.add( path );
+          else if (vFile.isWritable() && !vFile.isDirectory() )
+            writableFiles.add( path );
+        }
+
+        return true;
+      }
       );
     }
   }
@@ -788,21 +784,19 @@ public class VssChangeProvider implements ChangeProvider
 
   private void validateChangesOverTheHost( final VcsDirtyScope scope )
   {
-    ApplicationManager.getApplication().runReadAction( new Runnable() {
-      public void run() {
-        //  protect over being called in the forbidden phase
-        if( !project.isDisposed() )
-        {
-          HashSet<FilePath> set = new HashSet<FilePath>();
-          set.addAll( scope.getDirtyFiles() );
-          set.addAll( scope.getRecursivelyDirtyDirectories() );
+    ApplicationManager.getApplication().runReadAction(() -> {
+      //  protect over being called in the forbidden phase
+      if( !project.isDisposed() )
+      {
+        HashSet<FilePath> set = new HashSet<FilePath>();
+        set.addAll( scope.getDirtyFiles() );
+        set.addAll( scope.getRecursivelyDirtyDirectories() );
 
-          ProjectLevelVcsManager mgr = ProjectLevelVcsManager.getInstance( project );
-          for( FilePath path : set )
-          {
-            AbstractVcs fileHost = mgr.getVcsFor( path );
-            LOG.assertTrue( fileHost == host, "Not valid scope for current Vcs: " + path.getPath() );
-          }
+        ProjectLevelVcsManager mgr = ProjectLevelVcsManager.getInstance( project );
+        for( FilePath path : set )
+        {
+          AbstractVcs fileHost = mgr.getVcsFor( path );
+          LOG.assertTrue( fileHost == host, "Not valid scope for current Vcs: " + path.getPath() );
         }
       }
     });

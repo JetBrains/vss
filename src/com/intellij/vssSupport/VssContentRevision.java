@@ -104,9 +104,8 @@ public class VssContentRevision implements ByteBackedContentRevision
         else
         {
           final VirtualFile[] roots = new VirtualFile[ 1 ];
-          ApplicationManager.getApplication().runReadAction(new Runnable() {
-            public void run() {  roots[ 0 ] = ProjectLevelVcsManager.getInstance(project).getVcsRootFor( path );  }
-          });
+          ApplicationManager.getApplication().runReadAction(
+            () -> {roots[ 0 ] = ProjectLevelVcsManager.getInstance(project).getVcsRootFor(path );  });
           workDir = roots[ 0 ].getPath().replace('/', File.separatorChar);
         }
         VSSExecUtil.runProcess( project, config.CLIENT_PATH, options, config.getSSDIREnv(), workDir, listener );
@@ -151,7 +150,7 @@ public class VssContentRevision implements ByteBackedContentRevision
       else
       if( VssUtil.EXIT_CODE_FAILURE == getExitCode() )
       {
-        ApplicationManager.getApplication().invokeLater( new Runnable() { public void run() { VssUtil.showErrorOutput( output, project ); } });
+        ApplicationManager.getApplication().invokeLater(() -> VssUtil.showErrorOutput(output, project ));
       }
     }
   }

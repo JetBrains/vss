@@ -281,9 +281,7 @@ public class VssCheckinEnvironment implements CheckinEnvironment
 
         host.deletedFiles.remove( path );
         host.deletedFolders.remove( path );
-        ApplicationManager.getApplication().invokeLater( new Runnable() {
-          public void run() { VcsDirtyScopeManager.getInstance( project ).fileDirty( fp );  }
-        });
+        ApplicationManager.getApplication().invokeLater(() -> VcsDirtyScopeManager.getInstance(project ).fileDirty(fp ));
       }
     }
   }

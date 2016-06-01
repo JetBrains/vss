@@ -188,11 +188,7 @@ public class DirectoryCommandListener extends VssOutputCollector
     final String parent = file.getParent();
     final String truncatedName = file.getName().toLowerCase();
     String fullName = truncatedName;
-    String[] fullNames = file.getParentFile().list(new FilenameFilter() {
-      public boolean accept(File dir, String name) {
-        return name.toLowerCase().startsWith(truncatedName);
-      }
-    });
+    String[] fullNames = file.getParentFile().list((dir, name) -> name.toLowerCase().startsWith(truncatedName));
 
     //  if abstract pathname does not denote a directory, or if an I/O error
     // occurs, "File.list()" returns null.

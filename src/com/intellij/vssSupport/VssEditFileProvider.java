@@ -51,13 +51,13 @@ public class VssEditFileProvider implements EditFileProvider
       {
         Messages.showErrorDialog( errors.get( 0 ).getLocalizedMessage(), VssBundle.message("message.title.error"));
 
-        ApplicationManager.getApplication().runWriteAction( new Runnable() { public void run(){
+        ApplicationManager.getApplication().runWriteAction(() -> {
           try {   ReadOnlyAttributeUtil.setReadOnlyAttribute( file, false );  }
           catch( IOException e ) {
             Messages.showErrorDialog( VssBundle.message("message.text.ro.set.error", file.getPath()),
                                       VssBundle.message("message.title.error"));
           }
-        } });
+        });
       }
       errors.clear();
     }

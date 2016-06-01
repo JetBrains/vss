@@ -65,14 +65,11 @@ public class VssFileHistoryProvider implements VcsHistoryProvider
 
     public Comparator<VcsFileRevision> getComparator()
     {
-      return new Comparator<VcsFileRevision>() {
-        public int compare(VcsFileRevision o1, VcsFileRevision o2)
-        {
-          if (!(o1 instanceof VssFileRevision)) return 0;
-          if (!(o2 instanceof VssFileRevision)) return 0;
+      return (o1, o2) -> {
+        if (!(o1 instanceof VssFileRevision)) return 0;
+        if (!(o2 instanceof VssFileRevision)) return 0;
 
-          return ((VssFileRevision) o1).compareTo( o2 ); 
-        }
+        return ((VssFileRevision) o1).compareTo( o2 );
       };
     }
   };
