@@ -114,7 +114,7 @@ public class VssFileHistoryProvider implements VcsHistoryProvider
 
   public VcsDependentHistoryComponents getUICustomization(final VcsHistorySession session, JComponent forShortcutRegistration) {  return VcsDependentHistoryComponents.createOnlyColumns(new ColumnInfo[] { DATE, ACTION, LABEL });   }
 
-  public AnAction[] getAdditionalActions(final Runnable refresher) {  return new AnAction[0];   }
+  public AnAction[] getAdditionalActions(final Runnable refresher) {  return AnAction.EMPTY_ARRAY;   }
 
   public boolean isDateOmittable() {  return true;  }
 
