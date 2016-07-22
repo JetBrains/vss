@@ -44,11 +44,11 @@ public class VssChangeProvider implements ChangeProvider
   private boolean showInvalidConfigMessage = true;
   private ProgressIndicator progress;
 
-  private final HashSet<String> filesNew = new HashSet<String>();
-  private final HashSet<String> filesHijacked = new HashSet<String>();
-  private final HashSet<String> filesChanged = new HashSet<String>();
-  private final HashSet<String> filesObsolete = new HashSet<String>();
-  private final HashSet<String> filesIgnored = new HashSet<String>();
+  private final HashSet<String> filesNew = new HashSet<>();
+  private final HashSet<String> filesHijacked = new HashSet<>();
+  private final HashSet<String> filesChanged = new HashSet<>();
+  private final HashSet<String> filesObsolete = new HashSet<>();
+  private final HashSet<String> filesIgnored = new HashSet<>();
 
   public VssChangeProvider( @NotNull Project project, VssVcs host )
   {
@@ -160,7 +160,7 @@ public class VssChangeProvider implements ChangeProvider
 
   private void iterateOverDirtyFiles( final VcsDirtyScope scope )
   {
-    List<String> paths = new ArrayList<String>();
+    List<String> paths = new ArrayList<>();
     for( FilePath path : scope.getDirtyFiles() )
     {
       if (progress != null) {
@@ -217,7 +217,7 @@ public class VssChangeProvider implements ChangeProvider
       progress.checkCanceled();
     }
 
-    List<String> writableFiles = new ArrayList<String>();
+    List<String> writableFiles = new ArrayList<>();
     collectSuspiciousFiles( path, writableFiles );
     LOG.info( "-- ChangeProvider - Found: " + writableFiles.size() + " writable files." );
 
@@ -254,7 +254,7 @@ public class VssChangeProvider implements ChangeProvider
 
   private void analyzeWritableFiles( FilePath filePath, List<String> writableFiles )
   {
-    final HashSet<String> newFiles = new HashSet<String>();
+    final HashSet<String> newFiles = new HashSet<>();
 
     if( writableFiles.size() == 0 )
       return;
@@ -274,8 +274,8 @@ public class VssChangeProvider implements ChangeProvider
     //  is also new.
     if( isBatchUpdate )
     {
-      final List<String> newFolders = new ArrayList<String>();
-      final HashSet<String> processedFolders = new HashSet<String>();
+      final List<String> newFolders = new ArrayList<>();
+      final HashSet<String> processedFolders = new HashSet<>();
       for( String file : newFiles )
       {
         if (progress != null) {
@@ -293,7 +293,7 @@ public class VssChangeProvider implements ChangeProvider
                                              HashSet<String> newf, HashSet<String> changed,
                                              HashSet<String> hijacked, HashSet<String> obsolete )
   {
-    List<String> oldNames = new ArrayList<String>();
+    List<String> oldNames = new ArrayList<>();
     for( String file : files )
     {
       String legalName = discoverOldName( host, file );
@@ -351,7 +351,7 @@ public class VssChangeProvider implements ChangeProvider
                                                 HashSet<String> newFiles, HashSet<String> changed,
                                                 HashSet<String> hijacked )
   {
-    ArrayList<VcsException> errors = new ArrayList<VcsException>();
+    ArrayList<VcsException> errors = new ArrayList<>();
     DirectoryCommand cmd = new DirectoryCommand( project, filePath.getPath(), errors );
     cmd.execute();
 
@@ -788,7 +788,7 @@ public class VssChangeProvider implements ChangeProvider
       //  protect over being called in the forbidden phase
       if( !project.isDisposed() )
       {
-        HashSet<FilePath> set = new HashSet<FilePath>();
+        HashSet<FilePath> set = new HashSet<>();
         set.addAll( scope.getDirtyFiles() );
         set.addAll( scope.getRecursivelyDirtyDirectories() );
 

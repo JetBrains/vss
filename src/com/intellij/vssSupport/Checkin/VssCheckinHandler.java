@@ -30,7 +30,7 @@ public class VssCheckinHandler extends CheckinHandler {
   public ReturnResult beforeCheckin()
   {
     Collection<VirtualFile> files = panel.getVirtualFiles();
-    Set<VirtualFile> set = new HashSet<VirtualFile>();
+    Set<VirtualFile> set = new HashSet<>();
 
     //  Add those folders which are renamed and are parents for the files
     //  marked for checkin.

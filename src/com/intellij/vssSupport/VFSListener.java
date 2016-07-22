@@ -44,8 +44,8 @@ public class VFSListener extends VirtualFileAdapter implements CommandListener
   private final VssVcs  host;
 
   private int     commandLevel;
-  private final List<VirtualFile> filesAdded = new ArrayList<VirtualFile>();
-  private final List<FilePath> filesDeleted = new ArrayList<FilePath>();
+  private final List<VirtualFile> filesAdded = new ArrayList<>();
+  private final List<FilePath> filesDeleted = new ArrayList<>();
 
   public VFSListener( Project project, VssVcs host ) {  this.project = project; this.host = host; }
 
@@ -265,7 +265,7 @@ public class VFSListener extends VirtualFileAdapter implements CommandListener
 
   private void executeAdd()
   {
-    ArrayList<VirtualFile> files = new ArrayList<VirtualFile>( filesAdded );
+    ArrayList<VirtualFile> files = new ArrayList<>(filesAdded);
     VcsShowConfirmationOption confirmOption = host.getAddConfirmation();
 
     if( confirmOption.getValue() == VcsShowConfirmationOption.Value.DO_NOTHING_SILENTLY) return;
@@ -323,7 +323,7 @@ public class VFSListener extends VirtualFileAdapter implements CommandListener
     }
     else
     {
-      final List<FilePath> deletedFiles = new ArrayList<FilePath>( filesDeleted );
+      final List<FilePath> deletedFiles = new ArrayList<>(filesDeleted);
       AbstractVcsHelper helper = AbstractVcsHelper.getInstance( project );
       Collection<FilePath> filesToProcess = helper.selectFilePathsToProcess( deletedFiles, VssBundle.message("title.select.files.delete"),
                                                                              null, VssBundle.message("action.Vss.Delete.description") + "?",
@@ -337,7 +337,7 @@ public class VFSListener extends VirtualFileAdapter implements CommandListener
 
   private void markFileRemoval( final Collection<FilePath> paths, HashSet<String> folders, HashSet<String> files )
   {
-    final ArrayList<FilePath> allpaths = new ArrayList<FilePath>( paths );
+    final ArrayList<FilePath> allpaths = new ArrayList<>(paths);
     for( FilePath fpath : allpaths )
     {
       String path = fpath.getPath();

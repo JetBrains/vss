@@ -101,14 +101,14 @@ public class VssVcs extends AbstractVcs implements PersistentStateComponent<Elem
     historyProvider = new VssFileHistoryProvider(project);
     editFileProvider = new VssEditFileProvider(project);
 
-    removedFiles = new HashSet<String>();
-    removedFolders = new HashSet<String>();
-    renamedFiles = new HashMap<String, String>();
-    renamedFolders = new HashMap<String, String>();
-    newFiles = new HashSet<VirtualFile>();
-    deletedFiles = new HashSet<String>();
-    deletedFolders = new HashSet<String>();
-    savedProjectPaths = new HashSet<String>();
+    removedFiles = new HashSet<>();
+    removedFolders = new HashSet<>();
+    renamedFiles = new HashMap<>();
+    renamedFolders = new HashMap<>();
+    newFiles = new HashSet<>();
+    deletedFiles = new HashSet<>();
+    deletedFolders = new HashSet<>();
+    savedProjectPaths = new HashSet<>();
 
     ProjectLevelVcsManager vcsManager = ProjectLevelVcsManager.getInstance(getProject());
 
@@ -202,7 +202,7 @@ public class VssVcs extends AbstractVcs implements PersistentStateComponent<Elem
     VssConfiguration config = VssConfiguration.getInstance(myProject);
     ProjectLevelVcsManager mgr = ProjectLevelVcsManager.getInstance(myProject);
     List<VcsDirectoryMapping> currentMappings = mgr.getDirectoryMappings();
-    List<VcsDirectoryMapping> newMappings = new ArrayList<VcsDirectoryMapping>();
+    List<VcsDirectoryMapping> newMappings = new ArrayList<>();
 
     //  Load old-formatted content root mappings, transform them into new ones.
     //  VssConfiguration reads them but never writes down again, so this procedure
@@ -331,7 +331,7 @@ public class VssVcs extends AbstractVcs implements PersistentStateComponent<Elem
       //
       //  Errors list is fake since we do not want to propagate any errors on this
       //  step back.
-      List<VcsException> errorsFake = new ArrayList<VcsException>();
+      List<VcsException> errorsFake = new ArrayList<>();
       rollbackChanges(path, errorsFake);
     }
   }
@@ -439,7 +439,7 @@ public class VssVcs extends AbstractVcs implements PersistentStateComponent<Elem
     readElements(element, deletedFiles, PERSISTENCY_DELETED_FILE_TAG, false);
     readElements(element, deletedFolders, PERSISTENCY_DELETED_FOLDER_TAG, false);
 
-    HashSet<String> tmp = new HashSet<String>();
+    HashSet<String> tmp = new HashSet<>();
     readElements(element, tmp, PERSISTENCY_NEW_FILE_TAG, true);
 
     readRenamedElements(element, renamedFiles, PERSISTENCY_RENAMED_FILE_TAG, true);
@@ -500,7 +500,7 @@ public class VssVcs extends AbstractVcs implements PersistentStateComponent<Elem
     writeElement(element, deletedFiles, PERSISTENCY_DELETED_FILE_TAG);
     writeElement(element, deletedFolders, PERSISTENCY_DELETED_FOLDER_TAG);
 
-    HashSet<String> tmp = new HashSet<String>();
+    HashSet<String> tmp = new HashSet<>();
     for (VirtualFile file : newFiles) {
       FileStatus status = FileStatusManager.getInstance(myProject).getStatus(file);
       if (status == FileStatus.ADDED) {

@@ -29,7 +29,7 @@ import java.util.*;
 
 public class VssCheckinEnvironment implements CheckinEnvironment
 {
-  public static final Key<Boolean> RENAME_ROLLBACK = new Key<Boolean>( "RENAME_ROLLBACK" );
+  public static final Key<Boolean> RENAME_ROLLBACK = new Key<>("RENAME_ROLLBACK");
 
   private final Project project;
   private final VssVcs host;
@@ -120,8 +120,8 @@ public class VssCheckinEnvironment implements CheckinEnvironment
                                    @NotNull NullableFunction<Object, Object> parametersHolder,
                                    Set<String> feedback)
   {
-    List<VcsException> errors = new ArrayList<VcsException>();
-    HashSet<FilePath> processedFiles = new HashSet<FilePath>();
+    List<VcsException> errors = new ArrayList<>();
+    HashSet<FilePath> processedFiles = new HashSet<>();
 
     if( comment != null )
       VssConfiguration.getInstance(project).getCheckinOptions().COMMENT = comment;
@@ -174,7 +174,7 @@ public class VssCheckinEnvironment implements CheckinEnvironment
 
   private boolean adjustChangesWithRenamedParentFolders( List<Change> changes )
   {
-    Set<VirtualFile> renamedFolders = new HashSet<VirtualFile>();
+    Set<VirtualFile> renamedFolders = new HashSet<>();
     boolean isAnyAddedFolder = getNecessaryRenamedFoldersForList( changes, renamedFolders );
     if( isAnyAddedFolder )
     {
@@ -207,8 +207,8 @@ public class VssCheckinEnvironment implements CheckinEnvironment
    */
   private void commitNew( List<Change> changes, HashSet<FilePath> processedFiles, List<VcsException> errors )
   {
-    HashSet<FilePath> folders = new HashSet<FilePath>();
-    HashSet<FilePath> files = new HashSet<FilePath>();
+    HashSet<FilePath> folders = new HashSet<>();
+    HashSet<FilePath> files = new HashSet<>();
 
     collectNewChanges( changes, folders, files, processedFiles );
 
@@ -332,7 +332,7 @@ public class VssCheckinEnvironment implements CheckinEnvironment
 
   public List<VcsException> scheduleMissingFileForDeletion( List<FilePath> paths )
   {
-    List<VcsException> errors = new ArrayList<VcsException>();
+    List<VcsException> errors = new ArrayList<>();
     for( FilePath file : paths )
     {
       String path = file.getPath();
@@ -370,7 +370,7 @@ public class VssCheckinEnvironment implements CheckinEnvironment
       extendStatus( file );
     }
     // Keep intentionally empty.
-    return new ArrayList<VcsException>();
+    return new ArrayList<>();
   }
 
   private void extendStatus( VirtualFile file )

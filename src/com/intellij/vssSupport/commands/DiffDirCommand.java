@@ -21,9 +21,9 @@ public class DiffDirCommand extends VssCommandAbstract
 {
   @NonNls private static final String DIFF_DIR_COMMAND = "Diff";
 
-  public HashSet<String> filesNew = new HashSet<String>();
-  public HashSet<String> filesDeleted = new HashSet<String>();
-  public HashSet<String> filesChanged = new HashSet<String>();
+  public HashSet<String> filesNew = new HashSet<>();
+  public HashSet<String> filesDeleted = new HashSet<>();
+  public HashSet<String> filesChanged = new HashSet<>();
   public boolean         folderNotFound = false;
 
   private final String tmpPath;

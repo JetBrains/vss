@@ -44,7 +44,7 @@ public class VssUpdateEnvironment implements UpdateEnvironment
   @NotNull
   public UpdateSession updateDirectories(@NotNull final FilePath[] roots, UpdatedFiles updatedFiles, ProgressIndicator progress, @NotNull final Ref<SequentialUpdatesContext> context) throws ProcessCanceledException
   {
-    final ArrayList<VcsException> errors = new ArrayList<VcsException>();
+    final ArrayList<VcsException> errors = new ArrayList<>();
 
     progress.setText( VssBundle.message("message.synch.with.repository") );
 

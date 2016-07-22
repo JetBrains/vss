@@ -23,14 +23,14 @@ public abstract class VssCheckoutAbstractCommand extends VssCommandAbstract
   @NonNls public static final String CHECKED_OUT_SUFFIX = " checked out";
   @NonNls public static final String WRITABLE_COPY_MESSAGE = "writable copy of ";
 
-  public HashSet<String>  successFiles = new HashSet<String>();
-  public HashSet<String>  checkedAlready = new HashSet<String>();
-  public HashSet<String>  checkedByOther = new HashSet<String>();
-  public HashSet<String>  writableFiles = new HashSet<String>();
-  public HashSet<String>  deletedFiles = new HashSet<String>();
-  public HashSet<String>  notexistingFiles = new HashSet<String>();
+  public HashSet<String>  successFiles = new HashSet<>();
+  public HashSet<String>  checkedAlready = new HashSet<>();
+  public HashSet<String>  checkedByOther = new HashSet<>();
+  public HashSet<String>  writableFiles = new HashSet<>();
+  public HashSet<String>  deletedFiles = new HashSet<>();
+  public HashSet<String>  notexistingFiles = new HashSet<>();
 
-  public static final Key<Boolean> SUCCESSFUL_CHECKOUT = new Key<Boolean>( "CHECKOUT_SUCCESS" );
+  public static final Key<Boolean> SUCCESSFUL_CHECKOUT = new Key<>("CHECKOUT_SUCCESS");
 
   public VssCheckoutAbstractCommand( Project project, List<VcsException> errors )
   {

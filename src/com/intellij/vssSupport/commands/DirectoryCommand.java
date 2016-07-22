@@ -41,8 +41,8 @@ public class DirectoryCommand extends VssCommandAbstract
 
   private final String localRootPath;
   private final String vssProjectPath;
-  private final HashSet<String> filesInProject = new HashSet<String>();
-  private final HashSet<String> filesCheckedOut = new HashSet<String>();
+  private final HashSet<String> filesInProject = new HashSet<>();
+  private final HashSet<String> filesCheckedOut = new HashSet<>();
 
   public DirectoryCommand( Project project, String path, List<VcsException> errors )
   {

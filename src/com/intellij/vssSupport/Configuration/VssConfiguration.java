@@ -120,7 +120,7 @@ public class VssConfiguration implements PersistentStateComponent<Element>
   }
 
   public HashMap<String, String> getSSDIREnv(){
-    HashMap<String, String> result = new HashMap<String, String>(1);
+    HashMap<String, String> result = new HashMap<>(1);
     result.put(SSDIR_PARAM_NAME, getSSDIR());
     return result;
   }

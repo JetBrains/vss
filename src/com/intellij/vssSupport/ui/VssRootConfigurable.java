@@ -51,7 +51,7 @@ public class VssRootConfigurable implements UnnamedConfigurable
     btnTest.addActionListener(new ActionListener() {
       public void actionPerformed( ActionEvent e )
       {
-        List<VcsException> errors = new ArrayList<VcsException>();
+        List<VcsException> errors = new ArrayList<>();
         VssCommandAbstract cmd = new CPCommand( project, errors );
         cmd.execute();
         if( errors.size() == 0 )

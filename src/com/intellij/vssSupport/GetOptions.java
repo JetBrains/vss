@@ -96,7 +96,7 @@ public class GetOptions implements JDOMExternalizable, Cloneable
   public List<String> getOptions( File file )
   {
     Project project = myConfig.getProject();
-    ArrayList<String> options = new ArrayList<String>();
+    ArrayList<String> options = new ArrayList<>();
     options.add( GET_COMMAND );
 
     if( file.isDirectory() )

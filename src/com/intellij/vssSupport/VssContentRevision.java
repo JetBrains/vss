@@ -61,7 +61,7 @@ public class VssContentRevision implements ByteBackedContentRevision
 
   private byte[] getServerContent()
   {
-    List<VcsException> errors = new ArrayList<VcsException>();
+    List<VcsException> errors = new ArrayList<>();
     GetContentListener listener = new GetContentListener( errors );
 
     //  1. For renamed or deleted files, VirtualFile for <path> is NULL.
@@ -87,7 +87,7 @@ public class VssContentRevision implements ByteBackedContentRevision
         myTmpFile.deleteOnExit();
 
         // Launch Get command to store temporary file.
-        List<String> options = new LinkedList<String>();
+        List<String> options = new LinkedList<>();
         options.add( GET_COMMAND );
         options.add( vssPath );
         options.add( _GL_OPTION + tmpDir.getCanonicalPath() );

@@ -49,7 +49,7 @@ public class HistoryParser
 
   public static ArrayList<SubmissionData> parse( final String content )
   {
-    ArrayList<SubmissionData> changes = new ArrayList<SubmissionData>();
+    ArrayList<SubmissionData> changes = new ArrayList<>();
     String[] lines = LineTokenizer.tokenize( content, false );
     int      order = 0;
 

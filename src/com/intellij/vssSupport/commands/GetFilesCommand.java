@@ -42,7 +42,7 @@ public class GetFilesCommand extends VssCommandAbstract
   {
     super( project, errors );
     myFiles = files;
-    myFilesToBeGot = new ArrayList<File>(myFiles.length);
+    myFilesToBeGot = new ArrayList<>(myFiles.length);
   }
 
   /**

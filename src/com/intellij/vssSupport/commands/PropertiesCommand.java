@@ -26,7 +26,7 @@ public class PropertiesCommand extends VssCommandAbstract
 
   public PropertiesCommand( Project project, String path, boolean isFolder )
   {
-    super( project, new ArrayList<VcsException>() );
+    super( project, new ArrayList<>() );
 
     tmpPath = new File( path ).getParent();
     vssPath = VssUtil.getVssPath( path, isFolder, project );

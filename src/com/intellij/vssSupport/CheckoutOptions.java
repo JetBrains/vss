@@ -77,7 +77,7 @@ public class CheckoutOptions implements JDOMExternalizable, Cloneable
    */
   public List<String> getOptions( VirtualFile file )
   {
-    ArrayList<String> options=new ArrayList<String>();
+    ArrayList<String> options= new ArrayList<>();
     options.add(CHECKOUT_COMMAND);
     options.add(VssUtil.getVssPath(file, myConfig.getProject()));
     // Comments

@@ -28,7 +28,7 @@ import java.util.List;
  */
 public class VssRollbackEnvironment implements RollbackEnvironment
 {
-  public static final Key<Boolean> RENAME_ROLLBACK = new Key<Boolean>( "RENAME_ROLLBACK" );
+  public static final Key<Boolean> RENAME_ROLLBACK = new Key<>("RENAME_ROLLBACK");
 
   private final Project project;
   private final VssVcs host;
@@ -43,8 +43,8 @@ public class VssRollbackEnvironment implements RollbackEnvironment
 
   public void rollbackChanges(List<Change> changes, final List<VcsException> errors, @NotNull final RollbackProgressListener listener)
   {
-    List<String> renamedFolders = new ArrayList<String>();
-    HashSet<FilePath> processedFiles = new HashSet<FilePath>();
+    List<String> renamedFolders = new ArrayList<>();
+    HashSet<FilePath> processedFiles = new HashSet<>();
 
     listener.determinate();
     
@@ -89,7 +89,7 @@ public class VssRollbackEnvironment implements RollbackEnvironment
 
   private void rollbackNew( List<Change> changes, HashSet<FilePath> processedFiles, @NotNull final RollbackProgressListener listener)
   {
-    HashSet<FilePath> newFileAndFolders = new HashSet<FilePath>();
+    HashSet<FilePath> newFileAndFolders = new HashSet<>();
     collectNewChangesBack( changes, newFileAndFolders, processedFiles );
 
     VcsDirtyScopeManager mgr = VcsDirtyScopeManager.getInstance(project);
@@ -109,7 +109,7 @@ public class VssRollbackEnvironment implements RollbackEnvironment
   private void collectNewChangesBack( List<Change> changes, HashSet<FilePath> newFilesAndFolders,
                                       HashSet<FilePath> processedFiles )
   {
-    HashSet<FilePath> foldersNew = new HashSet<FilePath>();
+    HashSet<FilePath> foldersNew = new HashSet<>();
     for( Change change : changes )
     {
       if( VcsUtil.isChangeForNew( change ) )
@@ -160,7 +160,7 @@ public class VssRollbackEnvironment implements RollbackEnvironment
 
   private void rollbackChanged( List<Change> changes, HashSet<FilePath> processedFiles, List<VcsException> errors, @NotNull final RollbackProgressListener listener)
   {
-    ArrayList<String> rollbacked = new ArrayList<String>();
+    ArrayList<String> rollbacked = new ArrayList<>();
     for( Change change : changes )
     {
       if( !VcsUtil.isChangeForNew( change ) &&
@@ -184,7 +184,7 @@ public class VssRollbackEnvironment implements RollbackEnvironment
           //    the SourceSafe ("file not existing") and just delete the
           //    new file.
 
-          List<VcsException> localErrs = new ArrayList<VcsException>();
+          List<VcsException> localErrs = new ArrayList<>();
           final FilePath oldFile = change.getBeforeRevision().getFile();
 
           boolean fileAbsent = host.getLatestVersion( oldFile.getPath(), false, localErrs );
@@ -235,7 +235,7 @@ public class VssRollbackEnvironment implements RollbackEnvironment
 
   public List<VcsException> scheduleMissingFileForDeletion( List<FilePath> paths )
   {
-    List<VcsException> errors = new ArrayList<VcsException>();
+    List<VcsException> errors = new ArrayList<>();
     for( FilePath file : paths )
     {
       String path = file.getPath();

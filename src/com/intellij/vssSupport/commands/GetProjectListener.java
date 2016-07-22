@@ -47,9 +47,9 @@ public class GetProjectListener extends VssOutputCollector
     this.project = project;
     path = pathToProcess;
 
-    filesChanged = new ArrayList<String>();
-    filesAdded = new ArrayList<String>();
-    filesSkipped = new ArrayList<String>();
+    filesChanged = new ArrayList<>();
+    filesAdded = new ArrayList<>();
+    filesSkipped = new ArrayList<>();
   }
 
   public void everythingFinishedImpl( final String output )

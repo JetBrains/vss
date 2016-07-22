@@ -23,7 +23,7 @@ public class DiffAction extends VssAction
     Project project = e.getData( CommonDataKeys.PROJECT );
     VirtualFile[] files = VssUtil.getVirtualFiles( e );
     VirtualFile   vFile = files[ 0 ];
-    ArrayList<VcsException> errors = new ArrayList<VcsException>();
+    ArrayList<VcsException> errors = new ArrayList<>();
     (new DiffFileCommand(project, vFile, errors)).execute();
     
     if( !errors.isEmpty() )

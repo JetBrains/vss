@@ -73,7 +73,7 @@ public class CheckoutAction extends VssAction
     boolean isActionProduces = false;
     Project project = e.getData( CommonDataKeys.PROJECT );
     VirtualFile[] files = VssUtil.getVirtualFiles( e );
-    ArrayList<VcsException> errors = new ArrayList<VcsException>();
+    ArrayList<VcsException> errors = new ArrayList<>();
 
     UpdatedFiles updatedFiles = UpdatedFiles.create();
     initializeGroups( updatedFiles );

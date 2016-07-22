@@ -54,7 +54,7 @@ public class GetAction extends VssAction
     Project project = e.getData( CommonDataKeys.PROJECT );
     VirtualFile[] files = VssUtil.getVirtualFiles( e );
 
-    ArrayList<VcsException> errors = new ArrayList<VcsException>();
+    ArrayList<VcsException> errors = new ArrayList<>();
     try
     {
       boolean showOptions = VssVcs.getInstance( project ).getGetOptions().getValue();

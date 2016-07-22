@@ -27,7 +27,7 @@ public class LabelAction extends VssAction
     SetLabelDialog dlg = new SetLabelDialog(project);
     if (dlg.showAndGet() && StringUtil.isNotEmpty(dlg.getLabel())) {
       VirtualFile[] files = VssUtil.getVirtualFiles(e);
-      ArrayList<VcsException> errors = new ArrayList<VcsException>();
+      ArrayList<VcsException> errors = new ArrayList<>();
       (new LabelCommand(project, dlg.getLabel(), dlg.getComment(), files, errors)).execute();
 
       if (!errors.isEmpty())

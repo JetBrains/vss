@@ -120,7 +120,7 @@ public class VssFileHistoryProvider implements VcsHistoryProvider
 
   public VcsHistorySession createSessionFor( FilePath filePath ) throws VcsException
   {
-    List<VcsException> errors = new ArrayList<VcsException>();
+    List<VcsException> errors = new ArrayList<>();
     try
     {
       //  Take care of renamed files - refer to the original file name in
@@ -137,7 +137,7 @@ public class VssFileHistoryProvider implements VcsHistoryProvider
         throw errors.get( 0 );
 
       ArrayList<HistoryParser.SubmissionData> changes = cmd.changes;
-      ArrayList<VcsFileRevision> revisions = new ArrayList<VcsFileRevision>();
+      ArrayList<VcsFileRevision> revisions = new ArrayList<>();
       for( HistoryParser.SubmissionData change : changes )
       {
         VcsFileRevision rev = new VssFileRevision( change, filePath );
@@ -204,7 +204,7 @@ public class VssFileHistoryProvider implements VcsHistoryProvider
 
     public byte[] loadContent() throws IOException, VcsException
     {
-      ArrayList<VcsException> errors = new ArrayList<VcsException>();
+      ArrayList<VcsException> errors = new ArrayList<>();
       String tmpDir = FileUtil.getTempDirectory();
       
       GetFileCommand cmd = new GetFileCommand( project, path.getPath(), Integer.toString( version ), errors );

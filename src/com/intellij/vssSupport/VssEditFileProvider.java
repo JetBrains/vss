@@ -31,7 +31,7 @@ public class VssEditFileProvider implements EditFileProvider
 
   public void editFiles( VirtualFile[] files )
   {
-    ArrayList<VcsException> errors = new ArrayList<VcsException>();
+    ArrayList<VcsException> errors = new ArrayList<>();
     for( final VirtualFile file : files )
     {
       //  Calc options for each iteration since user can set "do not show"

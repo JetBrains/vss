@@ -20,9 +20,9 @@ public class DiffDirParser
   @NonNls private static final String VSSFILES_SIG = "SourceSafe files not in the current folder";
   @NonNls private static final String FILE_DIFFERENT_SIG = "SourceSafe files different from";
 
-  public static HashSet<String> filesNew = new HashSet<String>();
-  public static HashSet<String> filesDeleted = new HashSet<String>();
-  public static HashSet<String> filesChanged = new HashSet<String>();
+  public static HashSet<String> filesNew = new HashSet<>();
+  public static HashSet<String> filesDeleted = new HashSet<>();
+  public static HashSet<String> filesChanged = new HashSet<>();
 
   public static void parse( String log )
   {

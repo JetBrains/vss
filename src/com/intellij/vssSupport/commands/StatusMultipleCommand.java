@@ -45,13 +45,13 @@ public class StatusMultipleCommand extends VssCommandAbstract
   {
     VssOutputCollector listener = (files.size() == 1) ? new SingleStatusListener( myErrors ) :
                                                         new MultipleStatusListener( myErrors );
-    deletedFiles = new HashSet<String>();
-    nonexistingFiles = new HashSet<String>();
-    checkoutFiles = new HashSet<String>();
+    deletedFiles = new HashSet<>();
+    nonexistingFiles = new HashSet<>();
+    checkoutFiles = new HashSet<>();
 
     int currIndex = 0;
     int cmdLineLen;
-    LinkedList<String> options = new LinkedList<String>();
+    LinkedList<String> options = new LinkedList<>();
     while( currIndex < files.size() )
     {
       cmdLineLen = STATUS_COMMAND.length() + CURRENT_USER_OPTION.length();

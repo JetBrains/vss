@@ -18,7 +18,7 @@ public abstract class VssOutputCollector
 
   public VssOutputCollector( List<VcsException> errors )
   {
-    myErrors = (errors == null) ? new ArrayList<VcsException>() : errors;
+    myErrors = (errors == null) ? new ArrayList<>() : errors;
   }
 
   public void  setExitCode( int code ) {  myExitCode = code;  }

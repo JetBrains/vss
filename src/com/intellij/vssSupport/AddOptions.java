@@ -47,7 +47,7 @@ public class AddOptions implements JDOMExternalizable
    */
   public List<String> getOptions( VirtualFile virtualFile )
   {
-    ArrayList<String> options = new ArrayList<String>();
+    ArrayList<String> options = new ArrayList<>();
     options.add( ADD_COMMAND );
     options.add( virtualFile.getName() );
 

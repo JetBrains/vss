@@ -43,7 +43,7 @@ public class RunExplorerCommand
   public void execute()
   {
     VssConfiguration config = VssConfiguration.getInstance(myProject);
-    List<String> options = new ArrayList<String>();
+    List<String> options = new ArrayList<>();
     options.add(_s_OPTION + config.getSSDIR());
     options.add(_p_OPTION + myVssPath);
     if( config.USER_NAME.length() > 0 )

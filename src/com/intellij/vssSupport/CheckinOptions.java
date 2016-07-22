@@ -60,7 +60,7 @@ public class CheckinOptions implements JDOMExternalizable
   }
 
   public List<String> getOptions(VirtualFile virtualFile){
-    ArrayList<String> options=new ArrayList<String>();
+    ArrayList<String> options= new ArrayList<>();
     options.add(CHECKIN_COMMAND);
     String vssPath = VssUtil.getVssPath(virtualFile, myConfig.getProject());
     if (vssPath != null)

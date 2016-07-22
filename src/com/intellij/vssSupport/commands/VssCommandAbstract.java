@@ -64,7 +64,7 @@ public abstract class VssCommandAbstract
   protected VssCommandAbstract( @NotNull Project project )
   {
     myProject = project;
-    myErrors = new ArrayList<VcsException>();
+    myErrors = new ArrayList<>();
     myConfig = VssConfiguration.getInstance( project );
   }
 
@@ -167,7 +167,7 @@ public abstract class VssCommandAbstract
   }
 
   protected List<String> formOptions( @NonNls String... subcmd ) {
-    List<String> params = new ArrayList<String>();
+    List<String> params = new ArrayList<>();
     ContainerUtil.addAll(params, subcmd);
 
     if (myConfig.USER_NAME.length() > 0)
