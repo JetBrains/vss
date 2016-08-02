@@ -19,11 +19,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: lloix
- * Date: May 16, 2007
- */
 public class VssRootConfigurable implements UnnamedConfigurable
 {
   private final static String VSS_PROJECT_PREFIX = "$/";
@@ -82,7 +77,6 @@ public class VssRootConfigurable implements UnnamedConfigurable
   }
 
   public void reset() {}
-  public void disposeUIResources() {}
 
   private boolean validProject()
   {
