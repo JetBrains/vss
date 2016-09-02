@@ -1,7 +1,6 @@
 package com.intellij.vssSupport.commands;
 
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vcs.VcsException;
@@ -191,7 +190,7 @@ public class CheckinFileCommand extends VssCommandAbstract
     {
       final int[] status = new int[ 1 ];
       Runnable runnable = () -> status[ 0 ] = Messages.showYesNoDialog(project, message, title, icon );
-      ApplicationManager.getApplication().invokeAndWait( runnable, ModalityState.defaultModalityState() );
+      ApplicationManager.getApplication().invokeAndWait( runnable );
       return status[ 0 ] == Messages.YES;
     }
   }

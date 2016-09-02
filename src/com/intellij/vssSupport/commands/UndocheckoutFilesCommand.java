@@ -1,8 +1,6 @@
 package com.intellij.vssSupport.commands;
 
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.ModalityState;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.VcsException;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -101,7 +99,7 @@ public class UndocheckoutFilesCommand extends VssCommandAbstract
       exitCode[ 0 ] = dialog.getExitCode();
     };
 
-      ApplicationManager.getApplication().invokeAndWait( runnable, ModalityState.defaultModalityState() );
+      ApplicationManager.getApplication().invokeAndWait( runnable );
 
     return exitCode[ 0 ];
   }

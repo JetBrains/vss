@@ -1,23 +1,22 @@
 package com.intellij.vssSupport;
 
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Ref;
 import com.intellij.openapi.vcs.AbstractVcsHelper;
 import com.intellij.openapi.vcs.FilePath;
 import com.intellij.openapi.vcs.VcsException;
 import com.intellij.openapi.vcs.update.*;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.util.Ref;
 import com.intellij.vssSupport.commands.GetFileCommand;
 import com.intellij.vssSupport.commands.SynchronizeCommand;
 import com.intellij.vssSupport.ui.GetDirDialog;
 import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -116,7 +115,7 @@ public class VssUpdateEnvironment implements UpdateEnvironment
 
           cancelled[ 0 ] = !editor.isOK();
         };
-      ApplicationManager.getApplication().invokeAndWait( runnable, ModalityState.defaultModalityState() );
+      ApplicationManager.getApplication().invokeAndWait( runnable );
     }
     return cancelled[ 0 ];
   }
