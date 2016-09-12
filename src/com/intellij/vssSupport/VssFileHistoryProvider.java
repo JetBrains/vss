@@ -190,7 +190,8 @@ public class VssFileHistoryProvider implements VcsHistoryProvider
       return null;
     }
 
-    public VcsRevisionNumber getRevisionNumber() { return new VcsRevisionNumber.Int( version ); }
+    @NotNull
+    public VcsRevisionNumber getRevisionNumber() { return new VcsRevisionNumber.Int(version ); }
     public String getBranchName() { return null;   }
     public Date getRevisionDate() { return null;   }
     public int    getOrder()      { return order;  }
