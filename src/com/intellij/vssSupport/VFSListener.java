@@ -22,24 +22,22 @@ import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.*;
-import com.intellij.openapi.vcs.FilePath;
 import com.intellij.openapi.vcs.actions.VcsContextFactory;
 import com.intellij.openapi.vcs.changes.ChangeListManager;
 import com.intellij.openapi.vfs.*;
 import com.intellij.vcsUtil.VcsUtil;
 import org.jetbrains.annotations.NotNull;
 
-import static com.intellij.vssSupport.Checkin.VssCheckinEnvironment.RENAME_ROLLBACK;
-
 import java.util.*;
+
+import static com.intellij.vssSupport.Checkin.VssCheckinEnvironment.RENAME_ROLLBACK;
 
 /**
  * Created by IntelliJ IDEA.
  * User: lloix
  * Date: Sep 21, 2006
  */
-public class VFSListener extends VirtualFileAdapter implements CommandListener
-{
+public class VFSListener implements CommandListener, VirtualFileListener {
   private final Project project;
   private final VssVcs  host;
 
