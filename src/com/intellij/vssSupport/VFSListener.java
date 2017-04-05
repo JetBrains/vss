@@ -47,7 +47,8 @@ public class VFSListener implements CommandListener, VirtualFileListener {
 
   public VFSListener( Project project, VssVcs host ) {  this.project = project; this.host = host; }
 
-  public void fileCreated( @NotNull VirtualFileEvent event )
+  @Override
+  public void fileCreated(@NotNull VirtualFileEvent event )
   {
     VirtualFile file = event.getFile();
 
@@ -82,7 +83,8 @@ public class VFSListener implements CommandListener, VirtualFileListener {
     }
   }
 
-  public void beforeFileDeletion( @NotNull VirtualFileEvent event )
+  @Override
+  public void beforeFileDeletion(@NotNull VirtualFileEvent event )
   {
     if( !isIgnoredEvent( event ) )
     {
@@ -118,7 +120,8 @@ public class VFSListener implements CommandListener, VirtualFileListener {
     }
   }
 
-  public void beforePropertyChange( @NotNull VirtualFilePropertyEvent event )
+  @Override
+  public void beforePropertyChange(@NotNull VirtualFilePropertyEvent event )
   {
     VirtualFile file = event.getFile();
 
@@ -164,7 +167,8 @@ public class VFSListener implements CommandListener, VirtualFileListener {
     store.remove( oldName );
   }
 
-  public void beforeFileMovement( @NotNull VirtualFileMoveEvent event )
+  @Override
+  public void beforeFileMovement(@NotNull VirtualFileMoveEvent event )
   {
     if( isIgnoredEvent( event ) )
         return;
@@ -228,12 +232,14 @@ public class VFSListener implements CommandListener, VirtualFileListener {
     return false;
   }
 
+  @Override
   public void commandStarted(final CommandEvent event)
   {
     if( project == event.getProject() )
       commandLevel++;
   }
 
+  @Override
   public void commandFinished(final CommandEvent event)
   {
     if (project != event.getProject()) return;
@@ -387,8 +393,4 @@ public class VFSListener implements CommandListener, VirtualFileListener {
     }
     return false;
   }
-
-  public void beforeCommandFinished( final CommandEvent event ){}
-  public void undoTransparentActionStarted() {}
-  public void undoTransparentActionFinished() {}
 }
