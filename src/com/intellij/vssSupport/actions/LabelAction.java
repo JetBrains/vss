@@ -16,10 +16,6 @@ import com.intellij.vssSupport.ui.SetLabelDialog;
 
 import java.util.ArrayList;
 
-/**
- * Created by IntelliJ IDEA.
- * User: lloix
- */
 public class LabelAction extends VssAction
 {
   public void actionPerformed( AnActionEvent e ) {

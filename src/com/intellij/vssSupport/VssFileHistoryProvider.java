@@ -42,10 +42,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: lloix
- */
 public class VssFileHistoryProvider implements VcsHistoryProvider
 {
   @NonNls private final static String DATE_COLUMN = "Date";

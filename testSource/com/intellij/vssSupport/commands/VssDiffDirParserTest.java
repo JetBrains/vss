@@ -6,13 +6,6 @@ package com.intellij.vssSupport.commands;
 import com.intellij.vssSupport.DiffDirParser;
 import junit.framework.TestCase;
 
-/**
- * Created by IntelliJ IDEA.
- * User: lloix
- * Date: Jun 4, 2006
- * Time: 4:53:04 PM
- * To change this template use File | Settings | File Templates.
- */
 public class VssDiffDirParserTest extends TestCase
 {
   public void testCase0()

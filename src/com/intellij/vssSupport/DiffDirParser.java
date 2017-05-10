@@ -5,13 +5,6 @@ import org.jetbrains.annotations.NonNls;
 
 import java.util.HashSet;
 
-/**
- * Created by IntelliJ IDEA.
- * User: lloix
- * Date: Jun 4, 2006
- * Time: 4:19:26 PM
- * To change this template use File | Settings | File Templates.
- */
 public class DiffDirParser
 {
   @NonNls private static final String DIFF_GROUP_PREFIX = "Diffing: ";

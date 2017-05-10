@@ -11,10 +11,6 @@ import org.jetbrains.annotations.NonNls;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: lloix
- */
 public class HistoryCommand extends VssCommandAbstract
 {
   @NonNls private static final String HISTORY_COMMAND = "History";
