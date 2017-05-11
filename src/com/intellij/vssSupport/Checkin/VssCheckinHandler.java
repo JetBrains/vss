@@ -12,11 +12,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Created by IntelliJ IDEA.
- * User: lloix
- * Date: Apr 16, 2007
- */
 public class VssCheckinHandler extends CheckinHandler {
   private final VssVcs host;
   private final CheckinProjectPanel panel;

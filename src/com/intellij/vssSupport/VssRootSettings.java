@@ -6,11 +6,6 @@ import com.intellij.openapi.vcs.VcsRootSettings;
 import org.jdom.Element;
 import org.jetbrains.annotations.NonNls;
 
-/**
- * Created by IntelliJ IDEA.
- * User: lloix
- * Date: May 16, 2007
- */
 public class VssRootSettings implements VcsRootSettings
 {
   @NonNls private final static String PROJECT_TAG = "VssProject";

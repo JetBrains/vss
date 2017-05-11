@@ -26,11 +26,6 @@ import java.util.List;
 
 import static com.intellij.vssSupport.commands.VssCheckoutAbstractCommand.SUCCESSFUL_CHECKOUT;
 
-/**
- * Created by IntelliJ IDEA.
- * User: lloix
- * Date: Apr 6, 2006
- */
 public class VssChangeProvider implements ChangeProvider
 {
   private static final Logger LOG = Logger.getInstance("#com.intellij.vssSupport.VssChangeProvider");

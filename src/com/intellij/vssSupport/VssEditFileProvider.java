@@ -13,11 +13,6 @@ import com.intellij.vssSupport.ui.CheckoutFilesDialog;
 import java.io.IOException;
 import java.util.ArrayList;
 
-/**
- * Created by IntelliJ IDEA.
- * User: lloix
- * Date: Feb 1, 2007
- */
 public class VssEditFileProvider implements EditFileProvider
 {
   private final Project project;

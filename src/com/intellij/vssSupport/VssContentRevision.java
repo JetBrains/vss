@@ -21,11 +21,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: lloix
- * Date: Feb 21, 2007
- */
 public class VssContentRevision implements ByteBackedContentRevision
 {
   @NonNls private static final String _GWR_OPTION = "-GWR";

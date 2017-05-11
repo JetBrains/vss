@@ -8,12 +8,7 @@ import org.jetbrains.annotations.NonNls;
 import java.util.HashSet;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: lloix
- * Date: Mar 19, 2007
- */
-public abstract class VssCheckoutAbstractCommand extends VssCommandAbstract 
+public abstract class VssCheckoutAbstractCommand extends VssCommandAbstract
 {
   @NonNls public static final String CHECKED_OUT_BY_ANOTHER_USER_MESSAGE = "is checked out by";
   @NonNls public static final String HAVE_FILE_MESSAGE = "currently have file";

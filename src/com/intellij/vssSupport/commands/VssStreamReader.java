@@ -13,11 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
-/**
- * Created by IntelliJ IDEA.
- * User: lloix
- * Date: Mar 26, 2007
- */
 public final class VssStreamReader implements CancellableRunnable
 {
   @NonNls private static final String NO_DATABASE_MESSAGE = "No VSS database";

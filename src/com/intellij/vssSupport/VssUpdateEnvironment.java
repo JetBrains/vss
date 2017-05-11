@@ -22,11 +22,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: lloix
- * Date: Feb 20, 2007
- */
 public class VssUpdateEnvironment implements UpdateEnvironment
 {
   @NonNls

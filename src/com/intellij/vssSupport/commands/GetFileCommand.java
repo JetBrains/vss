@@ -11,11 +11,6 @@ import org.jetbrains.annotations.NonNls;
 import java.io.File;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: lloix
- * Date: Jul 5, 2006
- */
 
 public class GetFileCommand extends VssCommandAbstract
 {

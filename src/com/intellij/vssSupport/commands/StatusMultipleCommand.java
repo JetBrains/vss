@@ -14,11 +14,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: lloix
- * Date: Feb 20, 2007
- */
 public class StatusMultipleCommand extends VssCommandAbstract
 {
   @NonNls private static final String STATUS_COMMAND = "Status";

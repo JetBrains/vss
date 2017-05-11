@@ -32,11 +32,6 @@ import java.util.*;
 
 import static com.intellij.vssSupport.Checkin.VssCheckinEnvironment.RENAME_ROLLBACK;
 
-/**
- * Created by IntelliJ IDEA.
- * User: lloix
- * Date: Sep 21, 2006
- */
 public class VFSListener implements CommandListener, VirtualFileListener {
   private final Project project;
   private final VssVcs  host;

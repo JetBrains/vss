@@ -9,11 +9,6 @@ import org.jetbrains.annotations.NonNls;
 
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: Michael (LloiX) Gerasimov
- * Date: Mar 12, 2007
- */
 public class LabelCommand extends VssCommandAbstract
 {
   private final VirtualFile[] myFiles;

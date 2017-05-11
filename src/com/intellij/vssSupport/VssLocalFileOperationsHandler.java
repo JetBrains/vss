@@ -13,11 +13,6 @@ import com.intellij.vcsUtil.VcsUtil;
 import java.io.File;
 import java.io.IOException;
 
-/**
- * Created by IntelliJ IDEA.
- * User: lloix
- * Date: Sep 3, 2007
- */
 public class VssLocalFileOperationsHandler implements LocalFileOperationsHandler
 {
   private final Project project;

@@ -6,11 +6,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
-/**
- * Created by IntelliJ IDEA.
- * User: lloix
- * Date: May 31, 2006
- */
 public class HistoryParser
 {
   @NonNls private static final String FILE_SECTION_SIG = "*****";

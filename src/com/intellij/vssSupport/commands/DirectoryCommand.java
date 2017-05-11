@@ -27,11 +27,6 @@ import org.jetbrains.annotations.NonNls;
 import java.util.HashSet;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: lloix
- * Date: Nov 9, 2006
- */
 
 public class DirectoryCommand extends VssCommandAbstract
 {

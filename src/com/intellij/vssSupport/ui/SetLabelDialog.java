@@ -11,11 +11,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 
-/**
- * Created by IntelliJ IDEA.
- * User: lloix
- * Date: Mar 12, 2007
- */
 public class SetLabelDialog extends DialogWrapper
 {
   // UI controls.

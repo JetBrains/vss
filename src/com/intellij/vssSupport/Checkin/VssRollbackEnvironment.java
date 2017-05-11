@@ -21,11 +21,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: lloix
- * Date: Jun 28, 2007
- */
 public class VssRollbackEnvironment implements RollbackEnvironment
 {
   public static final Key<Boolean> RENAME_ROLLBACK = new Key<>("RENAME_ROLLBACK");
