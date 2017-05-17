@@ -9,7 +9,6 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vcs.*;
 import com.intellij.openapi.vcs.changes.*;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.util.Processor;
 import com.intellij.vcsUtil.VcsImplUtil;
 import com.intellij.vcsUtil.VcsUtil;
 import com.intellij.vssSupport.Configuration.VssConfiguration;
@@ -513,7 +512,7 @@ public class VssChangeProvider implements ChangeProvider
         progress.checkCanceled();
       }
       String oldFolderName = host.renamedFolders.get( folderName );
-      final FilePath refPath = VcsUtil.getFilePathForDeletedFile( oldFolderName, true );
+      final FilePath refPath = VcsUtil.getFilePath( oldFolderName, true );
       final FilePath currPath = VcsUtil.getFilePath( folderName );
 
       builder.processChange( new Change( new VssContentRevision( refPath, project ), new CurrentContentRevision( currPath )), VssVcs.getKey());
@@ -523,13 +522,13 @@ public class VssChangeProvider implements ChangeProvider
   private void addRemovedFiles( final ChangelistBuilder builder )
   {
     for( String path : host.removedFolders )
-      builder.processLocallyDeletedFile( VcsUtil.getFilePathForDeletedFile( path, true ) );
+      builder.processLocallyDeletedFile( VcsUtil.getFilePath( path, true ) );
 
     for( String path : host.removedFiles )
-      builder.processLocallyDeletedFile( VcsUtil.getFilePathForDeletedFile( path, false ) );
+      builder.processLocallyDeletedFile( VcsUtil.getFilePath( path, false ) );
 
     for( String path : host.deletedFolders )
-      builder.processChange( new Change( new CurrentContentRevision( VcsUtil.getFilePathForDeletedFile( path, true )),
+      builder.processChange( new Change( new CurrentContentRevision( VcsUtil.getFilePath( path, true )),
                                                                      null, FileStatus.DELETED ), VssVcs.getKey());
 
     for( String path : host.deletedFiles )
@@ -537,7 +536,7 @@ public class VssChangeProvider implements ChangeProvider
       if (progress != null) {
         progress.checkCanceled();
       }
-      FilePath refPath = VcsUtil.getFilePathForDeletedFile( path, false );
+      FilePath refPath = VcsUtil.getFilePath( path, false );
       VssContentRevision revision = ContentRevisionFactory.getRevision( refPath, project );
       builder.processChange( new Change( revision, null, FileStatus.DELETED ), VssVcs.getKey());
     }
