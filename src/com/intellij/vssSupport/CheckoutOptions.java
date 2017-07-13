@@ -42,12 +42,12 @@ public class CheckoutOptions implements JDOMExternalizable, Cloneable
 
   /**
    * -GWR
-   * This parameter has sense only if <code>doNotGetLatestVersion</code> isn't specified.
+   * This parameter has sense only if {@code doNotGetLatestVersion} isn't specified.
    */
   public boolean REPLACE_WRITABLE;
 
   /**
-   * This options presents only in UI and is not included by <code>getOptions</code>
+   * This options presents only in UI and is not included by {@code getOptions}
    * method into the options set. The CheckoutDirCommand uses this options to operate.
    */
   public boolean RECURSIVE;

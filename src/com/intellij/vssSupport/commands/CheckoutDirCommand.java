@@ -24,7 +24,7 @@ public class CheckoutDirCommand extends VssCheckoutAbstractCommand
    * @param project project.
    * @param dir directory to be checked out. Note, that the passed
    * directory must be a directory and this directory should be under VSS control,
-   * i.e. method <code>VssUtil.isUnderVss</code> must return <code>true</code>.
+   * i.e. method {@code VssUtil.isUnderVss} must return {@code true}.
    */
   public CheckoutDirCommand( Project project, VirtualFile dir, List<VcsException> errors )
   {

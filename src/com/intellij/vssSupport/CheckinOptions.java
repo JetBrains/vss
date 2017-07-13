@@ -45,12 +45,12 @@ public class CheckinOptions implements JDOMExternalizable
    * -I-Y or -I-N
    *
    * This is default answer on all questions.
-   * If it's <code>null</code> then it means that the answer is undefined
+   * If it's {@code null} then it means that the answer is undefined
    * and it should not be included into the set of command's optioon.
    */
   public Boolean defaultAnswer;
   /**
-   * This options presents only in UI and is not included by <code>getOptions</code>
+   * This options presents only in UI and is not included by {@code getOptions}
    * method into the options set. The CheckinDirCommand uses this options to operate.
    */
   public boolean RECURSIVE;

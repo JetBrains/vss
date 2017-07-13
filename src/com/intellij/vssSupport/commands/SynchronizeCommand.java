@@ -18,12 +18,12 @@ public class SynchronizeCommand extends VssCommandAbstract
   private final GetProjectListener listener;
 
   /**
-   * Creates new <code>SynchronizeCommand</code> instance.
+   * Creates new {@code SynchronizeCommand} instance.
    *
    * @param project        project.
    * @param path           paths to be gotten. Note, that the passed
-   *                       paths must be under VSS control, i.e. <code>VssUtil.isUnderVss</code>
-   *                       method must return <code>true</code> for each of them.
+   *                       paths must be under VSS control, i.e. {@code VssUtil.isUnderVss}
+   *                       method must return {@code true} for each of them.
    */
   public SynchronizeCommand( Project project, VirtualFile path, List<VcsException> errors )
   {

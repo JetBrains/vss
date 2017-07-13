@@ -4,7 +4,6 @@
 package com.intellij.vssSupport.commands;
 
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.LineTokenizer;
 import com.intellij.openapi.vcs.ProjectLevelVcsManager;
@@ -28,10 +27,10 @@ public class UndocheckoutDirCommand extends VssCommandAbstract
   private final VirtualFile myDir;
 
   /**
-   * Creates new <code>UndocheckoutDirCommand</code> instance.
+   * Creates new {@code UndocheckoutDirCommand} instance.
    * @param dir directory to be unchecked out. Note, that the passed
-   * directory must be under VSS control, i.e. <code>VssUtil.isUnderVss</code>
-   * method must return <code>true</code>.
+   * directory must be under VSS control, i.e. {@code VssUtil.isUnderVss}
+   * method must return {@code true}.
    */
   public UndocheckoutDirCommand( Project project, VirtualFile dir, List<VcsException> errors )
   {

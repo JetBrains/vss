@@ -20,11 +20,11 @@ public class CheckoutFileCommand extends VssCheckoutAbstractCommand
   private final VirtualFile myFile;
 
   /**
-   * Creates new <code>CheckoutFileCommand</code> instance.
+   * Creates new {@code CheckoutFileCommand} instance.
    * @param project project.
    * @param file file to be checked out. Note, that the passed
-   * file must be under VSS control, i.e. <code>VssUtil.isUnderVss</code>
-   * method must return <code>true</code> for it.
+   * file must be under VSS control, i.e. {@code VssUtil.isUnderVss}
+   * method must return {@code true} for it.
    */
   public CheckoutFileCommand( Project project, VirtualFile file, List<VcsException> errors )
   {

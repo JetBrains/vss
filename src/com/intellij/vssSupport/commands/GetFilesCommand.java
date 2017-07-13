@@ -25,18 +25,18 @@ public class GetFilesCommand extends VssCommandAbstract
   private GetOptions myBaseOptions;
 
   /**
-   * List of <code>java.io.File</code> objects. It doesn't contains directories.
+   * List of {@code java.io.File} objects. It doesn't contains directories.
    */
   private final ArrayList<File> myFilesToBeGot;
   private boolean myReplaceAllWritable;
   private boolean myDoNotReplaceAllWritable;
 
   /**
-   * Creates new <code>GetFilesCommand</code> instance.
+   * Creates new {@code GetFilesCommand} instance.
    * @param project project.
    * @param files files to be gotten. Note, that the passed
-   * files must be under VSS control, i.e. <code>VssUtil.isUnderVss</code>
-   * method must return <code>true</code> for each of them.
+   * files must be under VSS control, i.e. {@code VssUtil.isUnderVss}
+   * method must return {@code true} for each of them.
    */
   public GetFilesCommand( Project project, VirtualFile[] files, List<VcsException> errors )
   {

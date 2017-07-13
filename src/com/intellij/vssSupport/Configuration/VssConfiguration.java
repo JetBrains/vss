@@ -74,7 +74,7 @@ public class VssConfiguration implements PersistentStateComponent<Element>
 
   /**
    * @return Error message text if path to VSS client is not properly configured.
-   * Otherwise the method returns <code>NULL</code>.
+   * Otherwise the method returns {@code NULL}.
    */
   @Nullable
   public String checkCmdPath()
@@ -137,7 +137,7 @@ public class VssConfiguration implements PersistentStateComponent<Element>
   }
 
   /**
-   * @return <code>MapItem</code> with the specified index.
+   * @return {@code MapItem} with the specified index.
    */
   public MapItem getMapItem( int idx ){  return (MapItem) myMapItems.get( idx );  }
 

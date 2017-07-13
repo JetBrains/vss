@@ -25,7 +25,7 @@ public class LabelCommand extends VssCommandAbstract
    * @parem label label to be assigned to the file(s) or folder(s)
    * @param files  files for which a label will be set. Note, that the passed
    *               files must be under VSS control, i.e. it must have
-   *               not <code>null</code> nearest mapping item.
+   *               not {@code null} nearest mapping item.
    */
   public LabelCommand( Project project, String label, String comment,
                        VirtualFile[] files, List<VcsException> errors )

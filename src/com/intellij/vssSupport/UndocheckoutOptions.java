@@ -45,7 +45,7 @@ public class UndocheckoutOptions implements JDOMExternalizable, Cloneable
 
   /**
    * -R
-   * This options presents only in UI and is not included by <code>getOptions</code>
+   * This options presents only in UI and is not included by {@code getOptions}
    * method into the options set. The UndocheckoutDirCommand uses this options to operate.
    */
   public boolean RECURSIVE;

@@ -13,13 +13,13 @@ import org.jdom.Element;
 public class MapItem implements JDOMExternalizable{
   /**
    * Path to VSS project/item. This path doesn't contains any slashes at the end, excepting the
-   * root project (<code>$/</code>). It means that </code>$/myProject1/</code> is illegal path
-   * and <code>$/myProject1</code> is the legal one.
+   * root project ({@code $/}). It means that </code>$/myProject1/</code> is illegal path
+   * and {@code $/myProject1} is the legal one.
    */
   public String VSS_PATH="";
   /**
    * Path in local file system. It doesn't contains any slashes ant the end, excepting
-   * local disk roots: <code>C:\</code>, etc. This path has UNIX separator chars.
+   * local disk roots: {@code C:\}, etc. This path has UNIX separator chars.
    */
   public String LOCAL_PATH="";
 

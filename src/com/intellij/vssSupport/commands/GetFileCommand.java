@@ -24,7 +24,7 @@ public class GetFileCommand extends VssCommandAbstract
   private boolean isNonExistingFile = false;
 
   /**
-   * Creates new <code>GetFilesCommand</code> instance.
+   * Creates new {@code GetFilesCommand} instance.
    * @param project project.
    * @param filePath file path to be got
    */

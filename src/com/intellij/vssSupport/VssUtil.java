@@ -57,7 +57,7 @@ public class VssUtil extends VcsUtil
   }
 
   /**
-   * @return full local path for specified VSS item. Retruns <code>null</code>
+   * @return full local path for specified VSS item. Retruns {@code null}
    *         if local path cannot be resolved.
    */
   @Nullable
@@ -98,8 +98,8 @@ public class VssUtil extends VcsUtil
   }
 
   /**
-   * @return nearest <code>MapItem</code> to the specified <code>vssPath</code>. Returns
-   *         <code>null</code> if there is no any item found.
+   * @return nearest {@code MapItem} to the specified {@code vssPath}. Returns
+   *         {@code null} if there is no any item found.
    */
   @Nullable
   private static VcsDirectoryMapping getNearestMapItemForVssPath( String vssPath, Project project )
@@ -126,7 +126,7 @@ public class VssUtil extends VcsUtil
   }
 
   /**
-   * @return VSS path for the specified local file or <code>null</code> if
+   * @return VSS path for the specified local file or {@code null} if
    *         the file isn't under VSS control.
    */
   @Nullable
@@ -136,7 +136,7 @@ public class VssUtil extends VcsUtil
   }
 
   /**
-   * @return VSS path for the specified virtual file or <code>null</code>
+   * @return VSS path for the specified virtual file or {@code null}
    *         if virtual file isn't under VSS control.
    */
   @Nullable

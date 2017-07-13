@@ -359,7 +359,7 @@ public class VssVcs extends AbstractVcs implements PersistentStateComponent<Elem
   }
 
   /**
-   * Consults <code>ChangeListManager</code> whether the file belongs to the list of ignored
+   * Consults {@code ChangeListManager} whether the file belongs to the list of ignored
    * files or resides under the ignored folder.
    */
   public boolean isFileIgnored(VirtualFile file) {
