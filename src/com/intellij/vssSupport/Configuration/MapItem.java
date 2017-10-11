@@ -36,10 +36,7 @@ public class MapItem implements JDOMExternalizable{
       return false;
     }
     MapItem mapItem=(MapItem)obj;
-    if(!VSS_PATH.equals(mapItem.VSS_PATH)||!LOCAL_PATH.equals(mapItem.LOCAL_PATH)){
-      return false;
-    }
-    return true;
+      return VSS_PATH.equals(mapItem.VSS_PATH) && LOCAL_PATH.equals(mapItem.LOCAL_PATH);
   }
 
   public int hashCode(){

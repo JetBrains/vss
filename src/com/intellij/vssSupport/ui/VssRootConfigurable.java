@@ -72,7 +72,7 @@ public class VssRootConfigurable implements UnnamedConfigurable
 
   public boolean isModified() {  return false;  }
 
-  public void apply() throws ConfigurationException {
+  public void apply() {
     myMapping.setRootSettings( new VssRootSettings( (String)myComboBox1.getSelectedItem() ) );
   }
 

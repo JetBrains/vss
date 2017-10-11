@@ -40,7 +40,7 @@ public class VSSExecUtil
 
   private VSSExecUtil() {}
 
-  public static interface UserInput {  void doInput(Writer writer);  }
+  public interface UserInput {  void doInput(Writer writer);  }
 
   public synchronized static void runProcess( @NotNull Project project,
                                               String exePath, List<String> paremeters,

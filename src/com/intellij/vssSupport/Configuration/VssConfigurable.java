@@ -43,8 +43,7 @@ public class VssConfigurable extends BaseConfigurable
     myConfig = VssConfiguration.getInstance( myProject );
   }
 
-  public void apply() throws ConfigurationException
-  {
+  public void apply() {
     myConfig.CLIENT_PATH = myClientPath.getText().replace('/',File.separatorChar);
     myConfig.SRCSAFEINI_PATH = mySrcsafeIni.getText().replace('/',File.separatorChar);
     myConfig.USER_NAME = myTextFieldUserName.getText().trim();

@@ -28,8 +28,7 @@ public class VssLocalFileOperationsHandler implements LocalFileOperationsHandler
    * If the folder to be deleted is versioned, and contains unversioned files,
    * issue a warning with the possibility to cancel the deletion operation.
    */
-  public boolean delete( VirtualFile file ) throws IOException
-  {
+  public boolean delete( VirtualFile file ) {
     //  In the case of multi-vcs project configurations, we need to skip all
     //  notifications on non-owned files
     if( !VcsUtil.isFileForVcs( file, project, host ))
@@ -62,12 +61,12 @@ public class VssLocalFileOperationsHandler implements LocalFileOperationsHandler
     }
     return false;
   }
-  public boolean move(VirtualFile file, VirtualFile toDir) throws IOException { return false; }
-  public File copy(VirtualFile file, VirtualFile toDir, final String copyName) throws IOException { return null; }
-  public boolean rename(VirtualFile file, String newName) throws IOException  { return false; }
+  public boolean move(VirtualFile file, VirtualFile toDir) { return false; }
+  public File copy(VirtualFile file, VirtualFile toDir, final String copyName) { return null; }
+  public boolean rename(VirtualFile file, String newName) { return false; }
 
-  public boolean createFile(VirtualFile dir, String name) throws IOException  { return false; }
-  public boolean createDirectory(VirtualFile dir, String name) throws IOException { return false; }
+  public boolean createFile(VirtualFile dir, String name) { return false; }
+  public boolean createDirectory(VirtualFile dir, String name) { return false; }
 
   private static boolean isFolderItself( Change change, VirtualFile folder )
   {
