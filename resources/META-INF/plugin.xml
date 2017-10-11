@@ -19,8 +19,6 @@
     <category>VCS Integration</category>
     <resource-bundle xmlns="">com.intellij.vssSupport.VssBundle</resource-bundle>
     <depends>com.intellij.modules.vcs</depends>
-    <depends>com.intellij.modules.ultimate</depends>
-
 
     <extensions defaultExtensionNs="com.intellij">
 

@@ -24,8 +24,6 @@ import com.intellij.openapi.vfs.LocalFileOperationsHandler;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileListener;
-import com.intellij.ultimate.PluginVerifier;
-import com.intellij.ultimate.UltimateVerifier;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.containers.HashSet;
 import com.intellij.vcsUtil.VcsUtil;
@@ -90,9 +88,8 @@ public class VssVcs extends AbstractVcs implements PersistentStateComponent<Elem
   public HashMap<String, String> renamedFolders;
   private final HashSet<VirtualFile> newFiles;
 
-  public VssVcs(@NotNull Project project, UltimateVerifier verifier) {
+  public VssVcs(@NotNull Project project) {
     super(project, NAME);
-    PluginVerifier.verifyUltimatePlugin(verifier);
 
     checkinEnvironment = new VssCheckinEnvironment(project, this);
     rollbackEnvironment = new VssRollbackEnvironment(project, this);
