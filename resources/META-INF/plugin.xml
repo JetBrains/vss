@@ -1,6 +1,7 @@
 <idea-plugin>
     <name>Visual SourceSafe Integration</name>
     <id>SourceSafe</id>
+    <version>173.3188</version>
     <description>
         <![CDATA[
        <a href="http://msdn.microsoft.com/en-us/library/3h0544kx(v=vs.80).aspx">Visual SourceSafe</a> is a file-level version control system.
