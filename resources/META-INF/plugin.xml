@@ -10,10 +10,10 @@
       The following features are available:
       <ul>
       <li>Dedicated page under the Version Control node in the Settings/Preferences dialog.</li>
-      <li>Implementing the most frequently needed commands
-      (Open Source Safe Explorer, Check In/Out, Add, Undo Checkout, Get Latest Version); Next, Previous, Rollback,
-      Old text actions are available from the dedicated gutter bar in changed locations.</li>
+      <li>Implementing the most frequently needed commands (Open Source Safe Explorer, Check In/Out, Add, Undo Checkout, Get Latest Version)</li>
+      <li> Next, Previous, Rollback, Old text actions are available from the dedicated gutter bar in changed locations.</li>
       </ul>
+      The plugin support is discontinued since October 17, 2017
       ]]>
     </description>
     <vendor>JetBrains</vendor>
