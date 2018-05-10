@@ -24,6 +24,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.*;
 import com.intellij.openapi.vcs.actions.VcsContextFactory;
 import com.intellij.openapi.vcs.changes.ChangeListManager;
+import com.intellij.openapi.vcs.changes.VcsDirtyScopeManager;
 import com.intellij.openapi.vfs.*;
 import com.intellij.vcsUtil.VcsUtil;
 import org.jetbrains.annotations.NotNull;
@@ -298,7 +299,7 @@ public class VFSListener implements CommandListener, VirtualFileListener {
       host.deletedFolders.remove( path );
 
       host.add2NewFile( file );
-      VcsUtil.markFileAsDirty( project, file );
+      VcsDirtyScopeManager.getInstance(project).fileDirty(file);
     }
   }
 
@@ -351,7 +352,7 @@ public class VFSListener implements CommandListener, VirtualFileListener {
         files.add( path );
       }
 
-      VcsUtil.markFileAsDirty( project, fpath );
+      VcsDirtyScopeManager.getInstance(project).fileDirty(fpath);
     }
   }
 

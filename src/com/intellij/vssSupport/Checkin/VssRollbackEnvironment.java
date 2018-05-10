@@ -9,6 +9,8 @@ import com.intellij.openapi.vcs.changes.ChangeListManager;
 import com.intellij.openapi.vcs.changes.VcsDirtyScopeManager;
 import com.intellij.openapi.vcs.rollback.RollbackEnvironment;
 import com.intellij.openapi.vcs.rollback.RollbackProgressListener;
+import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.ArrayUtil;
 import com.intellij.vcsUtil.VcsUtil;
@@ -20,6 +22,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+
+import static com.intellij.util.containers.ContainerUtil.map;
+import static com.intellij.util.containers.ContainerUtil.map2Array;
 
 public class VssRollbackEnvironment implements RollbackEnvironment
 {
@@ -51,7 +56,8 @@ public class VssRollbackEnvironment implements RollbackEnvironment
     for( String path : renamedFolders )
       host.renamedFolders.remove( VcsUtil.getCanonicalLocalPath( path ) );
 
-    VcsUtil.refreshFiles( project, processedFiles );
+    VfsUtil.markDirtyAndRefresh(true, true, false, map2Array(processedFiles, VirtualFile.class, FilePath::getVirtualFile));
+    VcsDirtyScopeManager.getInstance(project).filesDirty(map(processedFiles, FilePath::getVirtualFile), null);
   }
 
   private void rollbackRenamedFolders( List<Change> changes, HashSet<FilePath> processedFiles,
@@ -70,7 +76,7 @@ public class VssRollbackEnvironment implements RollbackEnvironment
         File folderNew = folder.getIOFile();
         File folderOld = change.getBeforeRevision().getFile().getIOFile();
         folderNew.renameTo( folderOld );
-        VcsUtil.waitForTheFile( folderOld.getPath() );
+        LocalFileSystem.getInstance().refreshAndFindFileByPath(folderOld.getPath());
 
         //  Remember these renamed folders so that we still can use them for
         //  proper resolving of changed files under these folders, but afterwards
@@ -198,7 +204,7 @@ public class VssRollbackEnvironment implements RollbackEnvironment
             //     "Undo CheckOut" command since it work only on VirtualFiles.
             // ToDO: refactor UndoCheckout so that it does not require VirtualFiles.
             //-----------------------------------------------------------------
-            VcsUtil.waitForTheFile( oldFile.getPath() );
+            LocalFileSystem.getInstance().refreshAndFindFileByPath(oldFile.getPath());
 
             VirtualFile vfile = filePath.getVirtualFile();
             if( vfile != null )

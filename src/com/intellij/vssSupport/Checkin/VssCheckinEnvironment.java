@@ -27,6 +27,9 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.util.*;
 
+import static com.intellij.util.containers.ContainerUtil.map;
+import static com.intellij.util.containers.ContainerUtil.map2Array;
+
 public class VssCheckinEnvironment implements CheckinEnvironment
 {
   public static final Key<Boolean> RENAME_ROLLBACK = new Key<>("RENAME_ROLLBACK");
@@ -163,7 +166,8 @@ public class VssCheckinEnvironment implements CheckinEnvironment
       //  Nothing to do, just refresh the files which are already committed.
     }
 
-     VcsUtil.refreshFiles( project, processedFiles );
+    VfsUtil.markDirtyAndRefresh(true, true, false, map2Array(processedFiles, VirtualFile.class, FilePath::getVirtualFile));
+    VcsDirtyScopeManager.getInstance(project).filesDirty(map(processedFiles, FilePath::getVirtualFile), null);
 
     return errors;
   }
@@ -363,7 +367,7 @@ public class VssCheckinEnvironment implements CheckinEnvironment
     for( VirtualFile file : files )
     {
       host.add2NewFile( file );
-      VcsUtil.markFileAsDirty( project, file );
+      VcsDirtyScopeManager.getInstance(project).fileDirty(file);
 
       //  Extend status change to all parent folders if they are not
       //  included into the context of the menu action.
@@ -381,7 +385,7 @@ public class VssCheckinEnvironment implements CheckinEnvironment
     if( mgr.getStatus( parent ) == FileStatus.UNKNOWN )
     {
       host.add2NewFile( parent );
-      VcsUtil.markFileAsDirty( project, parent );
+      VcsDirtyScopeManager.getInstance(project).fileDirty(parent);
 
       extendStatus( parent );
     }

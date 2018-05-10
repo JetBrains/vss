@@ -277,7 +277,7 @@ public class VssVcs extends AbstractVcs implements PersistentStateComponent<Elem
     try {
       FileUtil.copy(newFile, oldFile);
       VirtualFile newVFile = VcsUtil.getVirtualFile(newFile);
-      VirtualFile oldVFile = VcsUtil.waitForTheFile(oldFile.getPath());
+      VirtualFile oldVFile = LocalFileSystem.getInstance().refreshAndFindFileByPath(oldFile.getPath());
 
       new CheckinFileCommand(myProject, oldVFile, errors).execute();
       new ShareFileCommand(myProject, oldFile, newFile, errors).execute();
@@ -318,7 +318,7 @@ public class VssVcs extends AbstractVcs implements PersistentStateComponent<Elem
     getLatestVersion(path, false, errors);
 
     //  Do not forget to refresh the VFS file holder.
-    VirtualFile file = VcsUtil.waitForTheFile(path);
+    VirtualFile file = LocalFileSystem.getInstance().refreshAndFindFileByPath(path);
     if (file != null) {
       //  During file deletion IDEA clears RO status from the file (if it is not
       //  cleared yet). If the file under the repository, this step causes checkout
